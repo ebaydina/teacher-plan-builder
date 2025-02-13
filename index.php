@@ -123,7 +123,7 @@ if(isset($_SESSION['verify'])){
             <div class="row">
                 <div class="col-12 col-lg-3 py-3">
                     <h5 class="text-center pb-2"><?=TITLE?></h5>
-                    <div class="user-info">
+                    <div class="user-info signin-block">
                         <div class="user-avatar">
                             <span class="spinner-border spinner-border d-none"></span>
                             <img id="user-avatar" class="d-none" style="object-fit: contain" alt="user photo" src="">
