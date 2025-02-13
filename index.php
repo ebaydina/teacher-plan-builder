@@ -139,8 +139,8 @@ if(isset($_SESSION['verify'])){
                 <div class="col-12 col-lg-9">
                     <section id="draft" class="page d-none">
                         <div class="d-flex justify-content-between align-items-center pb-1">
-                            <h4>Sheets</h4>
-                            <button id="draft-add" class="btn btn-primary">Add sheet</button>
+                            <h4>Calendars</h4>
+                            <button id="draft-add" class="btn btn-primary">Add new calendar</button>
                         </div>
                         <div class="table-responsive mt-2">
                             <table class="table">

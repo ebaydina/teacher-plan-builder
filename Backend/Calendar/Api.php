@@ -223,7 +223,7 @@ class Api
         }
         $calendar = $this->query("SELECT * FROM calendar_constructor WHERE id=?", intval($this->param('id')))->fetch_assoc();
         if(!$calendar){
-            return $this->error('Sheet not found');
+            return $this->error('Calendar not found');
         }
         if($calendar['user_id'] !== $user['id']){
             return $this->error('No rights');
@@ -231,7 +231,7 @@ class Api
         if(!$this->query("DELETE FROM calendar_constructor WHERE id=?", $calendar['id'])){
             return $this->error('Unknown error');
         }
-        return 'Sheet removed';
+        return 'Calendar removed';
     }
     public function apiCalendarConstructorSheetEdit()
     {
@@ -242,7 +242,7 @@ class Api
         $id = $this->paramId('id');
         $name = $this->param('name');
         if(!mb_strlen($name) || mb_strlen($name) > 30){
-            return $this->error('Sheet name must be from 1 to 30 characters');
+            return $this->error('Calendar name must be from 1 to 30 characters');
         }
         $data = @json_decode($this->param('data'), true);
         if(!is_array($data)){
@@ -251,7 +251,7 @@ class Api
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         $calendar = $this->query("SELECT * FROM calendar_constructor WHERE id=?", $id)->fetch_assoc();
         if(!$calendar){
-            return $this->error('Sheet not found');
+            return $this->error('Calendar not found');
         }
         if($calendar['user_id'] !== $user['id']){
             return $this->error('No rights');
@@ -267,7 +267,7 @@ class Api
         }
         $name = $this->param('name');
         if(!mb_strlen($name) || mb_strlen($name) > 30){
-            return $this->error('Sheet name must be from 1 to 30 characters');
+            return $this->error('Calendar name must be from 1 to 30 characters');
         }
         $data = @json_decode($this->param('data'), true);
         if(!is_array($data)){

@@ -165,7 +165,7 @@ function eventsCalendarConstructorSheets()
             try {
                 autoSaveData = JSON.parse(autoSaveData);
                 if(typeof(autoSaveData) == "object"){
-                    $($("#calendar-autosaved-new span")[1]).text('Edit selected sheet');
+                    $($("#calendar-autosaved-new span")[1]).text('Edit selected calendar');
                     $("#calendar-autosaved-new").attr('item-id', self.parent().parent().parent().attr('item-id'));
                     $("#calendar-load-autosave").modal('show');
                     return false;
@@ -185,7 +185,7 @@ function eventsCalendarConstructorSheets()
             if($("#draft-list .item").length == ''){
                 $("#draft-list").html(`
                     <tr class="text-center">
-                        <td colspan="4">No sheets</td>
+                        <td colspan="4">No calendar was ever created</td>
                     </tr>
                 `);
             }
@@ -431,7 +431,7 @@ function showDrafts()
 {
     loader(false, $("#page-loader"));
     $("#draft").removeClass('d-none');
-    title('Drafts');
+    title('Calendar Drafts');
 }
 function showCalendarMonthSelector()
 {
@@ -1537,7 +1537,7 @@ $(document).ready(function(){
         var self = $(this);
         var name = $("#calendar-save-sheet-name").val();
         if(!name.length){
-            return err("Enter sheet name", $("#calendar-constructor-saved-result"));
+            return err("Enter calendar name", $("#calendar-constructor-saved-result"));
         }
         spinner(self, true);
         var data = getCalendarData();
@@ -1549,7 +1549,7 @@ $(document).ready(function(){
         if(sheet.id !== undefined){
             params.id = sheet.id;
             api('calendarConstructorSheetEdit', params, function(res){
-                suc('Sheet saved', "#calendar-constructor-saved-result");
+                suc('Calendar saved', "#calendar-constructor-saved-result");
                 spinner(self, false);
                 localStorage.removeItem('calendar-autosave');
             }, function(res){
@@ -1559,7 +1559,7 @@ $(document).ready(function(){
         }else{
             api('calendarConstructorSheetAdd', params, function(res){
                 sheet = res;
-                suc('Sheet saved', "#calendar-constructor-saved-result");
+                suc('Calendar saved', "#calendar-constructor-saved-result");
                 spinner(self, false);
                 localStorage.removeItem('calendar-autosave');
             }, function(res){
@@ -1577,7 +1577,7 @@ $(document).ready(function(){
             if(!res.length){
                 list.html(`
                     <tr class="text-center">
-                        <td colspan="4">No sheets</td>
+                        <td colspan="4">No calendar was ever created</td>
                     </tr>
                 `);
             }else{
@@ -1603,7 +1603,7 @@ $(document).ready(function(){
                 autoSaveData = JSON.parse(autoSaveData);
                 if(typeof(autoSaveData) == "object"){
                     $("#calendar-autosaved-new").attr('item-id', 0);
-                    $($("#calendar-autosaved-new span")[1]).text('Add new sheet');
+                    $($("#calendar-autosaved-new span")[1]).text('Add new calendar');
                     $("#calendar-load-autosave").modal('show');
                     return false;
                 }
@@ -1755,7 +1755,7 @@ $(document).ready(function(){
     });
     tippy('.calendar-images-window-help', {
         content: `
-            <div>When you click a picture, it is added to the sheet.</div>
+            <div>When you click a picture, it is added to the calendar.</div>
             <div>The added image turns green for convenience.</div>
             <div>If desired, the same picture can be added several times.</div>
         `,
