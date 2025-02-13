@@ -462,7 +462,7 @@ class Api
         }
         $userFromLogin = $this->query("SELECT * FROM users WHERE login=? AND id <> ?", $login, $user['id'])->fetch_assoc();
         if($userFromLogin){
-            return $this->error('Login busy');
+            return $this->error('Login taken');
         }
         $this->query("UPDATE users SET name=?,surname=?,interests=?,login=?,about=?,gender=? WHERE id=?", $name, $surname, $interests, $login, $about, $gender, $user['id']);
         return 'General information saved';
@@ -562,18 +562,18 @@ class Api
         if(mb_strlen($email) > 30){
             return $this->error('Email must be to 30 characters');
         }
-        if(mb_strlen($password) < 6 || mb_strlen($password) > 15){
-            return $this->error('Password must be from 6 to 15 characters');
+        if(mb_strlen($password) < 6 || mb_strlen($password) > 30){
+            return $this->error('Password must be from 6 to 30 characters');
         }
-        if(mb_strlen($name) < 2 || mb_strlen($name) > 15){
-            return $this->error('Name must be from 2 to 15 characters');
+        if(mb_strlen($name) < 2 || mb_strlen($name) > 30){
+            return $this->error('Name must be from 2 to 30 characters');
         }
         if(preg_match('/[^A-z\d]/', $name)){
             return $this->error('Name must be of Latin letters and Arabic numbers');
         }
         $user = $this->query("SELECT * FROM users WHERE email=?", $email)->fetch_assoc();
         if($user){
-            return $this->error('Email busy');
+            return $this->error('Email taken');
         }
         $password = password_hash($password,PASSWORD_DEFAULT);
         $verifyCode = md5(Functions::getClientToken() . uniqid('calendar_') . microtime(1));
