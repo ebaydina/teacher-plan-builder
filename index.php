@@ -126,7 +126,7 @@ if(isset($_SESSION['verify'])){
                     <div class="user-info">
                         <div class="user-avatar">
                             <span class="spinner-border spinner-border d-none"></span>
-                            <img id="user-avatar" class="d-none">
+                            <img id="user-avatar" class="d-none" style="object-fit: contain" alt="user photo" src="">
                         </div>
                         <button id="draft-btn" class="form-control btn btn-primary mt-2">Draft</button>
                         <button id="name-constructor-btn" class="form-control btn btn-primary mt-2">Name constructor</button>
@@ -251,7 +251,7 @@ if(isset($_SESSION['verify'])){
                                 <h4>Profile Picture</h4>
                                 <div class="user-avatar">
                                     <span class="spinner-border spinner-border d-none"></span>
-                                    <img id="settings-user-avatar" class="d-none">
+                                    <img id="settings-user-avatar" class="d-none" style="object-fit: contain" alt="user photo preview" src="">
                                 </div>
                                 <div id="settings-avatar-result" class="alert d-none"></div>
                                 <button id="settings-avatar-remove-btn" class="form-control btn btn-danger d-none">
