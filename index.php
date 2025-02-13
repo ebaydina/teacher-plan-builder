@@ -75,6 +75,10 @@ if(isset($_SESSION['verify'])){
                     <input id="signin-email" class="form-control" placeholder="Enter email">
                     <label class="form-label mt-2">Password</label>
                     <input id="signin-password" class="form-control" type="password" placeholder="Enter password">
+
+                    <input type="checkbox" id="rememberMe" checked>
+                    <label class="form-label mt-2" for="rememberMe">Remember me</label>
+
                     <button id="btn-signin" class="form-control mt-3 btn btn-primary">
                         <span class="spinner-border spinner-border-sm d-none"></span>
                         <span>Sign in</span>

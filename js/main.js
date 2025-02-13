@@ -1214,11 +1214,25 @@ function calendarPrint(id, list, callback)
     });
 }
 $(document).ready(function(){
+    const storedEmail = localStorage.getItem("rememberMe");
+    if(storedEmail !== null){
+        $("#signin-email").val(storedEmail);
+    }
     $("#btn-signin").click(function(){
+        const email = $("#signin-email").val().trim();
+        const rememberMe =
+            document.getElementById("rememberMe").checked;
+        if (rememberMe) {
+            localStorage.setItem("rememberMe", email);
+        }
+        if (!rememberMe) {
+            localStorage.removeItem("rememberMe");
+        }
+
         var self = $(this);
         spinner(self, true);
         api('signin', {
-            email: $("#signin-email").val().trim(),
+            email: email,
             password: aesEncrypt($("#signin-password").val())
         }, function(res){
             userToken = res;
