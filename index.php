@@ -217,10 +217,6 @@ if(isset($_SESSION['verify'])){
                                 <input id="settings-surname" class="form-control" placeholder="Enter last name">
                             </div>
                             <div class="col-12 col-lg-6 mb-1">
-                                <label class="form-label">Login</label>
-                                <input id="settings-login" class="form-control" placeholder="Enter login">
-                            </div>
-                            <div class="col-12 col-lg-6 mb-1">
                                 <label class="form-label">Gender</label>
                                 <select id="settings-gender" class="form-control">
                                     <option value="0" selected>No select</option>
