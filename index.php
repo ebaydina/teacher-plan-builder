@@ -71,9 +71,9 @@ if(isset($_SESSION['verify'])){
                 <h1 class="py-5 text-center"><?=TITLE?></h1>
                 <div class="col-12 col-lg-4 offset-lg-4 signin-block">
                     <h3>Sign in</h3>
-                    <label class="form-label">Email</label>
-                    <input id="signin-email" class="form-control" placeholder="Enter email">
-                    <label class="form-label mt-2">Password</label>
+                    <label class="form-label" for="signin-email">Email</label>
+                    <input id="signin-email" class="form-control" placeholder="Enter email" type="email">
+                    <label class="form-label mt-2" for="signin-password">Password</label>
                     <input id="signin-password" class="form-control" type="password" placeholder="Enter password">
 
                     <input type="checkbox" id="rememberMe" checked>
@@ -101,11 +101,11 @@ if(isset($_SESSION['verify'])){
                 <h1 class="py-5 text-center"><?=TITLE?></h1>
                 <div class="col-12 col-lg-4 offset-lg-4 signup-block">
                     <h3>Sign up</h3>
-                    <label class="form-label">Email</label>
+                    <label class="form-label" for="signup-email">Email</label>
                     <input id="signup-email" class="form-control" placeholder="Enter email">
-                    <label class="form-label mt-2">Password</label>
+                    <label class="form-label mt-2" for="signup-password">Password</label>
                     <input id="signup-password" class="form-control" type="password" placeholder="Enter password">
-                    <label class="form-label mt-2">Name</label>
+                    <label class="form-label mt-2" for="signup-name">Name</label>
                     <input id="signup-name" class="form-control" placeholder="Enter name">
                     <button id="signup-btn" class="form-control mt-3 btn btn-primary">
                         <span class="spinner-border spinner-border-sm d-none"></span>
@@ -211,15 +211,15 @@ if(isset($_SESSION['verify'])){
                         <h4>General</h4>
                         <div class="row">
                             <div class="col-12 col-lg-6 mb-1">
-                                <label class="form-label">Name</label>
+                                <label class="form-label" for="settings-name">Name</label>
                                 <input id="settings-name" class="form-control" placeholder="Enter name">
                             </div>
                             <div class="col-12 col-lg-6 mb-1">
-                                <label class="form-label">Last Name</label>
+                                <label class="form-label" for="settings-surname">Last Name</label>
                                 <input id="settings-surname" class="form-control" placeholder="Enter last name">
                             </div>
                             <div class="col-12 col-lg-6 mb-1">
-                                <label class="form-label">Gender</label>
+                                <label class="form-label" for="settings-gender">Gender</label>
                                 <select id="settings-gender" class="form-control">
                                     <option value="0" selected>No select</option>
                                     <option value="1">Male</option>
@@ -228,11 +228,11 @@ if(isset($_SESSION['verify'])){
                                 </select>
                             </div>
                             <div class="col-12 mb-1">
-                                <label class="form-label">Most interested in teaching</label>
+                                <label class="form-label" for="settings-interests">Most interested in teaching</label>
                                 <input id="settings-interests" class="form-control" placeholder="Enter most interested in teaching">
                             </div>
                             <div class="col-12">
-                                <label class="form-label">About you (100 words)</label>
+                                <label class="form-label" for="settings-about">About you (100 words)</label>
                                 <input id="settings-about" class="form-control" placeholder="Enter about you">
                             </div>
                             <div class="col-12">
@@ -263,9 +263,9 @@ if(isset($_SESSION['verify'])){
                             </div>
                             <div class="col-12 col-lg-4 mt-5 mt-lg-0">
                                 <h4>Change password</h4>
-                                <label class="form-label">Password</label>
+                                <label class="form-label" for="settings-password">Password</label>
                                 <input id="settings-password" class="form-control" placeholder="Enter new password" type="password">
-                                <label class="form-label mt-2">Repeat password</label>
+                                <label class="form-label mt-2" for="settings-rpassword">Repeat password</label>
                                 <input id="settings-rpassword" class="form-control" placeholder="Enter password again" type="password">
                                 <div id="settings-password-result" class="alert d-none mt-3"></div>
                                 <button id="settings-password-btn" class="form-control btn btn-primary mt-2">
@@ -275,9 +275,9 @@ if(isset($_SESSION['verify'])){
                             </div>
                             <div class="col-12 col-lg-4 mt-5 mt-lg-0">
                                 <h4>Change email</h4>
-                                <label class="form-label">Email</label>
+                                <label class="form-label" for="settings-email">Email</label>
                                 <input id="settings-email" class="form-control" type="email">
-                                <label class="form-label d-none mt-2">Confirm code</label>
+                                <label class="form-label d-none mt-2" for="settings-email-code">Confirm code</label>
                                 <input id="settings-email-code" class="form-control d-none">
                                 <div id="settings-email-result" class="alert d-none mt-3"></div>
                                 <button id="settings-email-btn" class="form-control btn btn-primary mt-2">
@@ -327,9 +327,9 @@ if(isset($_SESSION['verify'])){
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label">Month</label>
+                    <label class="form-label" for="calendar-months">Month</label>
                     <select id="calendar-months" class="form-control"></select>
-                    <label class="form-label mt-2">Year</label>
+                    <label class="form-label mt-2" for="calendar-years">Year</label>
                     <select id="calendar-years" class="form-control"></select>
                 </div>
                 <div class="modal-footer">
@@ -395,15 +395,15 @@ if(isset($_SESSION['verify'])){
                         <div class="col col-md-6">
                             <div class="row">
                                 <div class="col">
-                                    <label class="form-label mt-2">Size</label>
+                                    <label class="form-label mt-2" for="calendar-constructor-edit-size">Size</label>
                                     <input id="calendar-constructor-edit-size" class="form-control" type="number" step="1" min="8" value="20" max="100">
                                 </div>
                                 <div class="col">
-                                    <label class="form-label mt-2">Color</label>
+                                    <label class="form-label mt-2" for="calendar-constructor-edit-color">Color</label>
                                     <input id="calendar-constructor-edit-color" class="form-control form-control-color" type="color" value="#000000">
                                 </div>
                                 <div class="row">
-                                    <label class="form-label mt-3">Preview</label>
+                                    <label class="form-label mt-3" for="calendar-constructor-edit-preview">Preview</label>
                                     <div id="calendar-constructor-edit-preview">Concept</div>
                                 </div>
                             </div>
@@ -430,15 +430,15 @@ if(isset($_SESSION['verify'])){
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <label class="form-label mt-2">Select color</label>
+                            <label class="form-label mt-2" for="calendar-day-color">Select color</label>
                             <input id="calendar-day-color" class="form-control form-control-color" type="color" value="#000000">
                         </div>
                         <div class="col">
-                            <label class="form-label mt-2">Holiday</label>
+                            <label class="form-label mt-2" for="calendar-day-holiday-color">Holiday</label>
                             <button id="calendar-day-holiday-color" data-bs-dismiss="modal" class="form-control btn btn-primary">Holiday</button>
                         </div>
                         <div class="col">
-                            <label class="form-label mt-2">Clear</label>
+                            <label class="form-label mt-2" for="calendar-day-clear-color">Clear</label>
                             <button id="calendar-day-clear-color" data-bs-dismiss="modal" class="form-control btn btn-primary">Clear</button>
                         </div>
                     </div>
@@ -478,7 +478,7 @@ if(isset($_SESSION['verify'])){
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label mt-2">Name</label>
+                    <label class="form-label mt-2" for="calendar-save-sheet-name">Name</label>
                     <input id="calendar-save-sheet-name" class="form-control" placeholder="Enter name">
                     <div id="calendar-constructor-saved-result" class="alert mt-2 d-none"></div>
                 </div>
