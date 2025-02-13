@@ -131,7 +131,9 @@ if(isset($_SESSION['verify'])){
                         <button id="draft-btn" class="form-control btn btn-primary mt-2">Draft</button>
                         <button id="name-constructor-btn" class="form-control btn btn-primary mt-2">Name constructor</button>
                         <button id="settings-btn" class="form-control btn btn-primary mt-2">Profile Settings</button>
-                        <button id="filemanager-btn" class="form-control btn btn-success mt-2<?=(isset($_SESSION['admin']) && $_SESSION['admin']) ? '' : ' d-none'?>">File Manager</button>
+                        <?php if (isset($_SESSION['admin']) && $_SESSION['admin']): ?>
+                            <button id="filemanager-btn" class="form-control btn btn-success mt-2">File Manager</button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="col-12 col-lg-9">
