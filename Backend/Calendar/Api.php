@@ -1,6 +1,7 @@
 <?php
 namespace Calendar;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use Throwable;
 
 class Api
 {
@@ -412,60 +413,64 @@ class Api
     }
     public function apiSetProfile()
     {
-        $user = $this->session();
-        if(!is_array($user)){
-            return $this->error($user);
+        try {
+            $user = $this->session();
+            if(!is_array($user)){
+                return $this->error($user);
+            }
+            $name = $this->param('name','');
+            $surname = $this->param('surname','');
+            $interests = $this->param('interests','');
+            $about = $this->param('about','');
+            $gender = intval($this->param('gender',0));
+            $week_type = intval($this->param('week_type',0));
+            if($name != '' && (mb_strlen($name) < 2 || mb_strlen($name) > 30)){
+                return $this->error('Name must be from 2 to 30 characters');
+            }
+            if(mb_strlen($name) && preg_match('/[^A-z\d]/', $name)){
+                return $this->error('Name must be of Latin letters and Arabic numbers');
+            }
+            if($surname != '' && (mb_strlen($surname) < 2 || mb_strlen($surname) > 15)){
+                return $this->error('Last Name must be from 2 to 15 characters');
+            }
+            if(mb_strlen($surname) && preg_match('/[^A-z\d]/', $surname)){
+                return $this->error('Last Name must be of Latin letters and Arabic numbers');
+            }
+            if(mb_strlen($interests) && preg_match('/[^A-z\d]/', $interests)){
+                return $this->error('Most interested in teaching must be of Latin letters and Arabic numbers');
+            }
+            if(mb_strlen($interests) > 100){
+                return $this->error('Most interested in teaching must be to 100 characters');
+            }
+            if(count(explode(" ", $about)) > 100){
+                return $this->error('About yourself should not have more than 100 words');
+            }
+            if(mb_strlen($about) && preg_match('/[^A-z\d]/', $about)){
+                return $this->error('About yourself must be of Latin letters and Arabic numbers');
+            }
+            if(mb_strlen($about) > 1000){
+                return $this->error('About yourself must be to 1000 characters');
+            }
+            if(!in_array($gender, [0, 1, 2])){
+                return $this->error('Incorrect gender');
+            }
+            $this->query(
+                "UPDATE users SET week_type=?, name=?,surname=?,interests=?,about=?,gender=? WHERE id=?",
+                $week_type, $name, $surname, $interests, $about, $gender, $user['id'])
+            ;
+            return 'General information saved';
+        } catch (Throwable $e) {
+            $a = get_defined_vars();
+            file_put_contents(
+                __DIR__ . '/Api-' . time() . '.log',
+                json_encode([
+                    $a,
+                    var_export($e, true),
+                ])
+            );
+
+            throw $e;
         }
-        $name = $this->param('name');
-        $surname = $this->param('surname');
-        $interests = $this->param('interests');
-        $login = $this->param('login');
-        $about = $this->param('about');
-        $gender = intval($this->param('gender'));
-        $week_type = $this->param('week_type');
-        if($week_type !== null){
-            $this->query("UPDATE users SET week_type=? WHERE id=?", $week_type ? 1 : 0, $user['id']);
-            return 'Week type saved';
-        }
-        if($name != '' && (mb_strlen($name) < 2 || mb_strlen($name) > 15)){
-            return $this->error('Name must be from 2 to 15 characters');
-        }
-        if(mb_strlen($name) && preg_match('/[^A-z\d]/', $name)){
-            return $this->error('Name must be of Latin letters and Arabic numbers');
-        }
-        if($surname != '' && (mb_strlen($surname) < 2 || mb_strlen($surname) > 15)){
-            return $this->error('Last Name must be from 2 to 15 characters');
-        }
-        if(mb_strlen($surname) && preg_match('/[^A-z\d]/', $surname)){
-            return $this->error('Last Name must be of Latin letters and Arabic numbers');
-        }
-        if(mb_strlen($interests) && preg_match('/[^A-z\d]/', $interests)){
-            return $this->error('Most interested in teaching must be of Latin letters and Arabic numbers');
-        }
-        if(mb_strlen($interests) > 100){
-            return $this->error('Most interested in teaching must be to 100 characters');
-        }
-        if(count(explode(" ", $about)) > 100){
-            return $this->error('About yourself should not have more than 100 words');
-        }
-        if(mb_strlen($about) && preg_match('/[^A-z\d]/', $about)){
-            return $this->error('About yourself must be of Latin letters and Arabic numbers');
-        }
-        if(mb_strlen($about) > 1000){
-            return $this->error('About yourself must be to 1000 characters');
-        }
-        if(!in_array($gender, [0, 1, 2])){
-            return $this->error('Incorrect gender');
-        }
-        if(mb_strlen($login) && preg_match('/[^A-z\d]/', $login)){
-            return $this->error('Login must be of Latin letters and Arabic numbers');
-        }
-        $userFromLogin = $this->query("SELECT * FROM users WHERE login=? AND id <> ?", $login, $user['id'])->fetch_assoc();
-        if($userFromLogin){
-            return $this->error('Login taken');
-        }
-        $this->query("UPDATE users SET name=?,surname=?,interests=?,login=?,about=?,gender=? WHERE id=?", $name, $surname, $interests, $login, $about, $gender, $user['id']);
-        return 'General information saved';
     }
     public function apiVerify()
     {
