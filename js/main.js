@@ -331,8 +331,7 @@ function getUserProfile()
 {
     title('Control panel');
     loader(true);
-    $("#signin, #signup, #verify").addClass('d-none');
-    $("#settings").addClass('d-none');
+    $("#signin, #signup, #verify, #settings").addClass('d-none');
     api('getProfile', function(res){
         loader(false);
         $("#panel").removeClass('d-none');
@@ -1307,28 +1306,33 @@ $(document).ready(function(){
         title('Settings');
     });
     $("#save-general-btn").click(function(){
-        var self = $(this);
-        var name = $("#settings-name").val();
-        var surname = $("#settings-surname").val();
-        var interests = $("#settings-interests").val();
-        var login = $("#settings-login").val();
-        var about = $("#settings-about").val();
-        var gender = $("#settings-gender").val();
+        const self = $(this);
+        const name = $("#settings-name").val();
+        const surname = $("#settings-surname").val();
+        const interests = $("#settings-interests").val();
+        const login = $("#settings-login").val();
+        const about = $("#settings-about").val();
+        const gender = $("#settings-gender").val();
+        const week = parseInt($("#select-week-type").val());
         spinner(self, true);
-        api('setProfile', {
-            name: name,
-            surname: surname,
-            interests: interests,
-            login: login,
-            about: about,
-            gender: gender
-        }, function(res){
+        try{
+            api('setProfile', {
+                name: name,
+                surname: surname,
+                interests: interests,
+                login: login,
+                about: about,
+                gender: gender,
+                week_type:week,
+            }, function(res){
+                suc(res, "#save-general-result");
+            }, function(res){
+                err(res, "#save-general-result");
+            });
+        }
+        finally {
             spinner(self, false);
-            suc(res, "#save-general-result");
-        }, function(res){
-            spinner(self, false);
-            err(res, "#save-general-result");
-        });
+        }
     });
     $("#settings-avatar-upload-btn").click(function(){
         var self = $(this);
@@ -1791,13 +1795,14 @@ $(document).ready(function(){
         window.open('/filemanager/', '_blank');
     });
     if($("#verify").hasClass('d-none')){
-        var storageToken = localStorage.getItem('token');
-        if(typeof(storageToken) == "string" && storageToken.length){
+        let storageToken = localStorage.getItem('token');
+        if(typeof(storageToken) === "string" && storageToken.length){
             userToken = storageToken;
         }
         if(userToken){
             getUserProfile();
-        }else{
+        }
+        if(!userToken){
             showSignInForm();
         }
     }
