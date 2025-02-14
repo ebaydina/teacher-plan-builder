@@ -308,11 +308,6 @@ if(isset($_SESSION['verify'])){
                                     <span class="spinner-border spinner-border-sm d-none"></span>
                                     <span>Change email</span>
                                 </button>
-                                <h4 class="mt-3">First day of the week</h4>
-                                <select id="select-week-type" class="form-control">
-                                    <option value="0" selected>Sunday</option>
-                                    <option value="1">Monday</option>
-                                </select>
                             </div>
                             <div class="hr my-5"></div>
                             <div class="text-center">Do you want to end your session?</div>
