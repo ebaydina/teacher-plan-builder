@@ -572,7 +572,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback)
         <table class="calendar-table-bottom">
             <tbody>
                 <tr class="line">
-                    <td class="line-edit" item-id="text-3" colspan="7">
+                    <td style="height:44px;" class="line-edit" item-id="text-3" colspan="7">
                         <span class="text"></span>
                         <input class="d-none" >
                     </td>
@@ -580,7 +580,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback)
             </tbody>
         </table>
         <div class="copyright">
-            <img src="img/copyright.png?v=`+Version+`">
+            <span>http://www.teacherplanbuilder.com</span>
         </div>
     `;
     calendarPage.html(html);
