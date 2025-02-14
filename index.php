@@ -128,12 +128,29 @@ if(isset($_SESSION['verify'])){
                             <span class="spinner-border spinner-border d-none"></span>
                             <img id="user-avatar" class="d-none" style="object-fit: contain" alt="user photo" src="">
                         </div>
-                        <button id="draft-btn" class="form-control btn btn-primary mt-2">Draft</button>
-                        <button id="name-constructor-btn" class="form-control btn btn-primary mt-2">Name constructor</button>
-                        <button id="settings-btn" class="form-control btn btn-primary mt-2">Profile Settings</button>
+                        <div class="menu-item">
+                            <label for="draft-btn">Click here to create monthly curriculum</label>
+                            <button id="draft-btn" class="menu-btn form-control btn btn-primary mt-2">New Calendar Draft</button>
+                        </div>
+                        <div class="menu-item">
+                            <label for="name-constructor-btn">Click here to create a new writing sheet</label>
+                            <button id="name-constructor-btn" class="menu-btn form-control btn btn-primary mt-2">Word Constructor</button>
+                        </div>
+                        <div class="menu-item">
+                            <button id="settings-btn" class="menu-btn form-control btn btn-primary mt-2">Profile Settings</button>
+                        </div>
                         <?php if (isset($_SESSION['admin']) && $_SESSION['admin']): ?>
-                            <button id="filemanager-btn" class="form-control btn btn-success mt-2">File Manager</button>
+                            <div class="menu-item">
+                                <label for="filemanager-btn">Upload a file</label>
+                                <button id="filemanager-btn" class="menu-btn form-control btn btn-success mt-2">File Manager</button>
+                            </div>
                         <?php endif; ?>
+                        <div class="menu-item">
+                            <button id="menu-signout-btn" class="menu-btn form-control btn btn-danger mt-2">
+                                <span class="spinner-border spinner-border-sm d-none"></span>
+                                <span>Sign out</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-lg-9">
