@@ -1299,6 +1299,20 @@ $(document).ready(function(){
             err(res);
         });
     });
+    $("#menu-signout-btn").click(function(){
+        var self = $(this);
+        spinner(self, true);
+        api('signout', function(res){
+            spinner(self, true);
+            localStorage.removeItem('token');
+            userToken = '';
+            $("#panel").addClass('d-none');
+            $("#signin").removeClass('d-none');
+        }, function(res){
+            spinner(self, false);
+            err(res);
+        });
+    });
     $("#settings-btn").click(function(){
         $('.page').addClass('d-none');
         $('#settings').removeClass('d-none');
