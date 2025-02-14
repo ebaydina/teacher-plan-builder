@@ -573,6 +573,7 @@ if(isset($_SESSION['verify'])){
         var conceptsList = <?=json_encode($api->apiGetConcepts(), JSON_UNESCAPED_UNICODE)?>;
         var selectedConcept = false;
     </script>
+    <!--<script src="js/main.js?v=<?php /*=VERSION*/?>"></script>-->
     <script src="js/main.js?v=<?=time()?>"></script>
 </body>
 </html>
