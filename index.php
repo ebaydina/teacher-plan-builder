@@ -244,6 +244,13 @@ if(isset($_SESSION['verify'])){
                                     <option value="3">Other</option>
                                 </select>
                             </div>
+                            <div class="col-12 col-lg-6 mb-1">
+                                <label class="form-label" for="select-week-type">First day of the week</label>
+                                <select id="select-week-type" class="form-control">
+                                    <option value="0" selected>Sunday</option>
+                                    <option value="1">Monday</option>
+                                </select>
+                            </div>
                             <div class="col-12 mb-1">
                                 <label class="form-label" for="settings-interests">Most interested in teaching</label>
                                 <input id="settings-interests" class="form-control" placeholder="Enter most interested in teaching">
