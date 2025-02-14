@@ -312,7 +312,8 @@ function msg(text, type, el)
     }
     window.msg_timer[el] = setTimeout(function(){
         obj.addClass('d-none');
-    }, 3000);
+    }, 30000);
+
 }
 function suc(text, el)
 {
