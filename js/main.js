@@ -339,7 +339,6 @@ function getUserProfile()
         $("#settings-name").val(user.name);
         $("#settings-surname").val(user.surname);
         $("#settings-interests").val(user.interests);
-        $("#settings-login").val(user.login);
         $("#settings-about").val(user.about);
         $("#settings-email").val(user.email);
         $("#settings-gender").val(user.gender.toString());
