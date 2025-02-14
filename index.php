@@ -157,7 +157,7 @@ if(isset($_SESSION['verify'])){
                     <section id="draft" class="page d-none">
                         <div class="d-flex justify-content-between align-items-center pb-1">
                             <h4>Calendars</h4>
-                            <button id="draft-add" class="btn btn-primary">Add new calendar</button>
+                            <button id="draft-add" class="btn btn-primary">Add New Draft</button>
                         </div>
                         <div class="table-responsive mt-2">
                             <table class="table">
@@ -528,7 +528,7 @@ if(isset($_SESSION['verify'])){
                     </button>
                     <button id="calendar-autosaved-new" type="button" data-bs-dismiss="modal" class="btn btn-primary">
                         <span class="spinner-border spinner-border-sm d-none"></span>
-                        <span>Add new sheet</span>
+                        <span>Add New Draft</span>
                     </button>
                 </div>
             </div>

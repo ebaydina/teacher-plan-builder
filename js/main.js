@@ -1618,7 +1618,7 @@ $(document).ready(function(){
                 autoSaveData = JSON.parse(autoSaveData);
                 if(typeof(autoSaveData) == "object"){
                     $("#calendar-autosaved-new").attr('item-id', 0);
-                    $($("#calendar-autosaved-new span")[1]).text('Add new calendar');
+                    $($("#calendar-autosaved-new span")[1]).text('Add New Draft');
                     $("#calendar-load-autosave").modal('show');
                     return false;
                 }
