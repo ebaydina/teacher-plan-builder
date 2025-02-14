@@ -1387,9 +1387,6 @@ $(document).ready(function(){
         self.prev().addClass('d-none');
         self.addClass('d-none');
     });
-    $("#select-week-type").change(function(){
-        api('setProfile', {week_type: $(this).val()});
-    });
     $(".user-avatar img").attr('src', 'img/avatar.png?v='+Version);
     $("#settings-password-btn").click(function(){
         var self = $(this);
