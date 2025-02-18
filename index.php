@@ -51,8 +51,8 @@ if(isset($_SESSION['verify'])){
     <script src="js/tippy.min.js?v=<?=VERSION?>"></script>
 </head>
 <body>
-    <section id="verify" class="<?=($verifyResult ? '' : 'd-none')?>">
-        <div class="container">
+    <section id="verify" style="background-image: url('img/cover.png');" class="<?=($verifyResult ? '' : 'd-none')?>">
+        <div class="container" style="background: white">
             <div clas="row">
                 <h1 class="py-5 text-center"><?=TITLE?></h1>
                 <div class="col-12 col-lg-4 offset-lg-4 verify-block">
@@ -65,8 +65,8 @@ if(isset($_SESSION['verify'])){
             </div>
         </div>
     </section>
-    <section id="signin" class="d-none">
-        <div class="container">
+    <section id="signin" style="background-image: url('img/cover.png');" class="d-none">
+        <div class="container" style="background: white">
             <div clas="row">
                 <h1 class="py-5 text-center"><?=TITLE?></h1>
                 <div class="col-12 col-lg-4 offset-lg-4 signin-block">
@@ -95,8 +95,8 @@ if(isset($_SESSION['verify'])){
             </div>
         </div>
     </section>
-    <section id="signup" class="d-none">
-        <div class="container">
+    <section id="signup" style="background-image: url('img/cover.png');" class="d-none">
+        <div class="container" style="background: white">
             <div clas="row">
                 <h1 class="py-5 text-center"><?=TITLE?></h1>
                 <div class="col-12 col-lg-4 offset-lg-4 signup-block">
