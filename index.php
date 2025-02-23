@@ -25,30 +25,42 @@ if(isset($_SESSION['verify'])){
     }
     unset($_SESSION['verify']);
 }
+
+$version = '1.0.0';
+if (defined('VERSION')) {
+    $version = constant('VERSION');
+}
+$dev = 0;
+if (defined('DEV')) {
+    $dev = constant('DEV');
+}
+if ($dev !== 0) {
+    $version = time();
+}
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/bootstrap-icons.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/jquery-ui.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/jquery-ui.base.theme.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/tippy.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/bootstrap.treeview.min.css?v=<?=VERSION?>" />
-    <link rel="stylesheet" href="css/main.css?v=<?=time()?>" />
-    <script src="js/jquery.min.js?v=<?=VERSION?>"></script>
-    <script src="js/jquery-ui.min.js?v=<?=VERSION?>"></script>
-    <script src="js/jquery-touch.min.js?v=<?=VERSION?>"></script>
-    <script src="js/jquery.scrollto.min.js?v=<?=VERSION?>"></script>
-    <script src="js/crypto.min.js?v=<?=VERSION?>"></script>
-    <script src="js/bootstrap.min.js?v=<?=VERSION?>"></script>
-    <script src="js/bootstrap.treeview.min.js?v=<?=VERSION?>"></script>
-    <script src="js/jspdf.min.js?v=<?=VERSION?>"></script>
-    <script src="js/html2canvas.min.js?v=<?=VERSION?>"></script>
-    <script src="js/popper.min.js?v=<?=VERSION?>"></script>
-    <script src="js/tippy.min.js?v=<?=VERSION?>"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/jquery-ui.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/jquery-ui.base.theme.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/tippy.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/bootstrap.treeview.min.css?v=<?=$version?>" />
+    <link rel="stylesheet" href="css/main.css?v=<?=$version?>" />
+    <script src="js/jquery.min.js?v=<?=$version?>"></script>
+    <script src="js/jquery-ui.min.js?v=<?=$version?>"></script>
+    <script src="js/jquery-touch.min.js?v=<?=$version?>"></script>
+    <script src="js/jquery.scrollto.min.js?v=<?=$version?>"></script>
+    <script src="js/crypto.min.js?v=<?=$version?>"></script>
+    <script src="js/bootstrap.min.js?v=<?=$version?>"></script>
+    <script src="js/bootstrap.treeview.min.js?v=<?=$version?>"></script>
+    <script src="js/jspdf.min.js?v=<?=$version?>"></script>
+    <script src="js/html2canvas.min.js?v=<?=$version?>"></script>
+    <script src="js/popper.min.js?v=<?=$version?>"></script>
+    <script src="js/tippy.min.js?v=<?=$version?>"></script>
 </head>
 <body>
     <section id="verify" style="background-image: url('img/cover-invisible-background.png');" class="<?=($verifyResult ? '' : 'd-none')?>">
@@ -337,7 +349,7 @@ if(isset($_SESSION['verify'])){
         </div>
     </section>
     <input id="image-uploader" class="d-none" type="file" accept=".png, .jpg, .jpeg">
-    <img id="copyright" src="img/copyright.png?v=<?=VERSION?>" class="d-none">
+    <img id="copyright" src="img/copyright.png?v=<?=$version?>" class="d-none">
     <div class="modal fade" id="calendar-month-selector" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -555,7 +567,7 @@ if(isset($_SESSION['verify'])){
     <script>
         var Host = '<?=HOST?>';
         var HostClear = Host.lastIndexOf('/') === Host.length - 1 ? Host.substring(0, Host.length - 1) : Host;
-        var Version = '<?=VERSION?>';
+        var Version = '<?=$version?>';
         var clientToken = '<?=$_COOKIE['csrf_token']?>';
         var userToken = '';
         var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -568,7 +580,6 @@ if(isset($_SESSION['verify'])){
         var conceptsList = <?=json_encode($api->apiGetConcepts(), JSON_UNESCAPED_UNICODE)?>;
         var selectedConcept = false;
     </script>
-    <!--<script src="js/main.js?v=<?php /*=VERSION*/?>"></script>-->
-    <script src="js/main.js?v=<?=time()?>"></script>
+    <script src="js/main.js?v=<?=$version?>"></script>
 </body>
 </html>
