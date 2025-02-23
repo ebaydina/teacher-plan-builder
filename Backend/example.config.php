@@ -8,6 +8,7 @@ define('DB_NAME', 'database_name');
 
 define('HOST', 'https://site.domen/');
 define('HOST_PATH', dirname(__DIR__) . '/');
+define('LOG_PATH', dirname(__DIR__) . '/log/');
 define('UPLOADS_PATH', dirname(__DIR__) . '/uploads/');
 define('UPLOADS_LINK', HOST . 'uploads/');
 define('CONTENT_PATH', dirname(__DIR__) . '/content/');
