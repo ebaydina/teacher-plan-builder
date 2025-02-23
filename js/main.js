@@ -378,12 +378,13 @@ function getUserProfile()
     }, function(res){
         loader(false);
         $("#signin").removeClass('d-none');
+        title('Welcome');
         err(res);
     });
 }
 function title(title)
 {
-    document.title = title;
+    document.title = `Teacher Plan Builder: ${title}`;
 }
 function spinner(el, mode)
 {
