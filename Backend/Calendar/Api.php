@@ -460,14 +460,20 @@ class Api
             ;
             return 'General information saved';
         } catch (Throwable $e) {
-            $a = get_defined_vars();
-            file_put_contents(
-                __DIR__ . '/Api-' . time() . '.log',
-                json_encode([
-                    $a,
-                    var_export($e, true),
-                ])
-            );
+            if(defined('LOG_PATH')){
+                $path = constant('LOG_PATH')
+                    . 'Api-'
+                    . time()
+                    . '.log';
+                $vars = get_defined_vars();
+                file_put_contents(
+                    $path,
+                    json_encode([
+                        $vars,
+                        var_export($e, true),
+                    ]),
+                );
+            }
 
             throw $e;
         }
