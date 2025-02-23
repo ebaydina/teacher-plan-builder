@@ -51,11 +51,11 @@ if(isset($_SESSION['verify'])){
     <script src="js/tippy.min.js?v=<?=VERSION?>"></script>
 </head>
 <body>
-    <section id="verify" style="background-image: url('img/cover.png');" class="<?=($verifyResult ? '' : 'd-none')?>">
-        <div class="container" style="background: white">
+    <section id="verify" style="background-image: url('img/cover-invisible-background.png');" class="<?=($verifyResult ? '' : 'd-none')?>">
+        <div class="container">
             <div clas="row">
-                <h1 class="py-5 text-center"><?=TITLE?></h1>
-                <div class="col-12 col-lg-4 offset-lg-4 verify-block">
+                <div class="col-12 col-lg-4 offset-lg-4 verify-block" style="background: white">
+                    <h2 class="pb-2 text-center"><?=TITLE?></h2>
                     <h3>Verify account</h3>
                     <div class="mt-3 alert <?=($verifyResult && isset($verifyResult['success']) ? 'alert-success' : 'alert-danger')?>">
                         <?=($verifyResult && isset($verifyResult['success']) ? $verifyResult['success'] : ($verifyResult ? $verifyResult['error'] : 'Unknown error'))?>
@@ -65,11 +65,11 @@ if(isset($_SESSION['verify'])){
             </div>
         </div>
     </section>
-    <section id="signin" style="background-image: url('img/cover.png');" class="d-none">
-        <div class="container" style="background: white">
+    <section id="signin" style="background-image: url('img/cover-invisible-background.png');" class="d-none">
+        <div class="container">
             <div clas="row">
-                <h1 class="py-5 text-center"><?=TITLE?></h1>
-                <div class="col-12 col-lg-4 offset-lg-4 signin-block">
+                <div class="col-12 col-lg-4 offset-lg-4 signin-block" style="background: white">
+                    <h2 class="pb-2 text-center"><?=TITLE?></h2>
                     <h3>Sign in</h3>
                     <label class="form-label" for="signin-email">Email</label>
                     <input id="signin-email" class="form-control" placeholder="Enter email" type="email">
@@ -95,11 +95,11 @@ if(isset($_SESSION['verify'])){
             </div>
         </div>
     </section>
-    <section id="signup" style="background-image: url('img/cover.png');" class="d-none">
-        <div class="container" style="background: white">
+    <section id="signup" style="background-image: url('img/cover-invisible-background.png');" class="d-none">
+        <div class="container">
             <div clas="row">
-                <h1 class="py-5 text-center"><?=TITLE?></h1>
-                <div class="col-12 col-lg-4 offset-lg-4 signup-block">
+                <div class="col-12 col-lg-4 offset-lg-4 signup-block"  style="background: white">
+                    <h2 class="pb-2 text-center"><?=TITLE?></h2>
                     <h3>Sign up</h3>
                     <label class="form-label" for="signup-email">Email</label>
                     <input id="signup-email" class="form-control" placeholder="Enter email">
