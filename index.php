@@ -43,10 +43,10 @@ if ($dev !== 0) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/favicon.ico" rel="icon" sizes="any">
-    <link href="/icon.svg" rel="icon" type="image/svg+xml">
-    <link href="/apple-touch-icon.png" rel="apple-touch-icon">
-    <link href="/manifest.webmanifest" rel="manifest">
+    <link href="/favicon.ico?v=<?=$version?>" rel="icon" sizes="any">
+    <link href="/icon.svg?v=<?=$version?>" rel="icon" type="image/svg+xml">
+    <link href="/apple-touch-icon.png?v=<?=$version?>" rel="apple-touch-icon">
+    <link href="/manifest.webmanifest?v=<?=$version?>" rel="manifest">
     <link rel="stylesheet" href="css/bootstrap.min.css?v=<?=$version?>" />
     <link rel="stylesheet" href="css/bootstrap-icons.min.css?v=<?=$version?>" />
     <link rel="stylesheet" href="css/jquery-ui.min.css?v=<?=$version?>" />
