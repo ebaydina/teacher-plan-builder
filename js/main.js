@@ -291,14 +291,14 @@ function msg(text, type, el)
     if(typeof(text) !== "string"){
         return true;
     }
-    var isGlobalResult = false;
+    let isGlobalResult = false;
     if(el === undefined){
         el = '#global-result';
         isGlobalResult = true;
     }
     const obj = $(el);
     obj.addClass('d-none');
-    var alertObj = obj;
+    let alertObj = obj;
     if(isGlobalResult){
         alertObj = obj.find('.alert');
     }
