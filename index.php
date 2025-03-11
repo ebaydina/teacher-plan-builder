@@ -39,10 +39,15 @@ if ($dev !== 0) {
 }
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="keywords" content="Alphabet, Calendar, Constructor">
+    <meta name="description"
+          content="Educational Service: Teacher Plan Builder">
+    <meta name="author" content="lena Baydina">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Plan Builder</title>
     <link href="/favicon.ico?v=<?=$version?>" rel="icon" sizes="any">
     <link href="/icon.svg?v=<?=$version?>" rel="icon" type="image/svg+xml">
     <link href="/apple-touch-icon.png?v=<?=$version?>" rel="apple-touch-icon">
