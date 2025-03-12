@@ -1304,7 +1304,7 @@ $(document).ready(function(){
         var self = $(this);
         spinner(self, true);
         api('signout', function(res){
-            spinner(self, true);
+            spinner(self, false);
             localStorage.removeItem('token');
             userToken = '';
             $("#panel").addClass('d-none');
