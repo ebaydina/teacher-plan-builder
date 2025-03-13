@@ -333,6 +333,17 @@ function getUserProfile()
     loader(true);
     $("#signin, #signup, #verify, #settings").addClass('d-none');
     api('getProfile', function(res){
+
+        $("td form").each(function (key, value) {
+            if (this.action.indexOf('&token=') === -1) {
+                this.action = `${this.action}\&token=${userToken}`;
+            }
+        });
+
+        document
+            .getElementById("subscription-list")
+            .outerHTML = res["subscription-list"] ?? '<table id=\'subscription-list\'/>';
+        delete res["subscription-list"];
         loader(false);
         $("#panel").removeClass('d-none');
         user = res;
@@ -1318,6 +1329,11 @@ $(document).ready(function(){
         $('.page').addClass('d-none');
         $('#settings').removeClass('d-none');
         title('Settings');
+    });
+    $("#subscription-btn").click(function(){
+        $('.page').addClass('d-none');
+        $('#subscription').removeClass('d-none');
+        title('Subscription');
     });
     $("#save-general-btn").click(function(){
         const self = $(this);

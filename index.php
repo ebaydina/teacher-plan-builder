@@ -5,7 +5,7 @@ require_once 'Backend/autoload.php';
 use Calendar\Functions;
 session_start();
 $api = new Calendar\Api($db, false);
-define('V', time());
+//define('V', time());
 if(!isset($_COOKIE['csrf_token'])){
     $_COOKIE['csrf_token'] = Functions::csrfToken();
     setcookie('csrf_token', $_COOKIE['csrf_token']);
@@ -159,6 +159,9 @@ if ($dev !== 0) {
                         </div>
                         <div class="menu-item">
                             <button id="settings-btn" class="menu-btn form-control btn btn-primary mt-2">Profile Settings</button>
+                        </div>
+                        <div class="menu-item">
+                            <button id="subscription-btn" class="menu-btn form-control btn btn-primary mt-2">My Subscription</button>
                         </div>
                         <?php if (isset($_SESSION['admin']) && $_SESSION['admin']): ?>
                             <div class="menu-item">
@@ -335,6 +338,101 @@ if ($dev !== 0) {
                             <div class="text-center mt-2 mb-2">
                                 <button id="signout-btn" class="btn btn-danger">Sign out</button>
                             </div>
+                        </div>
+                    </section>
+                    <section id="subscription" class="page d-none">
+                        <h1 class="pb-2">Shop</h1>
+                        <h4>Shop</h4>
+                        <div class="row">
+                            <table id='item-list' class="table table-hover table-bordered border-primary">
+                                <caption>List of products</caption>
+                                <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Note</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Buy</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Teacher Plan Builder - individual</th>
+                                    <td>Per year</td>
+                                    <td>$150.00 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=ANNUAL_SUBSCRIPTION_INDIVIDUAL?>" method="POST">
+                                            <button type="submit" id="renew-monthly-btn" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Teacher Plan Builder - individual</th>
+                                    <td>Per month</td>
+                                    <td>$15.00 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=MONTHLY_SUBSCRIPTION_INDIVIDUAL?>" method="POST">
+                                            <button type="submit" id="renew-monthly-btn" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Teacher Plan Builder - for schools</th>
+                                    <td>Per year</td>
+                                    <td>$450.00 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=ANNUAL_SUBSCRIPTION_SCHOOL?>" method="POST">
+                                            <button type="submit" id="renew-monthly-btn" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Teacher Plan Builder - for schools</th>
+                                    <td>Per month</td>
+                                    <td>$39.99 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=MONTHLY_SUBSCRIPTION_SCHOOL?>" method="POST">
+                                            <button type="submit" id="renew-monthly-btn" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Young Reader Workbook with subscription</th>
+                                    <td>book</td>
+                                    <td>$52.00 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=BOOK_WITH_SUBSCRIPTION?>&book=true" method="POST">
+                                            <button type="submit" id="book-with-subscription" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Young Reader Workbook without subscription</th>
+                                    <td>book</td>
+                                    <td>$62.00 USD</td>
+                                    <td>
+                                        <form action="/checkout.php?priceId=<?=FULL_PRICE_OF_BOOK?>&book=true" method="POST">
+                                            <button type="submit" id="full-price-of-book" class="form-control btn btn-primary my-2">
+                                                <span>Buy</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4>All My Subscription</h4>
+                        <div class="row">
+                            <table id='subscription-list'/>
                         </div>
                     </section>
                     <section id="page-loader" class="d-none py-3">

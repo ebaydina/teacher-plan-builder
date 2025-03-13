@@ -1,6 +1,7 @@
 <?php
 namespace Calendar;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use Stripe\Exception\ApiErrorException;
 use Throwable;
 
 class Api
@@ -346,6 +347,31 @@ class Api
         if(!$this->query("UPDATE users SET email=? WHERE id=?", $email, $user['id'])){
             return $this->error('Unknown error');
         }
+
+        $stripeCustomer = $this
+            ->query(
+                "SELECT customer_id FROM stripe WHERE user_id=?",
+                $user['id']
+            )
+            ->fetch_assoc();
+
+        $stripeSecretKey = '';
+        if (defined('STRIPE_SECRET_KEY')) {
+            $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+        }
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $customer = $stripe->customers->update(
+            $stripeCustomer['customer_id'],
+            ['email' => $user['email'],]
+        );
+
+        $dump = $customer->toJSON();
+        $this->query(
+            "UPDATE stripe set customer_json=? where user_id=?",
+            $dump,
+            $user['id'],
+        );
+
         return 'Email changed';
     }
     public function apiChangePassword()
@@ -396,7 +422,8 @@ class Api
             return $this->error($user);
         }
         $user['photo'] = $user['photo'] ? UPLOADS_LINK . $user['photo'] : '';
-        return $this->fields($user, [
+
+        $result=$this->fields($user, [
             'id',
             'admin',
             'name',
@@ -410,6 +437,45 @@ class Api
             'photo',
             'week_type'
         ]);
+
+        $stripeKey = '';
+        if (defined('STRIPE_SECRET_KEY')) {
+            $stripeKey = STRIPE_SECRET_KEY;
+        }
+        $stripe = new \Stripe\StripeClient($stripeKey);
+        $stripe->subscriptions->search
+        (
+            ['query' => 'metadata[\'uuid\']:\'value\'']
+        );
+
+        $result['subscription-list'] = <<<HTML
+<table id='subscription-list' class="table table-hover table-bordered border-primary">
+    <caption>List of my actual subscriptions</caption>
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">period_start</th>
+        <th scope="col">period_end</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">1</th>
+        <td>Annual</td>
+        <td>2025-03-13</td>
+        <td>2026-03-12</td>
+    </tr>
+    <tr>
+        <th scope="row">2</th>
+        <td>Monthly</td>
+        <td>2025-02-13</td>
+        <td>2025-03-12</td>
+    </tr>
+    </tbody>
+</table>
+HTML;
+        return $result;
     }
     public function apiSetProfile()
     {
@@ -458,6 +524,33 @@ class Api
                 "UPDATE users SET week_type=?, name=?,surname=?,interests=?,about=?,gender=? WHERE id=?",
                 $week_type, $name, $surname, $interests, $about, $gender, $user['id'])
             ;
+
+            $stripeCustomer = $this
+                ->query(
+                    "SELECT customer_id FROM stripe WHERE user_id=?",
+                    $user['id']
+                )
+                ->fetch_assoc();
+
+            $stripeSecretKey = '';
+            if (defined('STRIPE_SECRET_KEY')) {
+                $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+            }
+            $stripe = new \Stripe\StripeClient($stripeSecretKey);
+            $customer = $stripe->customers->update(
+                $stripeCustomer['customer_id'],
+                [
+                    'name' => $user['name'] . ' ' . $user['surname'],
+                    ]
+            );
+
+            $dump = $customer->toJSON();
+            $this->query(
+                "UPDATE stripe set customer_json=? where user_id=?",
+                $dump,
+                $user['id'],
+            );
+
             return 'General information saved';
         } catch (Throwable $e) {
             if(defined('LOG_PATH')){
@@ -478,10 +571,19 @@ class Api
             throw $e;
         }
     }
+
+    /**
+     * @throws ApiErrorException
+     */
     public function apiVerify()
     {
         $code = $this->param('code');
-        $user = $this->query("SELECT * FROM users WHERE verify_code=?", $code)->fetch_assoc();
+        $user = $this
+            ->query(
+                "SELECT email,name,surname,id,verify_code FROM users WHERE verify_code=?",
+                $code
+            )
+            ->fetch_assoc();
         if(!$user){
             return $this->error("User not found");
         }
@@ -494,6 +596,26 @@ class Api
         if(!$this->query("UPDATE users SET verify=1 WHERE id=?", $user['id'])){
             return $this->error('Unknown error');
         }
+
+        $stripeSecretKey = '';
+        if (defined('STRIPE_SECRET_KEY')) {
+            $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+        }
+        $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        $customer = $stripe->customers->create([
+            'name' => $user['name'] . ' ' . $user['surname'],
+            'email' => $user['email'],
+        ]);
+
+        $customerId = $customer->id;
+        $dump = $customer->toJSON();
+        $this->query(
+            "INSERT INTO stripe(user_id,customer_id,customer_json)values(?,?,?)",
+            $user['id'],
+            $customerId,
+            $dump,
+        );
+
         return 'Account has been confirmed, you are now logged in to your account.';
     }
     public function apiRecovery()
@@ -703,26 +825,46 @@ class Api
     }
     private function sendVerifyCode($email, $verifyCode)
     {
-        Functions::mail($email, 'Account activation', 'Account activation link:<br><a href="'.HOST . '?verify=' . $verifyCode .'">Confirm account</a>');
+        $host='';
+        if(defined('HOST')){
+            $host = constant('HOST');
+        }
+        Functions::mail(
+            $email
+            , 'Welcome to Teacher Plan Builder'
+            , <<<HTML
+Account activation link:<a href="$host?verify= $verifyCode">Click me to confirm account</a>
+HTML);
     }
     private function sendPassword($email, $password)
     {
-        Functions::mail($email, 'Account recovery', 'Account new password:<br>' . $password);
+        Functions::mail($email, 'Account Recovery, Teacher Plan Builder', 'Account new password:<br>' . $password);
     }
     private function sendEmailCode($email, $code)
     {
-        Functions::mail($email, 'Account confirm', 'Confirm code:<br>' . $code);
+        Functions::mail($email, 'Account Confirmation, Teacher Plan Builder', 'Confirm code:<br>' . $code);
     }
-    private function session($isAdmin = false)
+    public function session($isAdmin = false, $token = '')
     {
-        $token = $this->param('token', '');
+        if(!$token){
+            $token = $this->param('token', '');
+        }
         $tokenExplode = explode('_', $token);
         if(count($tokenExplode) !== 2){
             return 'Incorrect token';
         }
-        list($sessionId,$sessionIoken) = $tokenExplode;
-        $session = $this->query("SELECT * FROM sessions WHERE id=?", intval($sessionId))->fetch_assoc();
-        if(!$session || $session['token'] !== $sessionIoken || $session['client'] !== Functions::getClientToken()){
+        list($sessionId,$sessionToken) = $tokenExplode;
+        $session = $this
+            ->query(
+                "SELECT token,client,expires,user_id,id FROM sessions WHERE id=?",
+                intval($sessionId)
+            )
+            ->fetch_assoc();
+
+        if(!$session
+            || $session['token'] !== $sessionToken
+            || $session['client'] !== Functions::getClientToken()
+        ){
             return 'Session not found';
         }
         if(time() > $session['expires']){
@@ -736,6 +878,16 @@ class Api
             return 'No admin rights';
         }
         $user['session'] = $session;
+
+        $stripeCustomer = $this
+            ->query(
+                "SELECT customer_id FROM stripe WHERE user_id=?",
+                $session['user_id']
+            )
+            ->fetch_assoc();
+
+        $user['stripe-customer-id'] = $stripeCustomer['customer_id'] ?? '';
+
         return $user;
     }
 }

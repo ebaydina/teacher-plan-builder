@@ -50,7 +50,7 @@ class Functions
     }
     public static function getClientToken()
     {
-        return isset($_COOKIE['csrf_token']) ? $_COOKIE['csrf_token'] : '';
+        return $_COOKIE['csrf_token'] ?? '';
     }
     public static function aesDecrypt($text)
     {
