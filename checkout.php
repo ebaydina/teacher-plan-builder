@@ -1,5 +1,8 @@
 <?php
 
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
+
 require_once 'Backend/autoload.php';
 
 $stripeSecretKey = '';
@@ -24,11 +27,11 @@ if (isset($_GET['book']) && $_GET['book'] === 'true') {
     $mode = 'payment';
 }
 
-\Stripe\Stripe::setApiKey($stripeSecretKey);
+Stripe::setApiKey($stripeSecretKey);
 header('Content-Type: application/json');
 $YOUR_DOMAIN = $host;
 
-$checkout_session = \Stripe\Checkout\Session::create([
+$checkout_session = Session::create([
     'customer' => $customerId,
     'line_items' => [
         [

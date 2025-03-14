@@ -1,7 +1,8 @@
 <?php
-spl_autoload_register(function($className){
-    $fileName = 'Backend/' . str_replace( "\\", "/", $className) . '.php';
-    if(file_exists($fileName)){
+
+spl_autoload_register(function ($className) {
+    $fileName = 'Backend/' . str_replace("\\", "/", $className) . '.php';
+    if (file_exists($fileName)) {
         require_once $fileName;
     }
 });

@@ -1,7 +1,8 @@
 <?php
+
 define('DEV', 0);
 #define('DEV', 1);
-if(DEV){
+if (DEV) {
     ini_set('display_errors', 'On');
     error_reporting(E_ALL);
 }
@@ -10,73 +11,72 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'u718471842_tpb');
 define('DB_PASSWORD', '***');
 define('DB_NAME', 'u718471842_tpb');
-try{
+try {
     $db = new Calendar\Db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-}
-catch(\Throwable $e){
+} catch (Throwable $e) {
     echo 'Failure on establish connection to database';
 }
 
 define('TEST_MODE', 0);
 #define('TEST_MODE', 1);
-if(TEST_MODE){
+if (TEST_MODE) {
     define(
-        'STRIPE_SECRET_KEY'
-        ,'sk_test_51Qv7DyPbukN8lAgtdfUbUkUn8NxAJyaML9ec21oTKAAEbdL73K5tcTvHsu9WnNuBuCkU8bNrjBW0ZyjzWt3GOjhI00iOyN7bfx'
+        'STRIPE_SECRET_KEY',
+        'sk_test_51Qv7DyPbukN8lAgtdfUbUkUn8NxAJyaML9ec21oTKAAEbdL73K5tcTvHsu9WnNuBuCkU8bNrjBW0ZyjzWt3GOjhI00iOyN7bfx',
     );
     define(
-        'ANNUAL_SUBSCRIPTION_INDIVIDUAL'
-        ,'price_1R1joFPbukN8lAgtMy9hfPa8'
+        'ANNUAL_SUBSCRIPTION_INDIVIDUAL',
+        'price_1R1joFPbukN8lAgtMy9hfPa8',
     );
     define(
-        'MONTHLY_SUBSCRIPTION_INDIVIDUAL'
-        ,'price_1Qv7QEPbukN8lAgtvYbUur6U'
+        'MONTHLY_SUBSCRIPTION_INDIVIDUAL',
+        'price_1Qv7QEPbukN8lAgtvYbUur6U',
     );
     define(
-        'ANNUAL_SUBSCRIPTION_SCHOOL'
-        ,'price_1R1jnNPbukN8lAgtiSYKzi3n'
+        'ANNUAL_SUBSCRIPTION_SCHOOL',
+        'price_1R1jnNPbukN8lAgtiSYKzi3n',
     );
     define(
-        'MONTHLY_SUBSCRIPTION_SCHOOL'
-        ,'price_1Qv7R2PbukN8lAgtvjZOJrx2'
+        'MONTHLY_SUBSCRIPTION_SCHOOL',
+        'price_1Qv7R2PbukN8lAgtvjZOJrx2',
     );
     define(
-        'BOOK_WITH_SUBSCRIPTION'
-        ,'price_1Qv7PLPbukN8lAgtmL2ZeG2k'
+        'BOOK_WITH_SUBSCRIPTION',
+        'price_1Qv7PLPbukN8lAgtmL2ZeG2k',
     );
     define(
-        'FULL_PRICE_OF_BOOK'
-        ,'price_1R1jvHPbukN8lAgtoLzTzs1n'
+        'FULL_PRICE_OF_BOOK',
+        'price_1R1jvHPbukN8lAgtoLzTzs1n',
     );
 }
-if(!TEST_MODE){
+if (!TEST_MODE) {
     define(
-        'STRIPE_SECRET_KEY'
-        ,'***'
+        'STRIPE_SECRET_KEY',
+        '***',
     );
     define(
-        'ANNUAL_SUBSCRIPTION_INDIVIDUAL'
-        ,'***'
+        'ANNUAL_SUBSCRIPTION_INDIVIDUAL',
+        '***',
     );
     define(
-        'MONTHLY_SUBSCRIPTION_INDIVIDUAL'
-        ,'***'
+        'MONTHLY_SUBSCRIPTION_INDIVIDUAL',
+        '***',
     );
     define(
-        'ANNUAL_SUBSCRIPTION_SCHOOL'
-        ,'***'
+        'ANNUAL_SUBSCRIPTION_SCHOOL',
+        '***',
     );
     define(
-        'MONTHLY_SUBSCRIPTION_SCHOOL'
-        ,'***'
+        'MONTHLY_SUBSCRIPTION_SCHOOL',
+        '***',
     );
     define(
-        'BOOK_WITH_SUBSCRIPTION'
-        ,'***'
+        'BOOK_WITH_SUBSCRIPTION',
+        '***',
     );
     define(
-        'FULL_PRICE_OF_BOOK'
-        ,'***'
+        'FULL_PRICE_OF_BOOK',
+        '***',
     );
 }
 

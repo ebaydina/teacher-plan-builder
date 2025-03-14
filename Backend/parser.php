@@ -1,8 +1,9 @@
 <?php
+
 require_once "Modules/require.php";
 error_reporting(E_ALL);
 $filePdf = dirname(__DIR__) . '/Frontend/Concepts.pdf';
-$fileHTML = dirname(__DIR__)  . '/Frontend/Concepts.html';
+$fileHTML = dirname(__DIR__) . '/Frontend/Concepts.html';
 /*
 if(!file_exists($filePdf)){
     echo 'file pdf no exists';
@@ -20,20 +21,20 @@ $html = file_get_contents($fileHTML);
 preg_match_all("/<div(.*?)>(.*?)<\/div>/muis", $html, $matches);
 $tableName = '';
 $data = [];
-foreach($matches[2] as $row){
-    if(mb_strpos($row, '<a name="1">Page') !== false){
+foreach ($matches[2] as $row) {
+    if (mb_strpos($row, '<a name="1">Page') !== false) {
         continue;
     }
     $row = str_replace('<br>', "\n", $row);
     $row = strip_tags($row);
     $shortVowelsSearch = 'Short Vowels:';
-    if(mb_strpos($row, $shortVowelsSearch) !== false){
+    if (mb_strpos($row, $shortVowelsSearch) !== false) {
         $tableName = 'Shor Vowels';
         $array = explode($shortVowelsSearch, $row);
         $row = array_pop($array);
     }
     $row = trim($row);
-    if(!isset($data[$tableName])){
+    if (!isset($data[$tableName])) {
         $data[$tableName] = [];
     }
     $data[$tableName][] = $row;
