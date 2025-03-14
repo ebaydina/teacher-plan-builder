@@ -5,7 +5,7 @@ alter table calendar_constructor
 create unique index users_email_uindex
     on users (email);
 
-create table u718471842_tpb.stripe
+create table stripe
 (
     id            bigint unsigned auto_increment
         primary key,
@@ -19,7 +19,7 @@ create table u718471842_tpb.stripe
 );
 
 create index stripe_user_id_customer_id_index
-    on u718471842_tpb.stripe (user_id, customer_id);
+    on stripe (user_id, customer_id);
 
 
 
