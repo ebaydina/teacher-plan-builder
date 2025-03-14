@@ -2,21 +2,60 @@
 
 namespace Calendar;
 
+use mysqli_result;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
+use Stripe\Subscription;
 use Throwable;
 
 class Api
 {
-    private $db;
+    private Db $db;
+    private string $logPath = '';
+    private string $stripeCustomerTable = '';
+    private string $stripeSecretKey = '';
 
-    public function __construct(Db $db, $init = true)
+    /**
+     * @throws Throwable
+     */
+    public function __construct(Db $db, $letHandle = true)
     {
         ini_set('memory_limit', -1);
+
+        if (defined('LOG_PATH')) {
+            $parts = [
+                constant('LOG_PATH'),
+                pathinfo(__FILE__, PATHINFO_FILENAME)
+                . '-'
+                . time()
+                . '.log',
+            ];
+            $this->logPath = join(DIRECTORY_SEPARATOR, $parts);
+        }
+        if (defined('STRIPE_CUSTOMER')) {
+            $this->stripeCustomerTable = constant('STRIPE_CUSTOMER');
+        }
+        if (defined('STRIPE_SECRET_KEY')) {
+            $this->stripeSecretKey = constant('STRIPE_SECRET_KEY');
+        }
         $this->db = $db;
-        if ($init) {
-            $this->handle();
+
+        if ($letHandle) {
+            try {
+                $this->db->transaction(Db::BEGIN);
+                $this->handle();
+                $this->db->transaction(Db::COMMIT);
+            } catch (Throwable $e) {
+                $this->db->transaction(Db::ROLLBACK);
+                $this->logException(
+                    $e,
+                    'Failure handle API call',
+                    get_defined_vars()
+                );
+
+                throw $e;
+            }
         }
     }
 
@@ -358,6 +397,9 @@ class Api
         return 'Email change confirmation code sent to old email';
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function apiChangeEmail()
     {
         $email = $this->param('email');
@@ -385,29 +427,24 @@ class Api
             return $this->error('Unknown error');
         }
 
-        $stripeCustomer = $this
-            ->query(
-                "SELECT customer_id FROM stripe WHERE user_id=?",
-                $user['id']
-            )
-            ->fetch_assoc();
+        $customerId = $this->readCustomerId($user['id']);
 
-        $stripeSecretKey = '';
-        if (defined('STRIPE_SECRET_KEY')) {
-            $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+        if ($customerId !== '') {
+            $stripe = new StripeClient($this->stripeSecretKey);
+            $customer = $stripe->customers->update(
+                $customerId,
+                ['email' => $user['email'],]
+            );
+
+            $dump = $customer->toJSON();
+            $this->query(
+                <<<SQL
+UPDATE $this->stripeCustomerTable set customer_json=? where user_id=?
+SQL,
+                $dump,
+                $user['id'],
+            );
         }
-        $stripe = new StripeClient($stripeSecretKey);
-        $customer = $stripe->customers->update(
-            $stripeCustomer['customer_id'],
-            ['email' => $user['email'],]
-        );
-
-        $dump = $customer->toJSON();
-        $this->query(
-            "UPDATE stripe set customer_json=? where user_id=?",
-            $dump,
-            $user['id'],
-        );
 
         return 'Email changed';
     }
@@ -456,6 +493,9 @@ class Api
         return UPLOADS_LINK . $photo;
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function apiGetProfile()
     {
         $user = $this->session();
@@ -479,43 +519,82 @@ class Api
             'week_type'
         ]);
 
-        $stripeKey = '';
-        if (defined('STRIPE_SECRET_KEY')) {
-            $stripeKey = STRIPE_SECRET_KEY;
+        $rows = [];
+        $customerId = $this->readCustomerId($user['id']);
+        if ($customerId !== '') {
+            $stripe = new StripeClient($this->stripeSecretKey);
+            $collection = $stripe->subscriptions->all(
+                ['customer' => $customerId]
+            );
+
+            $actualSubscriptions = [];
+            foreach ($collection as $subscription) {
+                /** @var \Stripe\Subscription $subscription */
+                $isActive = in_array(
+                    $subscription->status,
+                    [
+                        Subscription::STATUS_ACTIVE,
+                        Subscription::STATUS_TRIALING
+                    ],
+                    true
+                );
+                if ($isActive) {
+                    $startAt = $subscription->current_period_start;
+                    $finishAt = $subscription->current_period_end;
+                    /** @var \Stripe\Plan $plan */
+                    $plan = $subscription->plan;
+                    $product = $plan->product;
+                    $interval = $plan->interval;
+
+                    $actualSubscriptions[] = [
+                        $startAt,
+                        $finishAt,
+                        $product,
+                        $interval
+                    ];
+                }
+            }
+
+            $products = [];
+            if(defined('STRIPE_PRODUCTS')){
+                $products = constant('STRIPE_PRODUCTS');
+            }
+
+            foreach ($actualSubscriptions as $next) {
+                list($startAt, $finishAt, $product, $interval) = $next;
+                $start = date('Y-m-d',$startAt);
+                $finish = date('Y-m-d',$finishAt);
+                $title = $products[$product] ?? '';
+                $rows[] = <<<HTML
+    <tr>
+        <th scope="row">$title</th>
+        <td>$interval</td>
+        <td>$start</td>
+        <td>$finish</td>
+    </tr>
+HTML;
+            }
         }
-        $stripe = new StripeClient($stripeKey);
-        $stripe->subscriptions->search
-        (
-            ['query' => 'metadata[\'uuid\']:\'value\'']
-        );
+
+        $productRowsHtml = implode('', $rows);
 
         $result['subscription-list'] = <<<HTML
 <table id='subscription-list' class="table table-hover table-bordered border-primary">
     <caption>List of my actual subscriptions</caption>
     <thead>
     <tr>
-        <th scope="col">#</th>
+        <th scope="col">Title</th>
         <th scope="col">Type</th>
-        <th scope="col">period_start</th>
-        <th scope="col">period_end</th>
+        <th scope="col">Starts</th>
+        <th scope="col">Ends</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>Annual</td>
-        <td>2025-03-13</td>
-        <td>2026-03-12</td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>Monthly</td>
-        <td>2025-02-13</td>
-        <td>2025-03-12</td>
-    </tr>
+$productRowsHtml
     </tbody>
 </table>
 HTML;
+
         return $result;
     }
 
@@ -573,48 +652,34 @@ HTML;
                 $user['id']
             );
 
-            $stripeCustomer = $this
-                ->query(
-                    "SELECT customer_id FROM stripe WHERE user_id=?",
-                    $user['id']
-                )
-                ->fetch_assoc();
+            $stripeCustomerId = $this->readCustomerId($user['id']);
 
-            $stripeSecretKey = '';
-            if (defined('STRIPE_SECRET_KEY')) {
-                $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+            if ($stripeCustomerId !== '') {
+                $stripe = new StripeClient($this->stripeSecretKey);
+                $customer = $stripe->customers->update(
+                    $stripeCustomerId,
+                    [
+                        'name' => $user['name'] . ' ' . $user['surname'],
+                    ]
+                );
+
+                $dump = $customer->toJSON();
+                $this->query(
+                    <<<SQL
+UPDATE $this->stripeCustomerTable set customer_json=? where user_id=?
+SQL,
+                    $dump,
+                    $user['id'],
+                );
             }
-            $stripe = new StripeClient($stripeSecretKey);
-            $customer = $stripe->customers->update(
-                $stripeCustomer['customer_id'],
-                [
-                    'name' => $user['name'] . ' ' . $user['surname'],
-                ]
-            );
-
-            $dump = $customer->toJSON();
-            $this->query(
-                "UPDATE stripe set customer_json=? where user_id=?",
-                $dump,
-                $user['id'],
-            );
 
             return 'General information saved';
         } catch (Throwable $e) {
-            if (defined('LOG_PATH')) {
-                $path = constant('LOG_PATH')
-                    . 'Api-'
-                    . time()
-                    . '.log';
-                $vars = get_defined_vars();
-                file_put_contents(
-                    $path,
-                    json_encode([
-                        $vars,
-                        var_export($e, true),
-                    ]),
-                );
-            }
+            $this->logException(
+                $e,
+                'Failure on setting profile data',
+                get_defined_vars(),
+            );
 
             throw $e;
         }
@@ -644,25 +709,6 @@ HTML;
         if (!$this->query("UPDATE users SET verify=1 WHERE id=?", $user['id'])) {
             return $this->error('Unknown error');
         }
-
-        $stripeSecretKey = '';
-        if (defined('STRIPE_SECRET_KEY')) {
-            $stripeSecretKey = constant('STRIPE_SECRET_KEY');
-        }
-        $stripe = new StripeClient($stripeSecretKey);
-        $customer = $stripe->customers->create([
-            'name' => $user['name'] . ' ' . $user['surname'],
-            'email' => $user['email'],
-        ]);
-
-        $customerId = $customer->id;
-        $dump = $customer->toJSON();
-        $this->query(
-            "INSERT INTO stripe(user_id,customer_id,customer_json)values(?,?,?)",
-            $user['id'],
-            $customerId,
-            $dump,
-        );
 
         return 'Account has been confirmed, you are now logged in to your account.';
     }
@@ -795,7 +841,7 @@ HTML;
         return 'An email has been sent to your email with link to activate your account. Follow it and you will be able to successfully log in to the site. The link is valid for an hour.';
     }
 
-    public function query()
+    public function query(): mysqli_result|bool|int
     {
         return call_user_func_array([$this->db, 'query'], func_get_args());
     }
@@ -982,15 +1028,117 @@ HTML
         }
         $user['session'] = $session;
 
-        $stripeCustomer = $this
-            ->query(
-                "SELECT customer_id FROM stripe WHERE user_id=?",
-                $session['user_id']
-            )
-            ->fetch_assoc();
-
-        $user['stripe-customer-id'] = $stripeCustomer['customer_id'] ?? '';
-
         return $user;
+    }
+
+    /**
+     * @param Throwable $e
+     * @return void
+     */
+    public function logException(
+        Throwable $e,
+        string $message = '',
+        array $context = [],
+    ): void {
+        $exceptionDetails = [
+            'Throwable' => var_export($e, true),
+        ];
+        $exceptionDetails += $context;
+
+        $this->log($message, $exceptionDetails);
+    }
+
+    /**
+     * @param string $message
+     * @param array $details
+     * @return void
+     */
+    public function log(
+        string $message,
+        array $details,
+    ): void {
+        $allow = $this->logPath !== '';
+
+        $testMode = 'unknow';
+        if ($allow && defined('TEST_MODE')) {
+            $testMode = constant('TEST_MODE');
+        }
+
+        if ($allow) {
+            $details['TEST_MODE'] = $testMode;
+            file_put_contents(
+                $this->logPath,
+                date(DATE_ATOM, time())
+                . ': '
+                . $message
+                . ', context: '
+                . json_encode(
+                    $details,
+                    JSON_NUMERIC_CHECK
+                    | JSON_UNESCAPED_SLASHES
+                    | JSON_UNESCAPED_UNICODE
+                ),
+            );
+        }
+    }
+
+    /**
+     * @param int $userId
+     * @return string
+     */
+    public function readCustomerId(
+        int $userId
+    ): string {
+        $mysqliResult = $this
+            ->query(
+                <<<SQL
+SELECT customer_id FROM $this->stripeCustomerTable WHERE user_id=?
+SQL,
+                $userId,
+            );
+
+        $stripeCustomerData = false;
+        if ($mysqliResult !== false) {
+            $stripeCustomerData = $mysqliResult->fetch_assoc();
+        }
+        $customerId = '';
+        if (
+            $stripeCustomerData !== false
+            && !is_null($stripeCustomerData)
+        ) {
+            $customerId = $stripeCustomerData['customer_id'] ?? '';
+        }
+
+        return $customerId;
+    }
+
+    /**
+     * @param array $user
+     * @return string
+     * @throws ApiErrorException
+     */
+    public function createStripeUser(
+        array $user
+    ): string {
+        $stripe = new StripeClient($this->stripeSecretKey);
+        $customer = $stripe->customers->create([
+            'name' => $user['name'] . ' ' . $user['surname'],
+            'email' => $user['email'],
+        ]);
+
+        $customerId = $customer->id;
+        $dump = $customer->toJSON();
+        $this->query(
+            <<<SQL
+INSERT INTO $this->stripeCustomerTable
+    (user_id,customer_id,customer_json)
+values(?,?,?)
+SQL,
+            $user['id'],
+            $customerId,
+            $dump,
+        );
+
+        return $customerId;
     }
 }

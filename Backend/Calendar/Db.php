@@ -3,6 +3,7 @@
 namespace Calendar;
 
 use mysqli;
+use mysqli_result;
 
 class Db
 {
@@ -33,7 +34,7 @@ class Db
         return call_user_func_array([$this->db, $method], $args);
     }
 
-    public function query()
+    public function query(): mysqli_result|bool|int
     {
         $args = func_get_args();
         $num = func_num_args();

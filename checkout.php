@@ -17,36 +17,48 @@ $priceId = $_GET['priceId'];
 $token = $_GET['token'];
 
 $api = new Calendar\Api($db, false);
-$user = $api->session(token: $token);
-$customerId = '';
-if (is_array($user)) {
-    $customerId = $user['stripe-customer-id'];
-}
-$mode = 'subscription';
-if (isset($_GET['book']) && $_GET['book'] === 'true') {
-    $mode = 'payment';
-}
 
-Stripe::setApiKey($stripeSecretKey);
-header('Content-Type: application/json');
-$YOUR_DOMAIN = $host;
+try {
+    $user = $api->session(token: $token);
+    $customerId = $api->readCustomerId($user['id']);
+    if ($customerId === '') {
+        $customerId = $api->createStripeUser($user);
+    }
+    $mode = 'subscription';
+    if (isset($_GET['book']) && $_GET['book'] === 'true') {
+        $mode = 'payment';
+    }
 
-$checkout_session = Session::create([
-    'customer' => $customerId,
-    'line_items' => [
-        [
-            'price' => $priceId,
-            'quantity' => 1,
-        ]
-    ],
-    'mode' => $mode,
-    'success_url' => $YOUR_DOMAIN . '/index.php',
-    'cancel_url' => $YOUR_DOMAIN . '/index.php',
-    'customer_update' => ['address' => 'auto'],
-    'automatic_tax' => [
-        'enabled' => true,
-    ],
-]);
+    Stripe::setApiKey($stripeSecretKey);
+    header('Content-Type: application/json');
+    $YOUR_DOMAIN = $host;
+
+    $checkout_session = Session::create([
+        'customer' => $customerId,
+        'line_items' => [
+            [
+                'price' => $priceId,
+                'quantity' => 1,
+            ]
+        ],
+        'mode' => $mode,
+        'success_url' => $YOUR_DOMAIN . '/index.php',
+        'cancel_url' => $YOUR_DOMAIN . '/index.php',
+        'customer_update' => ['address' => 'auto'],
+        'automatic_tax' => [
+            'enabled' => true,
+        ],
+    ]);
+
+} catch (\Throwable $e) {
+    $api->logException(
+        $e,
+        'Failure buy with Stripe API',
+        get_defined_vars()
+    );
+
+    throw $e;
+}
 
 header("HTTP/1.1 303 See Other");
 header("Location: " . $checkout_session->url);
