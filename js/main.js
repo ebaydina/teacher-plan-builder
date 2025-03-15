@@ -1473,6 +1473,7 @@ $(document).ready(function () {
             });
         }
     });
+
     $("#name-constructor-btn").click(function () {
         showNameConstructor();
     });
@@ -1739,6 +1740,7 @@ $(document).ready(function () {
             els.removeClass('selected');
         }
     });
+
     $("#filemanager-btn").click(function () {
         window.open('/filemanager/', '_blank');
     });
