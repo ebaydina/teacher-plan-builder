@@ -462,7 +462,7 @@ if ($dev !== 0) {
                     </div>
                     <h4>All My Subscription</h4>
                     <div class="row">
-                        <table id='subscription-list'/>
+                        <table id='subscription-list'></table>
                     </div>
                 </section>
                 <section id="page-loader" class="d-none py-3">
