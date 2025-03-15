@@ -332,7 +332,15 @@ function getUserProfile()
     title('Control panel');
     loader(true);
     $("#signin, #signup, #verify, #settings").addClass('d-none');
-    api('getProfile', function(res){
+    api('getProfile', function (res) {
+        user = res;
+
+        if (user['allow'] === true && user.admin === 0) {
+            $("#book-full-price").addClass('d-none');
+        }
+        if (user['allow'] === false && user.admin === 0) {
+            $("#book-with-discount").addClass('d-none');
+        }
 
         $("td form").each(function (key, value) {
             if (this.action.indexOf('&token=') === -1) {
@@ -346,7 +354,6 @@ function getUserProfile()
         delete res["subscription-list"];
         loader(false);
         $("#panel").removeClass('d-none');
-        user = res;
         $("#settings-name").val(user.name);
         $("#settings-surname").val(user.surname);
         $("#settings-interests").val(user.interests);

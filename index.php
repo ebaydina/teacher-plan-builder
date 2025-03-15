@@ -429,7 +429,7 @@ if ($dev !== 0) {
                                     </form>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="book-with-discount">
                                 <th scope="row">Young Reader Workbook with subscription</th>
                                 <td>book</td>
                                 <td>$52.00 USD</td>
@@ -443,7 +443,7 @@ if ($dev !== 0) {
                                     </form>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="book-full-price">
                                 <th scope="row">Young Reader Workbook without subscription</th>
                                 <td>book</td>
                                 <td>$62.00 USD</td>

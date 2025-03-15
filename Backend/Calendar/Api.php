@@ -520,6 +520,7 @@ SQL,
         ]);
 
         $rows = [];
+        $allow = false;
         $customerId = $this->readCustomerId($user['id']);
         if ($customerId !== '') {
             $stripe = new StripeClient($this->stripeSecretKey);
@@ -539,6 +540,8 @@ SQL,
                     true
                 );
                 if ($isActive) {
+                    $allow = true;
+
                     $startAt = $subscription->current_period_start;
                     $finishAt = $subscription->current_period_end;
                     /** @var \Stripe\Plan $plan */
@@ -594,6 +597,11 @@ $productRowsHtml
     </tbody>
 </table>
 HTML;
+
+        if ($user['admin'] === 1) {
+            $allow = true;
+        }
+        $result['allow'] = $allow;
 
         return $result;
     }
