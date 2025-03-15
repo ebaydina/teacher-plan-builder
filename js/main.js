@@ -1740,11 +1740,6 @@ $(document).ready(function () {
             els.removeClass('selected');
         }
     });
-
-    $("#filemanager-btn").click(function () {
-        window.open('/filemanager/', '_blank');
-    });
-
     $("#letter-images-search")
         .on('input change', function () {
             var alphabetImages = [];
@@ -1782,6 +1777,10 @@ $(document).ready(function () {
     $("#calendar-constructor-edit-text").focus(function () {
         var value = $(this).val();
         renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
+    });
+
+    $("#filemanager-btn").click(function () {
+        window.open('/filemanager/', '_blank');
     });
 
     $(".user-avatar img")
