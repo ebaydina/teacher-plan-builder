@@ -559,14 +559,14 @@ SQL,
             }
 
             $products = [];
-            if(defined('STRIPE_PRODUCTS')){
+            if (defined('STRIPE_PRODUCTS')) {
                 $products = constant('STRIPE_PRODUCTS');
             }
 
             foreach ($actualSubscriptions as $next) {
                 list($startAt, $finishAt, $product, $interval) = $next;
-                $start = date('Y-m-d',$startAt);
-                $finish = date('Y-m-d',$finishAt);
+                $start = date('Y-m-d', $startAt);
+                $finish = date('Y-m-d', $finishAt);
                 $title = $products[$product] ?? '';
                 $rows[] = <<<HTML
     <tr>
@@ -582,7 +582,9 @@ HTML;
         $productRowsHtml = implode('', $rows);
 
         $result['subscription-list'] = <<<HTML
-<table id='subscription-list' class="table table-hover table-bordered border-primary">
+<table 
+    id='subscription-list' 
+    class="table table-hover table-bordered border-primary">
     <caption>List of my actual subscriptions</caption>
     <thead>
     <tr>
@@ -693,9 +695,6 @@ SQL,
         }
     }
 
-    /**
-     * @throws ApiErrorException
-     */
     public function apiVerify()
     {
         $code = $this->param('code');
@@ -807,8 +806,6 @@ SQL,
 
     public function apiSignup()
     {
-        error_reporting(E_ALL);
-        ini_set('display_errors', 1);
         $email = $this->param('email');
         $password = Functions::aesDecrypt($this->param('password'));
         $name = $this->param('name');
@@ -859,16 +856,16 @@ SQL,
         if ($default !== null && !isset($_POST[$name])) {
             $_POST[$name] = $default;
         }
-        return isset($_POST[$name]) ? $_POST[$name] : '';
+        return $_POST[$name] ?? '';
     }
 
     public function paramId($name)
     {
         $id = intval($this->param($name));
-        return $id < 0 ? 0 : $id;
+        return max($id, 0);
     }
 
-    public function paramIds($name)
+    private function paramIds($name)
     {
         $list = [];
         foreach (explode(",", $this->param($name)) as $id) {
