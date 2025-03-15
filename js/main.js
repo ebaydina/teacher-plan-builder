@@ -348,7 +348,9 @@ function getUserProfile() {
         });
         document
             .getElementById("subscription-list")
-            .outerHTML = res["subscription-list"] ?? '<table id=\'subscription-list\'/>';
+            .outerHTML =
+            res["subscription-list"]
+            ?? '<table id=\'subscription-list\'></table>';
         delete res["subscription-list"];
         loader(false);
         $("#panel").removeClass('d-none');
