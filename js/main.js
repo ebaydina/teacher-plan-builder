@@ -334,6 +334,313 @@ function getUserProfile() {
     api('getProfile', function (res) {
         user = res;
 
+        if(user['allow'] === true){
+            $("#name-constructor-btn").click(function () {
+                showNameConstructor();
+            });
+            $("#name-constructor-generate").click(function () {
+                var self = $(this);
+                spinner(self, true);
+                var name = $("#name-constructor-name").val().replace(/[^A-z]/, '').split('');
+
+                function generateRow(name, isLines) {
+                    var html = '<div class="item-row">';
+                    for (var i = 0; i < name.length; i++) {
+                        var letter = name[i];
+                        html += `
+                    <div class="item` + (isLines === true ? ' line' : '') + `">
+                        <img src="img/alphabet/` + letter.toLowerCase() + (letter === letter.toUpperCase() ? '_' : '') + `.png?v=` + Version + `">
+                        <div></div>
+                    </div>
+                `;
+                    }
+                    html += '</div>';
+                    return html;
+                }
+
+                var html = '';
+                if (name.length) {
+                    html += generateRow(name);
+                    html += generateRow(name);
+                    html += generateRow(name, true);
+                    html += generateRow(name);
+                    html += generateRow(name);
+                    html += generateRow(name, true);
+                }
+                html += `
+            <div class="copyright">
+                <img src="img/copyright.png?v=` + Version + `">
+            </div>`;
+                $("#name-constructor-list-content .a4").html(html);
+                $("#name-constructor-print").removeAttr('disabled');
+                self.attr('disabled', '');
+                spinner(self, false);
+            });
+            $("#name-constructor-print").click(function () {
+                var self = $(this);
+                spinner(self, true);
+                html2canvas(document.querySelector("#name-constructor-list-content .a4"), {
+                    allowTaint: true,
+                    useCORS: true,
+                    dpi: 300,
+                    scale: 5
+                }).then(canvas => {
+                    var doc = new jspdf.jsPDF({
+                        orientation: 'p',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+                    /*
+                    var dpi = 300;
+                    var mmInch = 25.4;
+                    doc.internal.scaleFactor = dpi / 72;
+                    doc.internal.pageSize.getWidth = function() {
+                        return this.width / this.scaleFactor;
+                    };
+                    doc.internal.pageSize.getHeight = function() {
+                        return this.height / this.scaleFactor;
+                    }; */
+                    canvas.webkitImageSmoothingEnabled = false;
+                    canvas.mozImageSmoothingEnabled = false;
+                    canvas.imageSmoothingEnabled = false;
+                    doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height);
+                    doc.autoPrint();
+                    window.open(doc.output('bloburl'), '_blank');
+                    spinner(self, false);
+                });
+            });
+            $("#calendar-constructor-add-sheet").click(function () {
+                showCalendarConstructor(true);
+            });
+            $("#calendar-constructor-save").click(function () {
+                if (sheet && sheet.id !== undefined) {
+                    $("#calendar-save-sheet-name").val(sheet.name);
+                }
+                $("#calendar-constructor-save-window").modal('show');
+            });
+            $("#calendar-constructor-saved").click(function () {
+                var self = $(this);
+                var name = $("#calendar-save-sheet-name").val();
+                if (!name.length) {
+                    return err("Enter calendar name", $("#calendar-constructor-saved-result"));
+                }
+                spinner(self, true);
+                var data = getCalendarData();
+                data = JSON.stringify(data);
+                var params = {
+                    name: name,
+                    data: data
+                };
+                if (sheet.id !== undefined) {
+                    params.id = sheet.id;
+                    api('calendarConstructorSheetEdit', params, function (res) {
+                        suc('Calendar saved', "#calendar-constructor-saved-result");
+                        spinner(self, false);
+                        localStorage.removeItem('calendar-autosave');
+                    }, function (res) {
+                        err(res, "#calendar-constructor-saved-result");
+                        spinner(self, false);
+                    });
+                } else {
+                    api('calendarConstructorSheetAdd', params, function (res) {
+                        sheet = res;
+                        suc('Calendar saved', "#calendar-constructor-saved-result");
+                        spinner(self, false);
+                        localStorage.removeItem('calendar-autosave');
+                    }, function (res) {
+                        err(res, "#calendar-constructor-saved-result");
+                        spinner(self, false);
+                    });
+                }
+            })
+            $("#draft-btn").click(function () {
+                $('.page').addClass('d-none');
+                loader(true, $("#page-loader"));
+                api('getCalendarConstructorSheets', function (res) {
+                    var list = $("#draft-list");
+                    sheets = {};
+                    if (!res.length) {
+                        list.html(`
+                    <tr class="text-center">
+                        <td colspan="4">No calendar was ever created</td>
+                    </tr>
+                `);
+                    } else {
+                        var html = [];
+                        for (var i = 0; i < res.length; i++) {
+                            var item = res[i];
+                            html.push(renderCalendarConstructorSheet(item));
+                            sheets[item.id] = item;
+                        }
+                        list.html(html.join());
+                        eventsCalendarConstructorSheets();
+                    }
+                    showDrafts();
+                }, function (res) {
+                    loader(false, $("#page-loader"));
+                    err(res);
+                });
+            });
+            $("#draft-add").click(function () {
+                autoSaveData = localStorage.getItem('calendar-autosave');
+                if (autoSaveData !== null) {
+                    try {
+                        autoSaveData = JSON.parse(autoSaveData);
+                        if (typeof (autoSaveData) == "object") {
+                            $("#calendar-autosaved-new").attr('item-id', 0);
+                            $($("#calendar-autosaved-new span")[1]).text('Add New Draft');
+                            $("#calendar-load-autosave").modal('show');
+                            return false;
+                        }
+                    } catch (e) {
+                    }
+                }
+                showCalendarMonthSelector();
+            });
+            $("#calendar-autosaved-load").click(function () {
+                showCalendarConstructor(autoSaveData);
+            });
+            $("#calendar-autosaved-new").click(function () {
+                var self = $(this);
+                localStorage.removeItem('calendar-autosave');
+                var itemId = parseInt(self.attr('item-id')) || 0;
+                if (itemId > 0) {
+                    showCalendarConstructor(false, itemId);
+                    return;
+                }
+                $("#draft-add").click();
+            })
+            $("#calendar-to-edit-text").click(function () {
+                showAddText();
+            });
+            $("#calendar-text-editor-add").click(function () {
+                if (!selectedConcept) {
+                    err("Please select concept", "#calendar-text-editor-result");
+                    return false;
+                }
+                var count = 1;
+
+                function getCountChilds(arr) {
+                    var countElements = arr.length;
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i].nodes) {
+                            countElements += getCountChilds(arr[i].nodes);
+                        }
+                    }
+                    return countElements;
+                }
+
+                if (selectedConcept.nodes) {
+                    count += getCountChilds(selectedConcept.nodes);
+                }
+                if (count > 1) {
+                    $("#dialog-confirm-add-text-selected").text(count);
+                    $("#calendar-text-editor").modal('hide');
+                    $("#dialog-confirm-add-text").modal('show');
+                } else {
+                    addTextElement(selectedConcept.text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
+                    $("#calendar-text-editor").modal('hide');
+                }
+            });
+            $("#calendar-day-color-save").click(function () {
+                if (selectDay) {
+                    var color = $("#calendar-day-color").val();
+                    selectDay.css({backgroundColor: color}).attr('color', color);
+                }
+            });
+            $("#calendar-day-holiday-color").click(function () {
+                if (selectDay) {
+                    var color = '#ea868f';
+                    selectDay.css({backgroundColor: color}).attr('color', color);
+                }
+            });
+            $("#calendar-day-clear-color").click(function () {
+                if (selectDay) {
+                    var color = '#ffffff';
+                    selectDay.css({backgroundColor: color}).attr('color', color);
+                }
+            });
+            $("#calendar-to-add-image").click(function () {
+                $("#calendar-to-add-image-type").modal('show');
+            });
+            $("#calendar-to-add-image-type-all").click(function () {
+                showAddImage(true);
+            });
+            $("#calendar-to-add-image-type-one").click(function () {
+                showAddImage(false);
+            });
+            $("#calendar-constructor-generate").click(function () {
+                var self = $(this);
+                spinner(self, true);
+                calendarPrint(sheet.id, '#calendar-constructor-list-content .a4', function (res) {
+                    spinner(self, false);
+                });
+            });
+            $("#calendar-text-editor-add-confirmed").click(function () {
+                if (selectedConcept) {
+                    function addNodes(nodes) {
+                        for (var i = 0; i < nodes.length; i++) {
+                            if (nodes[i].nodes) {
+                                addNodes(nodes[i].nodes);
+                            } else {
+                                addTextElement(nodes[i].text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
+                            }
+                        }
+                    }
+
+                    if (selectedConcept.nodes) {
+                        addNodes(selectedConcept.nodes);
+                    }
+                }
+                $("#dialog-confirm-add-text").modal('hide');
+            });
+            $(document).click(function (e) {
+                var els = $(".calendar-element");
+                if (!els.is(e.target) && els.has(e.target).length === 0) {
+                    selectedElement = false;
+                    els.removeClass('selected');
+                }
+            });
+            $("#letter-images-search")
+                .on('input change', function () {
+                    var alphabetImages = [];
+                    if (calendarImages !== undefined && calendarImages.alphabet != undefined) {
+                        alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet, $(this).val());
+                    }
+                    var html = [];
+                    for (var i = 0; i < alphabetImages.length; i++) {
+                        html.push(renderCalendarConstructorImage(alphabetImages[i]));
+                    }
+                    $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
+                    eventsCalendarConstructorImages();
+                });
+            $("#name-constructor-name").on('input', function () {
+                var self = $(this);
+                var name = self.val().replace(/[^A-z]/g, '');
+                if (name.length == 0) {
+                    $("#name-constructor-list-content .a4").html('');
+                    $("#name-constructor-generate, #name-constructor-print").attr('disabled', '');
+                } else {
+                    $("#name-constructor-print").attr('disabled', '');
+                    $("#name-constructor-generate").removeAttr('disabled');
+                }
+            });
+            $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
+                .on('input change', function (e) {
+                    var self = $(this);
+                    var value = $(this).val();
+                    calendarTextEditorPreview();
+                    if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
+                        self.removeAttr('text');
+                        renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
+                    }
+                });
+            $("#calendar-constructor-edit-text").focus(function () {
+                var value = $(this).val();
+                renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
+            });
+        }
+
         if (user['allow'] === true && user.admin === 0) {
             $("#book-full-price").addClass('d-none');
         }
@@ -1472,311 +1779,6 @@ $(document).ready(function () {
                 err(res, '#settings-email-result');
             });
         }
-    });
-
-    $("#name-constructor-btn").click(function () {
-        showNameConstructor();
-    });
-    $("#name-constructor-generate").click(function () {
-        var self = $(this);
-        spinner(self, true);
-        var name = $("#name-constructor-name").val().replace(/[^A-z]/, '').split('');
-
-        function generateRow(name, isLines) {
-            var html = '<div class="item-row">';
-            for (var i = 0; i < name.length; i++) {
-                var letter = name[i];
-                html += `
-                    <div class="item` + (isLines === true ? ' line' : '') + `">
-                        <img src="img/alphabet/` + letter.toLowerCase() + (letter === letter.toUpperCase() ? '_' : '') + `.png?v=` + Version + `">
-                        <div></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            return html;
-        }
-
-        var html = '';
-        if (name.length) {
-            html += generateRow(name);
-            html += generateRow(name);
-            html += generateRow(name, true);
-            html += generateRow(name);
-            html += generateRow(name);
-            html += generateRow(name, true);
-        }
-        html += `
-            <div class="copyright">
-                <img src="img/copyright.png?v=` + Version + `">
-            </div>`;
-        $("#name-constructor-list-content .a4").html(html);
-        $("#name-constructor-print").removeAttr('disabled');
-        self.attr('disabled', '');
-        spinner(self, false);
-    });
-    $("#name-constructor-print").click(function () {
-        var self = $(this);
-        spinner(self, true);
-        html2canvas(document.querySelector("#name-constructor-list-content .a4"), {
-            allowTaint: true,
-            useCORS: true,
-            dpi: 300,
-            scale: 5
-        }).then(canvas => {
-            var doc = new jspdf.jsPDF({
-                orientation: 'p',
-                unit: 'mm',
-                format: 'a4'
-            });
-            /*
-            var dpi = 300;
-            var mmInch = 25.4;
-            doc.internal.scaleFactor = dpi / 72;
-            doc.internal.pageSize.getWidth = function() {
-                return this.width / this.scaleFactor;
-            };
-            doc.internal.pageSize.getHeight = function() {
-                return this.height / this.scaleFactor;
-            }; */
-            canvas.webkitImageSmoothingEnabled = false;
-            canvas.mozImageSmoothingEnabled = false;
-            canvas.imageSmoothingEnabled = false;
-            doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height);
-            doc.autoPrint();
-            window.open(doc.output('bloburl'), '_blank');
-            spinner(self, false);
-        });
-    });
-    $("#calendar-constructor-add-sheet").click(function () {
-        showCalendarConstructor(true);
-    });
-    $("#calendar-constructor-save").click(function () {
-        if (sheet && sheet.id !== undefined) {
-            $("#calendar-save-sheet-name").val(sheet.name);
-        }
-        $("#calendar-constructor-save-window").modal('show');
-    });
-    $("#calendar-constructor-saved").click(function () {
-        var self = $(this);
-        var name = $("#calendar-save-sheet-name").val();
-        if (!name.length) {
-            return err("Enter calendar name", $("#calendar-constructor-saved-result"));
-        }
-        spinner(self, true);
-        var data = getCalendarData();
-        data = JSON.stringify(data);
-        var params = {
-            name: name,
-            data: data
-        };
-        if (sheet.id !== undefined) {
-            params.id = sheet.id;
-            api('calendarConstructorSheetEdit', params, function (res) {
-                suc('Calendar saved', "#calendar-constructor-saved-result");
-                spinner(self, false);
-                localStorage.removeItem('calendar-autosave');
-            }, function (res) {
-                err(res, "#calendar-constructor-saved-result");
-                spinner(self, false);
-            });
-        } else {
-            api('calendarConstructorSheetAdd', params, function (res) {
-                sheet = res;
-                suc('Calendar saved', "#calendar-constructor-saved-result");
-                spinner(self, false);
-                localStorage.removeItem('calendar-autosave');
-            }, function (res) {
-                err(res, "#calendar-constructor-saved-result");
-                spinner(self, false);
-            });
-        }
-    })
-    $("#draft-btn").click(function () {
-        $('.page').addClass('d-none');
-        loader(true, $("#page-loader"));
-        api('getCalendarConstructorSheets', function (res) {
-            var list = $("#draft-list");
-            sheets = {};
-            if (!res.length) {
-                list.html(`
-                    <tr class="text-center">
-                        <td colspan="4">No calendar was ever created</td>
-                    </tr>
-                `);
-            } else {
-                var html = [];
-                for (var i = 0; i < res.length; i++) {
-                    var item = res[i];
-                    html.push(renderCalendarConstructorSheet(item));
-                    sheets[item.id] = item;
-                }
-                list.html(html.join());
-                eventsCalendarConstructorSheets();
-            }
-            showDrafts();
-        }, function (res) {
-            loader(false, $("#page-loader"));
-            err(res);
-        });
-    });
-    $("#draft-add").click(function () {
-        autoSaveData = localStorage.getItem('calendar-autosave');
-        if (autoSaveData !== null) {
-            try {
-                autoSaveData = JSON.parse(autoSaveData);
-                if (typeof (autoSaveData) == "object") {
-                    $("#calendar-autosaved-new").attr('item-id', 0);
-                    $($("#calendar-autosaved-new span")[1]).text('Add New Draft');
-                    $("#calendar-load-autosave").modal('show');
-                    return false;
-                }
-            } catch (e) {
-            }
-        }
-        showCalendarMonthSelector();
-    });
-    $("#calendar-autosaved-load").click(function () {
-        showCalendarConstructor(autoSaveData);
-    });
-    $("#calendar-autosaved-new").click(function () {
-        var self = $(this);
-        localStorage.removeItem('calendar-autosave');
-        var itemId = parseInt(self.attr('item-id')) || 0;
-        if (itemId > 0) {
-            showCalendarConstructor(false, itemId);
-            return;
-        }
-        $("#draft-add").click();
-    })
-    $("#calendar-to-edit-text").click(function () {
-        showAddText();
-    });
-    $("#calendar-text-editor-add").click(function () {
-        if (!selectedConcept) {
-            err("Please select concept", "#calendar-text-editor-result");
-            return false;
-        }
-        var count = 1;
-
-        function getCountChilds(arr) {
-            var countElements = arr.length;
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i].nodes) {
-                    countElements += getCountChilds(arr[i].nodes);
-                }
-            }
-            return countElements;
-        }
-
-        if (selectedConcept.nodes) {
-            count += getCountChilds(selectedConcept.nodes);
-        }
-        if (count > 1) {
-            $("#dialog-confirm-add-text-selected").text(count);
-            $("#calendar-text-editor").modal('hide');
-            $("#dialog-confirm-add-text").modal('show');
-        } else {
-            addTextElement(selectedConcept.text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
-            $("#calendar-text-editor").modal('hide');
-        }
-    });
-    $("#calendar-day-color-save").click(function () {
-        if (selectDay) {
-            var color = $("#calendar-day-color").val();
-            selectDay.css({backgroundColor: color}).attr('color', color);
-        }
-    });
-    $("#calendar-day-holiday-color").click(function () {
-        if (selectDay) {
-            var color = '#ea868f';
-            selectDay.css({backgroundColor: color}).attr('color', color);
-        }
-    });
-    $("#calendar-day-clear-color").click(function () {
-        if (selectDay) {
-            var color = '#ffffff';
-            selectDay.css({backgroundColor: color}).attr('color', color);
-        }
-    });
-    $("#calendar-to-add-image").click(function () {
-        $("#calendar-to-add-image-type").modal('show');
-    });
-    $("#calendar-to-add-image-type-all").click(function () {
-        showAddImage(true);
-    });
-    $("#calendar-to-add-image-type-one").click(function () {
-        showAddImage(false);
-    });
-    $("#calendar-constructor-generate").click(function () {
-        var self = $(this);
-        spinner(self, true);
-        calendarPrint(sheet.id, '#calendar-constructor-list-content .a4', function (res) {
-            spinner(self, false);
-        });
-    });
-    $("#calendar-text-editor-add-confirmed").click(function () {
-        if (selectedConcept) {
-            function addNodes(nodes) {
-                for (var i = 0; i < nodes.length; i++) {
-                    if (nodes[i].nodes) {
-                        addNodes(nodes[i].nodes);
-                    } else {
-                        addTextElement(nodes[i].text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
-                    }
-                }
-            }
-
-            if (selectedConcept.nodes) {
-                addNodes(selectedConcept.nodes);
-            }
-        }
-        $("#dialog-confirm-add-text").modal('hide');
-    });
-    $(document).click(function (e) {
-        var els = $(".calendar-element");
-        if (!els.is(e.target) && els.has(e.target).length === 0) {
-            selectedElement = false;
-            els.removeClass('selected');
-        }
-    });
-    $("#letter-images-search")
-        .on('input change', function () {
-            var alphabetImages = [];
-            if (calendarImages !== undefined && calendarImages.alphabet != undefined) {
-                alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet, $(this).val());
-            }
-            var html = [];
-            for (var i = 0; i < alphabetImages.length; i++) {
-                html.push(renderCalendarConstructorImage(alphabetImages[i]));
-            }
-            $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
-            eventsCalendarConstructorImages();
-        });
-    $("#name-constructor-name").on('input', function () {
-        var self = $(this);
-        var name = self.val().replace(/[^A-z]/g, '');
-        if (name.length == 0) {
-            $("#name-constructor-list-content .a4").html('');
-            $("#name-constructor-generate, #name-constructor-print").attr('disabled', '');
-        } else {
-            $("#name-constructor-print").attr('disabled', '');
-            $("#name-constructor-generate").removeAttr('disabled');
-        }
-    });
-    $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
-        .on('input change', function (e) {
-            var self = $(this);
-            var value = $(this).val();
-            calendarTextEditorPreview();
-            if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
-                self.removeAttr('text');
-                renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-            }
-        });
-    $("#calendar-constructor-edit-text").focus(function () {
-        var value = $(this).val();
-        renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
     });
 
     $("#filemanager-btn").click(function () {
