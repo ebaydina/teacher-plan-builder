@@ -347,7 +347,6 @@ function getUserProfile()
                 this.action = `${this.action}\&token=${userToken}`;
             }
         });
-
         document
             .getElementById("subscription-list")
             .outerHTML = res["subscription-list"] ?? '<table id=\'subscription-list\'/>';
@@ -1415,18 +1414,7 @@ $(document).ready(function(){
             err(res, '#settings-avatar-result');
         });
     });
-    $(".user-avatar img").on('load', function(){
-        var self = $(this);
-        self.prev().addClass('d-none');
-        self.removeClass('d-none');
-    });
-    $(".user-avatar img").on('error', function(){
-        var self = $(this);
-        self.prev().addClass('d-none');
-        self.addClass('d-none');
-    });
-    $(".user-avatar img").attr('src', 'img/avatar.png?v='+Version);
-    $("#settings-password-btn").click(function(){
+    $("#settings-password-btn").click(function () {
         var self = $(this);
         var password = $("#settings-password").val();
         var rpassword = $("#settings-rpassword").val();
@@ -1482,18 +1470,7 @@ $(document).ready(function(){
     $("#name-constructor-btn").click(function(){
         showNameConstructor();
     });
-    $("#name-constructor-name").on('input', function(){
-        var self = $(this);
-        var name = self.val().replace(/[^A-z]/g,'');
-        if(name.length == 0){
-            $("#name-constructor-list-content .a4").html('');
-            $("#name-constructor-generate, #name-constructor-print").attr('disabled','');
-        }else{
-            $("#name-constructor-print").attr('disabled','');
-            $("#name-constructor-generate").removeAttr('disabled');
-        }
-    });
-    $("#name-constructor-generate").click(function(){
+    $("#name-constructor-generate").click(function () {
         var self = $(this);
         spinner(self, true);
         var name = $("#name-constructor-name").val().replace(/[^A-z]/,'').split('');
@@ -1666,21 +1643,8 @@ $(document).ready(function(){
     $("#calendar-to-edit-text").click(function(){
         showAddText();
     });
-    $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color").on('input change', function(e){
-        var self = $(this);
-        var value = $(this).val();
-        calendarTextEditorPreview();
-        if(self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change'){
-            self.removeAttr('text');
-            renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-        }
-    });
-    $("#calendar-constructor-edit-text").focus(function(){
-        var value = $(this).val();
-        renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-    });
-    $("#calendar-text-editor-add").click(function(){
-        if(!selectedConcept){
+    $("#calendar-text-editor-add").click(function () {
+        if (!selectedConcept) {
             err("Please select concept", "#calendar-text-editor-result");
             return false;
         }
@@ -1741,71 +1705,11 @@ $(document).ready(function(){
             spinner(self, false);
         });
     });
-    $("#letter-images-search").on('input change', function(){
-        var alphabetImages = [];
-        if(calendarImages !== undefined && calendarImages.alphabet != undefined){
-            alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet, $(this).val());
-        }
-        var html = [];
-        for(var i = 0; i < alphabetImages.length; i++){
-            html.push(renderCalendarConstructorImage(alphabetImages[i]));
-        }
-        $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
-        eventsCalendarConstructorImages();
-    });
-    var monthsOptions = [];
-    for(var i = 1; i <= 12; i++){
-        monthsOptions.push('<option value="'+i+'">'+getMonth(i)+'</option>');
-    }
-    $("#calendar-months").html(monthsOptions.join(""));
-    var yearsOptions = [];
-    var currentYear = (new Date).getFullYear();
-    for(var i = 0; i <= 10; i++){
-        var year = currentYear + i;
-        yearsOptions.push('<option value="'+year+'"'+(year == currentYear ? ' selected':'')+'>'+year+'</option>');
-    }
-    $("#calendar-years").html(yearsOptions.join());
-    $("#calendar-constructor-edit-text-search").treeview({
-        levels: 1,
-        data: conceptsList,
-        expandIcon: 'bi bi-chevron-down',
-        collapseIcon: 'bi bi-chevron-right',
-        emptyIcon: 'no-icon',
-        nodeIcon: '',
-        selectedIcon: '',
-        checkedIcon: '',
-        uncheckedIcon: '',
-        highlightSelected: true,
-        selectedBackColor: '#0d6efd',
-        selectedColor: 'white',
-        borderColor: false,
-        backColor: false,
-        color: false,
-        onNodeSelected: function(a, b, c){
-            selectedConcept = b;
-        },
-        onNodeUnselected: function(){
-            selectedConcept = false;
-        }
-    });
-    tippy('#calendar-editor-helper', {
-        content: `Select the item you want to add`,
-        allowHTML: true,
-    });
-    tippy('.calendar-images-window-help', {
-        content: `
-            <div>When you click a picture, it is added to the calendar.</div>
-            <div>The added image turns green for convenience.</div>
-            <div>If desired, the same picture can be added several times.</div>
-        `,
-        allowHTML: true,
-    });
-    $("#calendar-text-editor-add-confirmed").click(function(){
-        if(selectedConcept){
-            function addNodes(nodes)
-            {
-                for(var i = 0; i < nodes.length; i++){
-                    if(nodes[i].nodes) {
+    $("#calendar-text-editor-add-confirmed").click(function () {
+        if (selectedConcept) {
+            function addNodes(nodes) {
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].nodes) {
                         addNodes(nodes[i].nodes);
                     }else{
                         addTextElement(nodes[i].text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
@@ -1828,16 +1732,58 @@ $(document).ready(function(){
     $("#filemanager-btn").click(function(){
         window.open('/filemanager/', '_blank');
     });
-    if($("#verify").hasClass('d-none')){
-        let storageToken = localStorage.getItem('token');
-        if(typeof(storageToken) === "string" && storageToken.length){
-            userToken = storageToken;
+
+    $("#letter-images-search")
+        .on('input change', function () {
+            var alphabetImages = [];
+            if (calendarImages !== undefined && calendarImages.alphabet != undefined) {
+                alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet, $(this).val());
+            }
+            var html = [];
+            for (var i = 0; i < alphabetImages.length; i++) {
+                html.push(renderCalendarConstructorImage(alphabetImages[i]));
+            }
+            $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
+            eventsCalendarConstructorImages();
+        });
+    $("#name-constructor-name").on('input', function () {
+        var self = $(this);
+        var name = self.val().replace(/[^A-z]/g, '');
+        if (name.length == 0) {
+            $("#name-constructor-list-content .a4").html('');
+            $("#name-constructor-generate, #name-constructor-print").attr('disabled', '');
+        } else {
+            $("#name-constructor-print").attr('disabled', '');
+            $("#name-constructor-generate").removeAttr('disabled');
         }
-        if(userToken){
-            getUserProfile();
-        }
-        if(!userToken){
-            showSignInForm();
-        }
-    }
+    });
+    $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
+        .on('input change', function (e) {
+            var self = $(this);
+            var value = $(this).val();
+            calendarTextEditorPreview();
+            if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
+                self.removeAttr('text');
+                renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
+            }
+        });
+    $("#calendar-constructor-edit-text").focus(function () {
+        var value = $(this).val();
+        renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
+    });
+
+    $(".user-avatar img")
+        .on('load', function () {
+            var self = $(this);
+            self.prev().addClass('d-none');
+            self.removeClass('d-none');
+        });
+    $(".user-avatar img")
+        .on('error', function () {
+            var self = $(this);
+            self.prev().addClass('d-none');
+            self.addClass('d-none');
+        });
+    $(".user-avatar img")
+        .attr('src', 'img/avatar.png?v=' + Version);
 });
