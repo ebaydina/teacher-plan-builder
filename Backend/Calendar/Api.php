@@ -560,7 +560,7 @@ SQL,
 
             $actualSubscriptions = [];
             foreach ($collection as $subscription) {
-                /** @var \Stripe\Subscription $subscription */
+                /** @var Subscription $subscription */
                 $isActive = in_array(
                     $subscription->status,
                     [
@@ -599,12 +599,12 @@ SQL,
                 $finish = date('Y-m-d', $finishAt);
                 $title = $products[$product] ?? '';
                 $rows[] = <<<HTML
-    <tr>
-        <th scope="row">$title</th>
-        <td>$interval</td>
-        <td>$start</td>
-        <td>$finish</td>
-    </tr>
+<tr>
+    <th scope="row">$title</th>
+    <td>$interval</td>
+    <td>$start</td>
+    <td>$finish</td>
+</tr>
 HTML;
             }
         }
@@ -1135,14 +1135,14 @@ HTML
         string $message,
         array $details,
     ): void {
-        $allow = $this->logPath !== '';
+        $isPossible = $this->logPath !== '';
 
         $testMode = 'unknow';
-        if ($allow && defined('TEST_MODE')) {
+        if ($isPossible && defined('TEST_MODE')) {
             $testMode = constant('TEST_MODE');
         }
 
-        if ($allow) {
+        if ($isPossible) {
             $details['TEST_MODE'] = $testMode;
             file_put_contents(
                 $this->logPath,
