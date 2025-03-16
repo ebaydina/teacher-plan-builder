@@ -182,22 +182,21 @@ if ($dev !== 0) {
                             My Subscription
                         </button>
                     </div>
-                    <?php
-                    if (isset($_SESSION['admin']) && $_SESSION['admin']): ?>
-                        <div class="menu-item">
-                            <label for="filemanager-btn">Upload a file</label>
-                            <button id="filemanager-btn" class="menu-btn form-control btn btn-success mt-2">File
-                                Manager
-                            </button>
-                        </div>
-                    <?php
-                    endif; ?>
                     <div class="menu-item">
                         <button id="menu-signout-btn" class="menu-btn form-control btn btn-danger mt-2">
                             <span class="spinner-border spinner-border-sm d-none"></span>
                             <span>Sign out</span>
                         </button>
                     </div>
+                    <!--COMMON FINISH-->
+                    <!--ADMIN START-->
+                    <div class="menu-item">
+                        <label for="filemanager-btn">Upload a file</label>
+                        <button id="filemanager-btn" class="menu-btn form-control btn btn-success mt-2">File
+                            Manager
+                        </button>
+                    </div>
+                    <!--ADMIN FINISH-->
                 </div>
             </div>
             <div class="col-12 col-lg-9">
