@@ -1,5 +1,7 @@
 # Requirements
 
+// May be PHP Office requires it
+
 PHP needs to have the zip extension installed.
 
 On Debian and Ubuntu, you can usually install it with:
