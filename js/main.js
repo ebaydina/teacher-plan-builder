@@ -662,11 +662,32 @@ function getUserProfile() {
                 this.action = `${this.action}\&token=${userToken}`;
             }
         });
+
+        const emptySubscriptionList = `
+<table
+        id='subscription-list'
+        class="table table-hover table-bordered border-primary">
+    <caption>
+        List of my actual subscriptions
+    </caption>
+    <thead>
+    <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Type</th>
+        <th scope="col">Starts</th>
+        <th scope="col">Ends</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+`;
+
         document
             .getElementById("subscription-list")
             .outerHTML =
             res["subscription-list"]
-            ?? '<table id=\'subscription-list\'></table>';
+            ?? emptySubscriptionList;
         delete res["subscription-list"];
 
         $("#panel").removeClass('d-none');

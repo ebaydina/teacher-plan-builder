@@ -476,7 +476,23 @@ if ($dev !== 0) {
                     </div>
                     <h4>All My Subscription</h4>
                     <div class="row">
-                        <table id='subscription-list'></table>
+                        <table
+                                id='subscription-list'
+                                class="table table-hover table-bordered border-primary">
+                            <caption>
+                                List of my actual subscriptions
+                            </caption>
+                            <thead>
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Starts</th>
+                                <th scope="col">Ends</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
                 <!--COMMON FINISH-->
