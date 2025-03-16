@@ -128,6 +128,10 @@ class Api
 
     public function apiGetConcepts()
     {
+        if(!$_SESSION['isAllow']){
+            return [];
+        }
+
         $fileName = $_SERVER['DOCUMENT_ROOT'] . '/content/Concepts.xlsx';
         $fileJson = sys_get_temp_dir() . '/Concepts.json';
         $list = [];
@@ -221,6 +225,7 @@ class Api
         $dataJson['last_modify'] = time();
         $dataJson['data'] = $data;
         file_put_contents($fileJson, json_encode($dataJson));
+
         return $data;
     }
 
@@ -259,6 +264,10 @@ class Api
 
     public function apiCalendarConstructorTexts()
     {
+        if(!$_SESSION['isAllow']){
+            return [];
+        }
+
         return $this->getFiles(CONTENT_PATH, [
             'txt'
         ]);
@@ -266,6 +275,10 @@ class Api
 
     public function apiCalendarConstructorImages()
     {
+        if(!$_SESSION['isAllow']){
+            return [];
+        }
+
         return $this->getFiles(CALENDAR_IMAGES_PATH, [
             'jpg',
             'jpeg',
@@ -275,6 +288,10 @@ class Api
 
     public function apiCalendarConstructorSheetRemove()
     {
+        if(!$_SESSION['isAllow']){
+            return $this->error('No rights');
+        }
+
         $user = $this->session();
         if (!is_array($user)) {
             return $this->error($user);
@@ -297,6 +314,10 @@ class Api
 
     public function apiCalendarConstructorSheetEdit()
     {
+        if(!$_SESSION['isAllow']){
+            return $this->error('No rights');
+        }
+
         $user = $this->session();
         if (!is_array($user)) {
             return $this->error($user);
@@ -324,6 +345,10 @@ class Api
 
     public function apiCalendarConstructorSheetAdd()
     {
+        if(!$_SESSION['isAllow']){
+            return [];
+        }
+
         $user = $this->session();
         if (!is_array($user)) {
             return $this->error($user);
@@ -352,11 +377,16 @@ class Api
         }
         $calendar['data'] = @json_decode($calendar['data'], true);
         $calendar['created'] = date('d.m.Y H:i:s', $calendar['created']);
+
         return $calendar;
     }
 
     public function apiGetCalendarConstructorSheets()
     {
+        if(!$_SESSION['isAllow']){
+            return [];
+        }
+
         $user = $this->session();
         if (!is_array($user)) {
             return $this->error($user);
@@ -752,9 +782,15 @@ SQL,
             return $this->error('Session not found');
         }
         $_SESSION['admin'] = 0;
+        $_SESSION['isAllow'] = false;
+        $_SESSION['token'] = '';
+
         return 'Session destroyed';
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function apiSignin()
     {
         $email = $this->param('email');
@@ -800,8 +836,45 @@ SQL,
         if (!$session) {
             return $this->error('Unknown error');
         }
+
         $_SESSION['admin'] = $user['admin'];
-        return $session['id'] . '_' . $session['token'];
+        $isAllow = $this->hasPaidSubscription($user);
+        $_SESSION['isAllow'] = $isAllow;
+        $_SESSION['token'] = $session['id'] . '_' . $session['token'];
+
+        return  $_SESSION['token'];
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function hasPaidSubscription(array $user):bool
+    {
+        $has = false;
+        $customerId = $this->readCustomerId($user['id']);
+        if ($customerId !== '') {
+            $stripe = new StripeClient($this->stripeSecretKey);
+            $collection = $stripe->subscriptions->all(
+                ['customer' => $customerId]
+            );
+            foreach ($collection as $subscription) {
+                /** @var Subscription $subscription */
+                $isActive = in_array(
+                    $subscription->status,
+                    [
+                        Subscription::STATUS_ACTIVE,
+                        Subscription::STATUS_TRIALING
+                    ],
+                    true
+                );
+                if ($isActive) {
+                    $has = true;
+                    break;
+                }
+            }
+        }
+
+        return $has;
     }
 
     public function apiSignup()

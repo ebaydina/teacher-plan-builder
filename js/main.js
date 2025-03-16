@@ -330,11 +330,18 @@ function err(text, el) {
 function getUserProfile() {
     title('Control panel');
     loader(true);
-    $("#signin, #signup, #verify, #settings").addClass('d-none');
+    $("#signin, #signup, #verify, #settings, #subscription").addClass('d-none');
     api('getProfile', function (res) {
         user = res;
 
+        if(user['allow'] !== true){
+            $("#menu-item-draft-btn").addClass('d-none');
+            $("#menu-item-name-constructor-btn").addClass('d-none');
+        }
         if(user['allow'] === true){
+            $("#menu-item-draft-btn").removeClass('d-none');
+            $("#menu-item-name-constructor-btn").removeClass('d-none');
+
             $("#name-constructor-btn").click(function () {
                 showNameConstructor();
             });
@@ -643,8 +650,10 @@ function getUserProfile() {
 
         if (user['allow'] === true && user.admin === 0) {
             $("#book-full-price").addClass('d-none');
+            $("#book-with-discount").removeClass('d-none');
         }
         if (user['allow'] === false && user.admin === 0) {
+            $("#book-full-price").removeClass('d-none');
             $("#book-with-discount").addClass('d-none');
         }
 
@@ -659,7 +668,7 @@ function getUserProfile() {
             res["subscription-list"]
             ?? '<table id=\'subscription-list\'></table>';
         delete res["subscription-list"];
-        loader(false);
+
         $("#panel").removeClass('d-none');
         $("#settings-name").val(user.name);
         $("#settings-surname").val(user.surname);
@@ -668,13 +677,6 @@ function getUserProfile() {
         $("#settings-email").val(user.email);
         $("#settings-gender").val(user.gender.toString());
         $("#select-week-type").val(parseInt(user.week_type) || 0);
-        if (user.admin) {
-            $('body').removeClass('is-user').addClass('is-admin');
-            $("#filemanager-btn").removeClass('d-none');
-        } else {
-            $('body').removeClass('is-admin').addClass('is-user');
-            $("#filemanager-btn").addClass('d-none');
-        }
         if (user.photo.length) {
             spinner($("#user-avatar").parent(), true);
             spinner($("#settings-user-avatar").parent(), true);
@@ -685,7 +687,14 @@ function getUserProfile() {
         } else {
             $("#settings-avatar-remove-btn").addClass('d-none');
         }
-        $("#draft-btn").click();
+
+        if (user.admin) {
+            $('body').removeClass('is-user').addClass('is-admin');
+            $("#filemanager-btn").removeClass('d-none');
+        } else {
+            $('body').removeClass('is-admin').addClass('is-user');
+            $("#filemanager-btn").addClass('d-none');
+        }
         if (user.admin) {
             $("#name-constructor-photos").sortable({
                 stop: function () {
@@ -700,11 +709,20 @@ function getUserProfile() {
                 }
             });
         }
-    }, function (res) {
+        if (user['allow'] === true) {
+            $("#draft-btn").click();
+        }
+        if (user['allow'] === false) {
+            $("#subscription-btn").click();
+        }
+
         loader(false);
+    }, function (res) {
         $("#signin").removeClass('d-none');
         title('Welcome');
         err(res);
+
+        loader(false);
     });
 }
 

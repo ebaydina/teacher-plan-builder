@@ -151,24 +151,35 @@ if ($dev !== 0) {
                         <span class="spinner-border spinner-border d-none"></span>
                         <img id="user-avatar" class="d-none" style="object-fit: contain" alt="user photo" src="">
                     </div>
+                    <!--PAID START-->
+                    <div class="menu-item" id="menu-item-draft-btn">
+                        <label for="draft-btn">
+                            Click here to create monthly curriculum
+                        </label>
+                        <button id="draft-btn"
+                                class="menu-btn form-control btn btn-primary mt-2">
+                            New Calendar Draft
+                        </button>
+                    </div>
+                    <div class="menu-item" id="menu-item-name-constructor-btn">
+                        <label for="name-constructor-btn">
+                            Click here to create a new writing sheet
+                        </label>
+                        <button id="name-constructor-btn"
+                                class="menu-btn form-control btn btn-primary mt-2">
+                            Word Constructor
+                        </button>
+                    </div>
+                    <!--PAID FINISH-->
+                    <!--COMMON START-->
                     <div class="menu-item">
-                        <label for="draft-btn">Click here to create monthly curriculum</label>
-                        <button id="draft-btn" class="menu-btn form-control btn btn-primary mt-2">New Calendar Draft
+                        <button id="settings-btn" class="menu-btn form-control btn btn-primary mt-2">
+                            Profile Settings
                         </button>
                     </div>
                     <div class="menu-item">
-                        <label for="name-constructor-btn">Click here to create a new writing sheet</label>
-                        <button id="name-constructor-btn" class="menu-btn form-control btn btn-primary mt-2">Word
-                            Constructor
-                        </button>
-                    </div>
-                    <div class="menu-item">
-                        <button id="settings-btn" class="menu-btn form-control btn btn-primary mt-2">Profile Settings
-                        </button>
-                    </div>
-                    <div class="menu-item">
-                        <button id="subscription-btn" class="menu-btn form-control btn btn-primary mt-2">My
-                            Subscription
+                        <button id="subscription-btn" class="menu-btn form-control btn btn-primary mt-2">
+                            My Subscription
                         </button>
                     </div>
                     <?php
@@ -190,6 +201,7 @@ if ($dev !== 0) {
                 </div>
             </div>
             <div class="col-12 col-lg-9">
+                <!--PAID START-->
                 <section id="draft" class="page d-none">
                     <div class="d-flex justify-content-between align-items-center pb-1">
                         <h4>Calendars</h4>
@@ -261,6 +273,8 @@ if ($dev !== 0) {
                         </div>
                     </div>
                 </section>
+                <!--PAID FINISH-->
+                <!--COMMON START-->
                 <section id="settings" class="page d-none">
                     <h1 class="pb-2">Profile Settings</h1>
                     <h4>General</h4>
@@ -465,6 +479,7 @@ if ($dev !== 0) {
                         <table id='subscription-list'></table>
                     </div>
                 </section>
+                <!--COMMON FINISH-->
                 <section id="page-loader" class="d-none py-3">
                     <span class="loader-spinner spinner-border"></span>
                     <span class="loader-text text-center d-none"></span>
