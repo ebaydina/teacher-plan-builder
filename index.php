@@ -73,6 +73,9 @@ if ($dev !== 0) {
     <script src="js/tippy.min.js?v=<?= $version ?>"></script>
 </head>
 <body>
+<script>
+    var Version = '<?=$version?>';
+</script>
 <section id="verify" style="background-image: url('img/cover-invisible-background.png');"
          class="<?= ($verifyResult ? '' : 'd-none') ?>">
     <div class="container">
@@ -756,7 +759,6 @@ if ($dev !== 0) {
 <script>
     var Host = '<?=HOST?>';
     var HostClear = Host.lastIndexOf('/') === Host.length - 1 ? Host.substring(0, Host.length - 1) : Host;
-    var Version = '<?=$version?>';
     var clientToken = '<?=$_COOKIE['csrf_token']?>';
     var userToken = '';
     var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
