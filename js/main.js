@@ -334,11 +334,11 @@ function getUserProfile() {
     api('getProfile', function (res) {
         user = res;
 
-        if(user['allow'] !== true){
+        if (user['allow'] !== true) {
             $("#menu-item-draft-btn").addClass('d-none');
             $("#menu-item-name-constructor-btn").addClass('d-none');
         }
-        if(user['allow'] === true){
+        if (user['allow'] === true) {
             /* let i; */
             $("#menu-item-draft-btn").removeClass('d-none');
             $("#menu-item-name-constructor-btn").removeClass('d-none');
@@ -624,15 +624,15 @@ function getUserProfile() {
                 });
 
             const monthsOptions = [];
-            for(let i = 1; i <= 12; i++){
-                monthsOptions.push('<option value="'+i+'">'+getMonth(i)+'</option>');
+            for (let i = 1; i <= 12; i++) {
+                monthsOptions.push('<option value="' + i + '">' + getMonth(i) + '</option>');
             }
             $("#calendar-months").html(monthsOptions.join(""));
             const yearsOptions = [];
             const currentYear = (new Date).getFullYear();
-            for(let i = 0; i <= 10; i++){
+            for (let i = 0; i <= 10; i++) {
                 const year = currentYear + i;
-                yearsOptions.push('<option value="'+year+'"'+(year === currentYear ? ' selected':'')+'>'+year+'</option>');
+                yearsOptions.push('<option value="' + year + '"' + (year === currentYear ? ' selected' : '') + '>' + year + '</option>');
             }
             $("#calendar-years").html(yearsOptions.join());
 
@@ -652,10 +652,10 @@ function getUserProfile() {
                 borderColor: false,
                 backColor: false,
                 color: false,
-                onNodeSelected: function(a, b, c){
+                onNodeSelected: function (a, b, c) {
                     selectedConcept = b;
                 },
-                onNodeUnselected: function(){
+                onNodeUnselected: function () {
                     selectedConcept = false;
                 }
             });
@@ -1888,15 +1888,15 @@ $(document).ready(function () {
     $(".user-avatar img")
         .attr('src', 'img/avatar.png?v=' + Version);
 
-    if($("#verify").hasClass('d-none')){
+    if ($("#verify").hasClass('d-none')) {
         let storageToken = localStorage.getItem('token');
-        if(typeof(storageToken) === "string" && storageToken.length){
+        if (typeof (storageToken) === "string" && storageToken.length) {
             userToken = storageToken;
         }
-        if(userToken){
+        if (userToken) {
             getUserProfile();
         }
-        if(!userToken) {
+        if (!userToken) {
             showSignInForm();
         }
     }
