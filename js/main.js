@@ -339,6 +339,7 @@ function getUserProfile() {
             $("#menu-item-name-constructor-btn").addClass('d-none');
         }
         if(user['allow'] === true){
+            /* let i; */
             $("#menu-item-draft-btn").removeClass('d-none');
             $("#menu-item-name-constructor-btn").removeClass('d-none');
 
@@ -525,11 +526,11 @@ function getUserProfile() {
                     err("Please select concept", "#calendar-text-editor-result");
                     return false;
                 }
-                var count = 1;
+                let count = 1;
 
                 function getCountChilds(arr) {
-                    var countElements = arr.length;
-                    for (var i = 0; i < arr.length; i++) {
+                    let countElements = arr.length;
+                    for (let i = 0; i < arr.length; i++) {
                         if (arr[i].nodes) {
                             countElements += getCountChilds(arr[i].nodes);
                         }
@@ -621,10 +622,60 @@ function getUserProfile() {
                     $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
                     eventsCalendarConstructorImages();
                 });
+
+            const monthsOptions = [];
+            for(let i = 1; i <= 12; i++){
+                monthsOptions.push('<option value="'+i+'">'+getMonth(i)+'</option>');
+            }
+            $("#calendar-months").html(monthsOptions.join(""));
+            const yearsOptions = [];
+            const currentYear = (new Date).getFullYear();
+            for(let i = 0; i <= 10; i++){
+                const year = currentYear + i;
+                yearsOptions.push('<option value="'+year+'"'+(year === currentYear ? ' selected':'')+'>'+year+'</option>');
+            }
+            $("#calendar-years").html(yearsOptions.join());
+
+            $("#calendar-constructor-edit-text-search").treeview({
+                levels: 1,
+                data: conceptsList,
+                expandIcon: 'bi bi-chevron-down',
+                collapseIcon: 'bi bi-chevron-right',
+                emptyIcon: 'no-icon',
+                nodeIcon: '',
+                selectedIcon: '',
+                checkedIcon: '',
+                uncheckedIcon: '',
+                highlightSelected: true,
+                selectedBackColor: '#0d6efd',
+                selectedColor: 'white',
+                borderColor: false,
+                backColor: false,
+                color: false,
+                onNodeSelected: function(a, b, c){
+                    selectedConcept = b;
+                },
+                onNodeUnselected: function(){
+                    selectedConcept = false;
+                }
+            });
+            tippy('#calendar-editor-helper', {
+                content: `Select the item you want to add`,
+                allowHTML: true,
+            });
+            tippy('.calendar-images-window-help', {
+                content: `
+            <div>When you click a picture, it is added to the calendar.</div>
+            <div>The added image turns green for convenience.</div>
+            <div>If desired, the same picture can be added several times.</div>
+        `,
+                allowHTML: true,
+            });
+
             $("#name-constructor-name").on('input', function () {
-                var self = $(this);
-                var name = self.val().replace(/[^A-z]/g, '');
-                if (name.length == 0) {
+                const self = $(this);
+                const name = self.val().replace(/[^A-z]/g, '');
+                if (name.length === 0) {
                     $("#name-constructor-list-content .a4").html('');
                     $("#name-constructor-generate, #name-constructor-print").attr('disabled', '');
                 } else {
@@ -1599,7 +1650,7 @@ $(document).ready(function () {
             localStorage.removeItem("rememberMe");
         }
 
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('signin', {
             email: email,
@@ -1838,4 +1889,17 @@ $(document).ready(function () {
         });
     $(".user-avatar img")
         .attr('src', 'img/avatar.png?v=' + Version);
+
+    if($("#verify").hasClass('d-none')){
+        let storageToken = localStorage.getItem('token');
+        if(typeof(storageToken) === "string" && storageToken.length){
+            userToken = storageToken;
+        }
+        if(userToken){
+            getUserProfile();
+        }
+        if(!userToken) {
+            showSignInForm();
+        }
+    }
 });
