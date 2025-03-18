@@ -708,6 +708,14 @@ function getUserProfile() {
             $("#book-with-discount").addClass('d-none');
         }
 
+        if (user.admin === 1){
+            $("#filemanager-btn").click(function () {
+                if (user.admin === 1) {
+                    window.open('/filemanager/', '_blank');
+                }
+            });
+        }
+
         $("td form").each(function (key, value) {
             if (this.action.indexOf('&token=') === -1) {
                 this.action = `${this.action}\&token=${userToken}`;
@@ -1867,10 +1875,6 @@ $(document).ready(function () {
                 err(res, '#settings-email-result');
             });
         }
-    });
-
-    $("#filemanager-btn").click(function () {
-        window.open('/filemanager/', '_blank');
     });
 
     $(".user-avatar img")
