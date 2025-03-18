@@ -1841,8 +1841,6 @@ $(document).ready(function () {
         var codeInput = $("#settings-email-code");
         var email = $("#settings-email").val();
         var code = $("#settings-email-code").val();
-        var password = $("#settings-password").val();
-        var rpassword = $("#settings-rpassword").val();
         spinner(self, true);
         if (codeInput.hasClass('d-none')) {
             api('changeEmailCode', {
