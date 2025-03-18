@@ -98,7 +98,7 @@ function eventsCalendarConstructorImages(id) {
     items.addClass('init-events');
     items.disableSelection();
     items.click(function (e) {
-        var self = $(this);
+        const self = $(this);
         var image = self.find('img').attr('src');
         self.addClass('selected');
         if (id !== undefined && id >= 0) {
@@ -143,7 +143,7 @@ function renderCalendarConstructorSheet(item) {
 
 function eventsCalendarConstructorSheets() {
     $("#draft-list .item-print").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         var id = parseInt(self.parent().parent().parent().attr('item-id')) || 0;
         showCalendarConstructor(false, id, function (res) {
@@ -157,7 +157,7 @@ function eventsCalendarConstructorSheets() {
         });
     });
     $("#draft-list .item-edit").click(function () {
-        var self = $(this);
+        const self = $(this);
         autoSaveData = localStorage.getItem('calendar-autosave');
         if (autoSaveData !== null) {
             try {
@@ -174,7 +174,7 @@ function eventsCalendarConstructorSheets() {
         showCalendarConstructor(false, parseInt(self.parent().parent().parent().attr('item-id')) || 0);
     });
     $("#draft-list .item-remove").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('calendarConstructorSheetRemove', {
             id: self.parent().parent().parent().attr('item-id'),
@@ -347,7 +347,7 @@ function getUserProfile() {
                 showNameConstructor();
             });
             $("#name-constructor-generate").click(function () {
-                var self = $(this);
+                const self = $(this);
                 spinner(self, true);
                 var name = $("#name-constructor-name").val().replace(/[^A-z]/, '').split('');
 
@@ -385,7 +385,7 @@ function getUserProfile() {
                 spinner(self, false);
             });
             $("#name-constructor-print").click(function () {
-                var self = $(this);
+                const self = $(this);
                 spinner(self, true);
                 html2canvas(document.querySelector("#name-constructor-list-content .a4"), {
                     allowTaint: true,
@@ -427,7 +427,7 @@ function getUserProfile() {
                 $("#calendar-constructor-save-window").modal('show');
             });
             $("#calendar-constructor-saved").click(function () {
-                var self = $(this);
+                const self = $(this);
                 var name = $("#calendar-save-sheet-name").val();
                 if (!name.length) {
                     return err("Enter calendar name", $("#calendar-constructor-saved-result"));
@@ -509,7 +509,7 @@ function getUserProfile() {
                 showCalendarConstructor(autoSaveData);
             });
             $("#calendar-autosaved-new").click(function () {
-                var self = $(this);
+                const self = $(this);
                 localStorage.removeItem('calendar-autosave');
                 var itemId = parseInt(self.attr('item-id')) || 0;
                 if (itemId > 0) {
@@ -578,7 +578,7 @@ function getUserProfile() {
                 showAddImage(false);
             });
             $("#calendar-constructor-generate").click(function () {
-                var self = $(this);
+                const self = $(this);
                 spinner(self, true);
                 calendarPrint(sheet.id, '#calendar-constructor-list-content .a4', function (res) {
                     spinner(self, false);
@@ -685,7 +685,7 @@ function getUserProfile() {
             });
             $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
                 .on('input change', function (e) {
-                    var self = $(this);
+                    const self = $(this);
                     var value = $(this).val();
                     calendarTextEditorPreview();
                     if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
@@ -1060,7 +1060,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     }
     calendarTable.html(html);
     calendarTable.find('.enabled').click(function () {
-        var self = $(this);
+        const self = $(this);
         var color = self.attr('color');
         if (!color) {
             color = '#000000';
@@ -1070,10 +1070,10 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
         selectDay = self;
     });
     $(".line-edit").click(function () {
-        var self = $(this);
+        const self = $(this);
         self.find('input, textarea').val(self.text().trim().replace(/<br>/g, "\n")).removeClass('d-none').focus();
     }).find('input, textarea').blur(function () {
-        var self = $(this);
+        const self = $(this);
         self.addClass('d-none').prev().html(self.val().replace(/\n/g, "<br>"));
         calendarAutoSave();
     });
@@ -1559,7 +1559,7 @@ function renderSearchTexts(texts, text) {
         $("#calendar-constructor-edit-text-search").addClass('d-none');
     });
     textSearchList.find('.text i').click(function () {
-        var self = $(this);
+        const self = $(this);
         addTextElement(atob(self.prev().attr('text')), $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
         self.removeClass('bi-plus-circle').addClass('bi-plus-circle-fill added');
     });
@@ -1676,7 +1676,7 @@ $(document).ready(function () {
         title('Sign in');
     });
     $("#signup-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('signup', {
             email: $("#signup-email").val().trim(),
@@ -1694,7 +1694,7 @@ $(document).ready(function () {
         $("#forgot-btn").removeClass('d-none');
     })
     $("#forgot-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('recovery', {
             email: $("#signin-email").val().trim()
@@ -1708,7 +1708,7 @@ $(document).ready(function () {
         });
     });
     $("#signout-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('signout', function (res) {
             spinner(self, true);
@@ -1722,7 +1722,7 @@ $(document).ready(function () {
         });
     });
     $("#menu-signout-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('signout', function (res) {
             spinner(self, false);
@@ -1774,7 +1774,7 @@ $(document).ready(function () {
         }
     });
     $("#settings-avatar-upload-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         upload(function (res) {
             var name = res.name;
             var photo = res.photo;
@@ -1805,7 +1805,7 @@ $(document).ready(function () {
         });
     });
     $("#settings-avatar-remove-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         spinner(self, true);
         api('profileRemoveAvatar', function (res) {
             spinner(self, false);
@@ -1818,7 +1818,7 @@ $(document).ready(function () {
         });
     });
     $("#settings-password-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         var password = $("#settings-password").val();
         var rpassword = $("#settings-rpassword").val();
         if (password !== rpassword) {
@@ -1837,7 +1837,7 @@ $(document).ready(function () {
         }
     });
     $("#settings-email-btn").click(function () {
-        var self = $(this);
+        const self = $(this);
         var codeInput = $("#settings-email-code");
         var email = $("#settings-email").val();
         var code = $("#settings-email-code").val();
@@ -1877,13 +1877,13 @@ $(document).ready(function () {
 
     $(".user-avatar img")
         .on('load', function () {
-            var self = $(this);
+            const self = $(this);
             self.prev().addClass('d-none');
             self.removeClass('d-none');
         });
     $(".user-avatar img")
         .on('error', function () {
-            var self = $(this);
+            const self = $(this);
             self.prev().addClass('d-none');
             self.addClass('d-none');
         });
