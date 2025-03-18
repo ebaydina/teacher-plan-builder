@@ -128,7 +128,7 @@ class Api
 
     public function apiGetConcepts()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return [];
         }
 
@@ -264,7 +264,7 @@ class Api
 
     public function apiCalendarConstructorTexts()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return [];
         }
 
@@ -275,7 +275,7 @@ class Api
 
     public function apiCalendarConstructorImages()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return [];
         }
 
@@ -288,7 +288,7 @@ class Api
 
     public function apiCalendarConstructorSheetRemove()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return $this->error('No rights');
         }
 
@@ -314,7 +314,7 @@ class Api
 
     public function apiCalendarConstructorSheetEdit()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return $this->error('No rights');
         }
 
@@ -345,7 +345,7 @@ class Api
 
     public function apiCalendarConstructorSheetAdd()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return [];
         }
 
@@ -383,7 +383,7 @@ class Api
 
     public function apiGetCalendarConstructorSheets()
     {
-        if(!$_SESSION['isAllow']){
+        if(!($_SESSION['isAllow'] ?? false) ){
             return [];
         }
 
