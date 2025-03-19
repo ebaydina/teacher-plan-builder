@@ -193,7 +193,7 @@ if ($dev !== 0) {
                     </div>
                     <!--COMMON FINISH-->
                     <!--ADMIN START-->
-                    <div class="menu-item">
+                    <div class="menu-item" id="menu-item-filemanager-btn">
                         <label for="filemanager-btn">Upload a file</label>
                         <button id="filemanager-btn" class="menu-btn form-control btn btn-success mt-2">File
                             Manager
@@ -379,80 +379,86 @@ if ($dev !== 0) {
                     <h4>Shop</h4>
 
                     <div class="row">
-                        <div class="col-sm-4">
-                            <h5>Young Reader Textbook (Prek-1) Elena Baydina</h5>
+                        <div class="col-md-4">
                             <div class="shop-item">
-                                <img src="img/shop/book/cover1.jpg" alt="book cover">
+                            <p class="title">Young Reader Textbook (Prek-1) Elena Baydina</p>
+                                <div class="shop-img">
+                                    <img src="img/shop/book/cover1.jpg" alt="book cover">
+                                </div>
+                                <p>
+                                    Rooted in structured literacy principles and phonics-based instruction, this book
+                                    offers:
+                                </p>
+                                <ul>
+                                    <li>
+                                        ✔ Step-by-step lessons to support foundational reading and writing development.
+                                    </li>
+                                    <li>
+                                        ✔ Beautifully illustrated resources to engage young learners.
+                                    </li>
+                                    <li>
+                                        ✔ Hands-on, adaptable activities for diverse learning needs, including ELL students.
+                                    </li>
+                                    <li>
+                                        ✔ Proven strategies to close literacy gaps and build confident, capable readers.
+                                    </li>
+                                </ul>
                             </div>
-                            <p>
-                                Rooted in structured literacy principles and phonics-based instruction, this book
-                                offers:
-                            </p>
-                            <ul>
-                                <li>
-                                    ✔ Step-by-step lessons to support foundational reading and writing development.
-                                </li>
-                                <li>
-                                    ✔ Beautifully illustrated resources to engage young learners.
-                                </li>
-                                <li>
-                                    ✔ Hands-on, adaptable activities for diverse learning needs, including ELL students.
-                                </li>
-                                <li>
-                                    ✔ Proven strategies to close literacy gaps and build confident, capable readers.
-                                </li>
-                            </ul>
                         </div>
-                        <div class="col-sm-4">
-                            <h5>Teacher Plan Builder App</h5>
+                        <div class="col-md-4">
                             <div class="shop-item">
-                                <img src="img/shop/app/TPB%20-%20app%20example.png" alt="calendar" >
+                                <p class="title">Teacher Plan Builder App</p>
+                                <div class="shop-img">
+                                    <img src="img/shop/app/TPB%20-%20app%20example.png" alt="calendar" >
+                                </div>
+                                <ul>
+                                    <li>
+                                        ✔ Comprehensive Lesson & Unit Planning – Organize instruction through a concept-based framework adaptable for various grade levels.
+                                    </li>
+                                    <li>
+                                        ✔ Extensive Literacy Resource Library – Access phonics lessons, reading strategies, and structured literacy activities to support diverse learners, including ELL students.
+                                    </li>
+                                    <li>
+                                        ✔ Comes with the writing Name Constructor – Create personalized writing exercises to reinforce early literacy skills.
+                                    </li>
+                                    <li>
+                                        ✔ Concept-Based Learning Tools – Build interdisciplinary units that connect literacy with broader themes and inquiry-based learning.
+                                    </li>
+                                    <li>
+                                        ✔ Daily Instruction Calendar – Generate a month-long instructional roadmap to guide daily lessons and student learning, ensuring consistency and progress.
+                                    </li>
+                                    <li>
+                                        ✔ Adaptable for Homeschooling & Traditional Classrooms – Customizable resources for different instructional needs.
+                                    </li>
+                                </ul>
                             </div>
-                            <ul>
-                                <li>
-                                    ✔ Comprehensive Lesson & Unit Planning – Organize instruction through a concept-based framework adaptable for various grade levels.
-                                </li>
-                                <li>
-                                    ✔ Extensive Literacy Resource Library – Access phonics lessons, reading strategies, and structured literacy activities to support diverse learners, including ELL students.
-                                </li>
-                                <li>
-                                    ✔ Comes with the writing Name Constructor – Create personalized writing exercises to reinforce early literacy skills.
-                                </li>
-                                <li>
-                                    ✔ Concept-Based Learning Tools – Build interdisciplinary units that connect literacy with broader themes and inquiry-based learning.
-                                </li>
-                                <li>
-                                    ✔ Daily Instruction Calendar – Generate a month-long instructional roadmap to guide daily lessons and student learning, ensuring consistency and progress.
-                                </li>
-                                <li>
-                                    ✔ Adaptable for Homeschooling & Traditional Classrooms – Customizable resources for different instructional needs.
-                                </li>
-                            </ul>
                         </div>
-                        <div class="col-sm-4">
-                            <h5>Name Constructor</h5>
+                        <div class="col-md-4">
                             <div class="shop-item">
-                                <img src="img/shop/name-constructor/name-example.webp" alt="calendar" >
+                                <p class="title">Name Constructor</p>
+                                <div class="shop-img">
+                                    <img src="img/shop/name-constructor/name-example.webp" alt="name-example" >
+                                </div>
+                                <p>
+                                    The Name Constructor is an interactive tool designed to help students practice writing
+                                    words they are learning, including sight words, their own names, and uppercase/lowercase
+                                    letters.
+                                </p>
+                                <ul>
+                                    <li>
+                                        ✔ Personalized Name Practice: Generates worksheets for students to practice writing their own names in both uppercase and lowercase letters.
+                                    </li>
+                                    <li>
+                                        ✔ Sight Word Integration: Allows teachers to input custom word lists for structured practice.
+                                    </li>
+                                    <li>
+                                        ✔ Adaptive Formatting: Provides dashed-line tracing, guided writing, and freehand spaces to support different skill levels.
+                                    </li>
+                                    <li>
+                                        ✔ Printable & Digital Use: Worksheets can be printed for handwriting practice or used on tablets with a stylus.
+                                    </li>
+                                </ul>
                             </div>
-                            <p>
-                                The Name Constructor is an interactive tool designed to help students practice writing
-                                words they are learning, including sight words, their own names, and uppercase/lowercase
-                                letters.
-                            </p>
-                            <ul>
-                                <li>
-                                    ✔ Personalized Name Practice: Generates worksheets for students to practice writing their own names in both uppercase and lowercase letters.
-                                </li>
-                                <li>
-                                    ✔ Sight Word Integration: Allows teachers to input custom word lists for structured practice.
-                                </li>
-                                <li>
-                                    ✔ Adaptive Formatting: Provides dashed-line tracing, guided writing, and freehand spaces to support different skill levels.
-                                </li>
-                                <li>
-                                    ✔ Printable & Digital Use: Worksheets can be printed for handwriting practice or used on tablets with a stylus.
-                                </li>
-                            </ul>
                         </div>
                     </div>
                     <div class="row">
