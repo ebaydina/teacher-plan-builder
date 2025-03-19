@@ -334,6 +334,26 @@ function getUserProfile() {
     api('getProfile', function (res) {
         user = res;
 
+        if (user['allow'] === true && user.admin === 0) {
+            $("#book-full-price").addClass('d-none');
+            $("#book-with-discount").removeClass('d-none');
+        }
+        if (user['allow'] === false && user.admin === 0) {
+            $("#book-full-price").removeClass('d-none');
+            $("#book-with-discount").addClass('d-none');
+        }
+
+        if (user.admin === 1){
+            $("#menu-item-filemanager-btn").removeClass('d-none');
+            $("#filemanager-btn").click(function () {
+                if (user.admin === 1) {
+                    window.open('/filemanager/', '_blank');
+                }
+            });
+        }
+        if (user.admin !== 1){
+            $("#menu-item-filemanager-btn").addClass('d-none');
+        }
         if (user['allow'] !== true) {
             $("#menu-item-draft-btn").addClass('d-none');
             $("#menu-item-name-constructor-btn").addClass('d-none');
@@ -696,23 +716,6 @@ function getUserProfile() {
             $("#calendar-constructor-edit-text").focus(function () {
                 var value = $(this).val();
                 renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-            });
-        }
-
-        if (user['allow'] === true && user.admin === 0) {
-            $("#book-full-price").addClass('d-none');
-            $("#book-with-discount").removeClass('d-none');
-        }
-        if (user['allow'] === false && user.admin === 0) {
-            $("#book-full-price").removeClass('d-none');
-            $("#book-with-discount").addClass('d-none');
-        }
-
-        if (user.admin === 1){
-            $("#filemanager-btn").click(function () {
-                if (user.admin === 1) {
-                    window.open('/filemanager/', '_blank');
-                }
             });
         }
 
