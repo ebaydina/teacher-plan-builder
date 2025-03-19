@@ -152,7 +152,7 @@ if ($dev !== 0) {
                 <div class="user-info signin-block">
                     <div class="user-avatar">
                         <span class="spinner-border spinner-border d-none"></span>
-                        <img id="user-avatar" class="d-none" style="object-fit: contain" alt="user photo" src="">
+                        <img id="user-avatar" class="d-none" alt="user photo" src="">
                     </div>
                     <!--PAID START-->
                     <div class="menu-item" id="menu-item-draft-btn">
