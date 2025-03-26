@@ -376,8 +376,7 @@ if ($dev !== 0) {
                 </section>
                 <section id="subscription" class="page d-none">
                     <h1 class="pb-2">Shop</h1>
-                    <h4>Shop</h4>
-
+                    <h4>Items</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="shop-item">
@@ -560,7 +559,7 @@ if ($dev !== 0) {
                             </tbody>
                         </table>
                     </div>
-                    <h4>All My Subscription</h4>
+                    <h4>My Subscriptions</h4>
                     <div class="row">
                         <table
                                 id='subscription-list'
