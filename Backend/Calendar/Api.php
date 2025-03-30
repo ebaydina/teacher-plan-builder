@@ -1111,6 +1111,8 @@ HTML
 
     /**
      * @param Throwable $e
+     * @param string $message
+     * @param array $context
      * @return void
      */
     public function logException(
@@ -1137,7 +1139,7 @@ HTML
     ): void {
         $isPossible = $this->logPath !== '';
 
-        $testMode = 'unknow';
+        $testMode = 'unknown';
         if ($isPossible && defined('TEST_MODE')) {
             $testMode = constant('TEST_MODE');
         }
