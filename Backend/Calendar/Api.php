@@ -843,7 +843,7 @@ SQL,
 
         $_SESSION['admin'] = $user['admin'];
         $isAllow = $this->hasPaidSubscription($user);
-        $_SESSION['isAllow'] = $isAllow;
+        $_SESSION['isAllow'] = $isAllow || $user['admin'] === 1;
         $_SESSION['token'] = $session['id'] . '_' . $session['token'];
 
         $this->log(__FUNCTION__,['$_SESSION' => $_SESSION]);
