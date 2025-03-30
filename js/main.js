@@ -334,6 +334,24 @@ function getUserProfile() {
     api('getProfile', function (res) {
         user = res;
 
+        api('CalendarConstructorTexts', function (res) {
+            calendarTexts = res;
+        }, function (error) {
+            err(error)
+        });
+
+        api('CalendarConstructorImages', function (res) {
+            calendarImages = res;
+        }, function (error) {
+            err(error)
+        });
+
+        api('GetConcepts', function (res) {
+            conceptsList = res;
+        }, function (error) {
+            err(error)
+        });
+
         if (user['allow'] === true && user.admin === 0) {
             $("#book-full-price").addClass('d-none');
             $("#book-with-discount").removeClass('d-none');
