@@ -635,6 +635,8 @@ HTML;
         }
         $result['allow'] = $allow;
 
+        $this->log(__FUNCTION__,['$result' => $result]);
+
         return $result;
     }
 
@@ -785,6 +787,8 @@ SQL,
         $_SESSION['isAllow'] = false;
         $_SESSION['token'] = '';
 
+        $this->log(__FUNCTION__,['$_SESSION' => $_SESSION]);
+
         return 'Session destroyed';
     }
 
@@ -841,6 +845,8 @@ SQL,
         $isAllow = $this->hasPaidSubscription($user);
         $_SESSION['isAllow'] = $isAllow;
         $_SESSION['token'] = $session['id'] . '_' . $session['token'];
+
+        $this->log(__FUNCTION__,['$_SESSION' => $_SESSION]);
 
         return  $_SESSION['token'];
     }
