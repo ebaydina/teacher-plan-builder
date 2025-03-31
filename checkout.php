@@ -1,9 +1,58 @@
 <?php
 
+use Calendar\Db;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
 require_once 'Backend/autoload.php';
+
+/** @var Db $db */
+try {
+    $api = new Calendar\Api($db, false);
+} catch (Throwable $e) {
+    $exception = var_export($e, true);
+    $details = ['EXCEPTION' => $exception];
+    $message = 'Failure on checkout';
+    echo $message;
+    if (defined('LOG_PATH')) {
+        $parts = [
+            constant('LOG_PATH'),
+            time()
+            . '-'
+            . pathinfo(__FILE__, PATHINFO_FILENAME)
+            . '.log',
+        ];
+        $logPath = join(DIRECTORY_SEPARATOR, $parts);
+        $isPossible = realpath($logPath) !== false;
+
+        $testMode = 'unknown';
+        if ($isPossible && defined('TEST_MODE')) {
+            $testMode = constant('TEST_MODE');
+        }
+
+        if ($isPossible) {
+            $details['TEST_MODE'] = $testMode;
+
+            file_put_contents(
+                $logPath,
+                date(DATE_ATOM, time())
+                . ': '
+                . $message
+                . ', context: '
+                . json_encode(
+                    $details,
+                    JSON_NUMERIC_CHECK
+                    | JSON_UNESCAPED_SLASHES
+                    | JSON_UNESCAPED_UNICODE
+                ),
+                FILE_APPEND,
+            );
+        }
+    }
+}
+if (!isset($api)) {
+    exit;
+}
 
 $stripeSecretKey = '';
 if (defined('STRIPE_SECRET_KEY')) {
@@ -15,8 +64,6 @@ if (defined('HOST')) {
 }
 $priceId = $_GET['priceId'];
 $token = $_GET['token'];
-
-$api = new Calendar\Api($db, false);
 
 try {
     $user = $api->session(token: $token);
@@ -49,7 +96,6 @@ try {
             'enabled' => true,
         ],
     ]);
-
 } catch (\Throwable $e) {
     $api->logException(
         $e,

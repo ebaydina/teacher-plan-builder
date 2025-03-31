@@ -26,9 +26,9 @@ class Api
         if (defined('LOG_PATH')) {
             $parts = [
                 constant('LOG_PATH'),
-                pathinfo(__FILE__, PATHINFO_FILENAME)
+                time()
                 . '-'
-                . time()
+                . pathinfo(__FILE__, PATHINFO_FILENAME)
                 . '.log',
             ];
             $this->logPath = join(DIRECTORY_SEPARATOR, $parts);
