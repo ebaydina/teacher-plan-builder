@@ -2,18 +2,62 @@
 
 require_once 'Backend/autoload.php';
 
+use Calendar\Db;
 use Calendar\Functions;
 
 session_start();
-$api = new Calendar\Api($db, false);
-//define('V', time());
+/** @var Db $db */
+try {
+    $api = new Calendar\Api($db, false);
+} catch (Throwable $e) {
+    $exception = var_export($e, true);
+    $details = ['EXCEPTION' => $exception];
+    $message = 'Failure on render index page';
+    echo $message;
+    if (defined('LOG_PATH')) {
+        $parts = [
+            constant('LOG_PATH'),
+            time()
+            . '-'
+            . pathinfo(__FILE__, PATHINFO_FILENAME)
+            . '.log',
+        ];
+        $logPath = join(DIRECTORY_SEPARATOR, $parts);
+        $isPossible = realpath($logPath) !== false;
+
+        $testMode = 'unknown';
+        if ($isPossible && defined('TEST_MODE')) {
+            $testMode = constant('TEST_MODE');
+        }
+
+        if ($isPossible) {
+            $details['TEST_MODE'] = $testMode;
+
+            file_put_contents(
+                $logPath,
+                date(DATE_ATOM, time())
+                . ': '
+                . $message
+                . ', context: '
+                . json_encode(
+                    $details,
+                    JSON_NUMERIC_CHECK
+                    | JSON_UNESCAPED_SLASHES
+                    | JSON_UNESCAPED_UNICODE
+                ),
+                FILE_APPEND,
+            );
+        }
+    }
+}
+
 if (!isset($_COOKIE['csrf_token'])) {
     $_COOKIE['csrf_token'] = Functions::csrfToken();
     setcookie('csrf_token', $_COOKIE['csrf_token']);
 }
 if (isset($_GET['verify'])) {
     $_SESSION['verify'] = $_GET['verify'];
-    return Functions::redirect('/', true);
+    Functions::redirect('/', true);
 }
 $verifyResult = false;
 if (isset($_SESSION['verify'])) {
@@ -616,7 +660,12 @@ if ($dev !== 0) {
     </div>
 </section>
 <input id="image-uploader" class="d-none" type="file" accept=".png, .jpg, .jpeg">
-<img id="copyright" src="img/copyright.png?v=<?= $version ?>" class="d-none">
+<img
+        id="copyright"
+        src="img/copyright.png?v=<?= $version ?>"
+        class="d-none"
+        alt="copyright"
+>
 <div class="modal fade" id="calendar-month-selector" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -853,6 +902,19 @@ if ($dev !== 0) {
     </div>
 </div>
 <div id="calendar-constructor-tmp"></div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-md-center">Author: Elena&nbsp;Baydina©2025
+                    <a href="mailto:by.elena@yahoo.com">
+                        by.elena@yahoo.com
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
 <script>
     var Host = '<?=HOST?>';
     var HostClear = Host.lastIndexOf('/') === Host.length - 1 ? Host.substring(0, Host.length - 1) : Host;
