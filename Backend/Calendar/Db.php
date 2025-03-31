@@ -19,14 +19,14 @@ class Db
         $this->db->set_charset($charset);
     }
 
-    public function __set($prop, $value)
-    {
-        $this->db->{$prop} = $value;
-    }
-
     public function __get($prop)
     {
         return $this->db->{$prop};
+    }
+
+    public function __set($prop, $value)
+    {
+        $this->db->{$prop} = $value;
     }
 
     public function __call($method, array $args)

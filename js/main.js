@@ -361,7 +361,7 @@ function getUserProfile() {
             $("#book-with-discount").addClass('d-none');
         }
 
-        if (user.admin === 1){
+        if (user.admin === 1) {
             $("#menu-item-filemanager-btn").removeClass('d-none');
             $("#filemanager-btn").click(function () {
                 if (user.admin === 1) {
@@ -369,7 +369,7 @@ function getUserProfile() {
                 }
             });
         }
-        if (user.admin !== 1){
+        if (user.admin !== 1) {
             $("#menu-item-filemanager-btn").addClass('d-none');
         }
         if (user['allow'] !== true) {

@@ -56,11 +56,6 @@ class Functions
         return md5(uniqid('calender_') . microtime(1));
     }
 
-    public static function getClientToken()
-    {
-        return $_COOKIE['csrf_token'] ?? '';
-    }
-
     public static function aesDecrypt($text)
     {
         $json = json_decode((string)base64_decode($text), true);
@@ -94,5 +89,10 @@ class Functions
         }
         unset($cipherText, $hashKey, $iv);
         return $decrypted;
+    }
+
+    public static function getClientToken()
+    {
+        return $_COOKIE['csrf_token'] ?? '';
     }
 }

@@ -59,76 +59,88 @@ class Api
         }
     }
 
-    private function correctConceptList(array $rowsData)
+    public function handle(): void
     {
-        $tmpRowsData = [];
-        $tmpArray = [];
-        $tmpName = '';
-        $hasBold = false;
-        foreach ($rowsData as $k => &$rowData) {
-            if ($rowData['type']) {
-                $hasBold = true;
-                if ($rowData['name'] !== $tmpName) {
-                    if (count($tmpArray)) {
-                        if (mb_strlen($tmpName)) {
-                            $tmpRowsData[] = [
-                                'text' => $tmpName,
-                                'nodes' => $tmpArray
-                            ];
-                        } else {
-                            $tmpRowsData[] = $tmpArray;
-                        }
-                    }
-                }
-                $tmpArray = [];
-                $tmpName = $rowData['name'];
-            }
-            $rowData = [
-                'text' => str_replace("\n", "<br>", $rowData['value'])
-            ];
-            if (!mb_strlen($rowData['text'])) {
-                unset($rowsData[$k]);
-            } else {
-                $tmpArray[] = $rowData;
-            }
-        }
-        if (count($tmpArray)) {
-            if (mb_strlen($tmpName)) {
-                $tmpRowsData[] = [
-                    'text' => $tmpName,
-                    'nodes' => $tmpArray
+        $method = 'api' . (isset($_POST['method']) ? $_POST['method'] : '');
+        $response = $this->error('Method not found');
+        if (isset($_POST['method']) && method_exists($this, $method)) {
+            $response = call_user_func([$this, $method]);
+            if (!is_array($response) || !isset($response['error'])) {
+                $response = [
+                    'success' => $response
                 ];
-            } else {
-                $tmpRowsData[] = $tmpArray;
             }
         }
-        return $hasBold ? $tmpRowsData : $rowsData;
+        header('Content-Type: application/json; charset=utf-8;');
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    public function correctConcepts(array $rows)
+    private function error($text)
     {
-        $list = [];
-        foreach ($rows as $k => $row) {
-            if (is_numeric($k)) {
-                if (!is_array($row)) {
-                    $row = [
-                        "text" => $row
-                    ];
-                }
-                $list[] = $row;
-            } else {
-                $list[] = [
-                    "text" => $k,
-                    "nodes" => $this->correctConcepts($row)
-                ];
-            }
+        return [
+            'error' => $text
+        ];
+    }
+
+    /**
+     * @param Throwable $e
+     * @param string $message
+     * @param array $context
+     * @return void
+     */
+    public function logException(
+        Throwable $e,
+        string $message = '',
+        array $context = [],
+    ): void {
+        $exceptionDetails = [
+            'Throwable' => var_export($e, true),
+        ];
+        $exceptionDetails += $context;
+
+        $this->log($message, $exceptionDetails);
+    }
+
+    /**
+     * @param string $message
+     * @param array $details
+     * @return void
+     */
+    public function log(
+        string $message,
+        array $details,
+    ): void {
+        $logPath = $this->logPath;
+        $isPossible = realpath($logPath) !== false;
+
+        $testMode = 'unknown';
+        if ($isPossible && defined('TEST_MODE')) {
+            $testMode = constant('TEST_MODE');
         }
-        return $list;
+
+        if ($isPossible) {
+            $details['TEST_MODE'] = $testMode;
+
+            file_put_contents(
+                $logPath,
+                date(DATE_ATOM, time())
+                . ': '
+                . $message
+                . ', context: '
+                . json_encode(
+                    $details,
+                    JSON_NUMERIC_CHECK
+                    | JSON_UNESCAPED_SLASHES
+                    | JSON_UNESCAPED_UNICODE
+                ),
+                FILE_APPEND,
+            );
+        }
     }
 
     public function apiGetConcepts()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return [];
         }
 
@@ -229,6 +241,84 @@ class Api
         return $data;
     }
 
+    private function correctConceptList(array $rowsData)
+    {
+        $tmpRowsData = [];
+        $tmpArray = [];
+        $tmpName = '';
+        $hasBold = false;
+        foreach ($rowsData as $k => &$rowData) {
+            if ($rowData['type']) {
+                $hasBold = true;
+                if ($rowData['name'] !== $tmpName) {
+                    if (count($tmpArray)) {
+                        if (mb_strlen($tmpName)) {
+                            $tmpRowsData[] = [
+                                'text' => $tmpName,
+                                'nodes' => $tmpArray
+                            ];
+                        } else {
+                            $tmpRowsData[] = $tmpArray;
+                        }
+                    }
+                }
+                $tmpArray = [];
+                $tmpName = $rowData['name'];
+            }
+            $rowData = [
+                'text' => str_replace("\n", "<br>", $rowData['value'])
+            ];
+            if (!mb_strlen($rowData['text'])) {
+                unset($rowsData[$k]);
+            } else {
+                $tmpArray[] = $rowData;
+            }
+        }
+        if (count($tmpArray)) {
+            if (mb_strlen($tmpName)) {
+                $tmpRowsData[] = [
+                    'text' => $tmpName,
+                    'nodes' => $tmpArray
+                ];
+            } else {
+                $tmpRowsData[] = $tmpArray;
+            }
+        }
+        return $hasBold ? $tmpRowsData : $rowsData;
+    }
+
+    public function correctConcepts(array $rows)
+    {
+        $list = [];
+        foreach ($rows as $k => $row) {
+            if (is_numeric($k)) {
+                if (!is_array($row)) {
+                    $row = [
+                        "text" => $row
+                    ];
+                }
+                $list[] = $row;
+            } else {
+                $list[] = [
+                    "text" => $k,
+                    "nodes" => $this->correctConcepts($row)
+                ];
+            }
+        }
+        return $list;
+    }
+
+    public function apiCalendarConstructorTexts()
+    {
+        if (!($_SESSION['isAllow'] ?? false)) {
+            return [];
+        }
+
+        return $this->getFiles(CONTENT_PATH, [
+            'txt'
+        ]);
+    }
+
     public function getFiles($path, $exts = [], $getContents = true)
     {
         if (is_dir($path)) {
@@ -262,20 +352,9 @@ class Api
         return $getContents ? str_replace("\n", '<br>', file_get_contents($path)) : str_replace(HOST_PATH, HOST, $path);
     }
 
-    public function apiCalendarConstructorTexts()
-    {
-        if(!($_SESSION['isAllow'] ?? false) ){
-            return [];
-        }
-
-        return $this->getFiles(CONTENT_PATH, [
-            'txt'
-        ]);
-    }
-
     public function apiCalendarConstructorImages()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return [];
         }
 
@@ -288,7 +367,7 @@ class Api
 
     public function apiCalendarConstructorSheetRemove()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return $this->error('No rights');
         }
 
@@ -297,7 +376,7 @@ class Api
             return $this->error($user);
         }
         $calendar = $this->query(
-            "SELECT * FROM calendar_constructor WHERE id=?",
+            "select * from calendar_constructor where id=?",
             intval($this->param('id'))
         )->fetch_assoc();
         if (!$calendar) {
@@ -306,15 +385,66 @@ class Api
         if ($calendar['user_id'] !== $user['id']) {
             return $this->error('No rights');
         }
-        if (!$this->query("DELETE FROM calendar_constructor WHERE id=?", $calendar['id'])) {
+        if (!$this->query("delete from calendar_constructor where id=?", $calendar['id'])) {
             return $this->error('Unknown error');
         }
         return 'Calendar removed';
     }
 
+    public function session($isAdmin = false, $token = '')
+    {
+        if (!$token) {
+            $token = $this->param('token', '');
+        }
+        $tokenExplode = explode('_', $token);
+        if (count($tokenExplode) !== 2) {
+            return 'Incorrect token';
+        }
+        list($sessionId, $sessionToken) = $tokenExplode;
+        $session = $this
+            ->query(
+                "select token,client,expires,user_id,id from sessions where id=?",
+                intval($sessionId)
+            )
+            ->fetch_assoc();
+
+        if (!$session
+            || $session['token'] !== $sessionToken
+            || $session['client'] !== Functions::getClientToken()
+        ) {
+            return 'Session not found';
+        }
+        if (time() > $session['expires']) {
+            return 'Session expired';
+        }
+        $user = $this->query("select * from users where id=?", $session['user_id'])->fetch_assoc();
+        if (!$user) {
+            return 'Session not found';
+        }
+        if ($isAdmin && !$user['admin']) {
+            return 'No admin rights';
+        }
+        $user['session'] = $session;
+
+        return $user;
+    }
+
+    public function param($name, $default = null)
+    {
+        if ($default !== null && !isset($_POST[$name])) {
+            $_POST[$name] = $default;
+        }
+        return $_POST[$name] ?? '';
+    }
+
+    public function query(): mysqli_result|bool|int
+    {
+        return call_user_func_array([$this->db, 'query'], func_get_args());
+    }
+
     public function apiCalendarConstructorSheetEdit()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return $this->error('No rights');
         }
 
@@ -332,20 +462,26 @@ class Api
             return $this->error('Incorrect data');
         }
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
-        $calendar = $this->query("SELECT * FROM calendar_constructor WHERE id=?", $id)->fetch_assoc();
+        $calendar = $this->query("select * from calendar_constructor where id=?", $id)->fetch_assoc();
         if (!$calendar) {
             return $this->error('Calendar not found');
         }
         if ($calendar['user_id'] !== $user['id']) {
             return $this->error('No rights');
         }
-        $this->query("UPDATE calendar_constructor SET data=?, name=? WHERE id=?", $data, $name, $id);
+        $this->query("update calendar_constructor set data=?, name=? where id=?", $data, $name, $id);
         return true;
+    }
+
+    public function paramId($name)
+    {
+        $id = intval($this->param($name));
+        return max($id, 0);
     }
 
     public function apiCalendarConstructorSheetAdd()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return [];
         }
 
@@ -363,7 +499,7 @@ class Api
         }
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         if (!$this->query(
-            "INSERT INTO calendar_constructor (user_id, data, created, name) VALUES (?,?,?,?)",
+            "insert into calendar_constructor (user_id, data, created, name) values (?,?,?,?)",
             $user["id"],
             $data,
             time(),
@@ -371,7 +507,7 @@ class Api
         )) {
             return $this->error('Unknown error');
         }
-        $calendar = $this->query("SELECT * FROM calendar_constructor WHERE id=?", $this->db->insert_id)->fetch_assoc();
+        $calendar = $this->query("select * from calendar_constructor where id=?", $this->db->insert_id)->fetch_assoc();
         if (!$calendar) {
             return $this->error('Unknown error');
         }
@@ -383,7 +519,7 @@ class Api
 
     public function apiGetCalendarConstructorSheets()
     {
-        if(!($_SESSION['isAllow'] ?? false) ){
+        if (!($_SESSION['isAllow'] ?? false)) {
             return [];
         }
 
@@ -391,7 +527,7 @@ class Api
         if (!is_array($user)) {
             return $this->error($user);
         }
-        $calendars = $this->query("SELECT * FROM calendar_constructor WHERE user_id=?", $user['id']);
+        $calendars = $this->query("select * from calendar_constructor where user_id=?", $user['id']);
         $list = [];
         while ($calendar = $calendars->fetch_assoc()) {
             $calendar['created'] = date('d.m.Y H:i:s', $calendar['created']);
@@ -416,7 +552,7 @@ class Api
         }
         $code = rand(100000, 999999);
         if (!$this->query(
-            "UPDATE users SET email_code=?, email_code_expires=? WHERE id=?",
+            "update users set email_code=?, email_code_expires=? where id=?",
             $code,
             time() + CONFIRM_CODE_EXPIRES,
             $user['id']
@@ -425,6 +561,11 @@ class Api
         }
         $this->sendEmailCode($user['email'], $code);
         return 'Email change confirmation code sent to old email';
+    }
+
+    private function sendEmailCode($email, $code)
+    {
+        Functions::mail($email, 'Account Confirmation, Teacher Plan Builder', 'Confirm code:<br>' . $code);
     }
 
     /**
@@ -453,7 +594,7 @@ class Api
         if ($email == $user['email']) {
             return $this->error('Email is the same as the previous email');
         }
-        if (!$this->query("UPDATE users SET email=? WHERE id=?", $email, $user['id'])) {
+        if (!$this->query("update users set email=? where id=?", $email, $user['id'])) {
             return $this->error('Unknown error');
         }
 
@@ -479,6 +620,36 @@ SQL,
         return 'Email changed';
     }
 
+    /**
+     * @param int $userId
+     * @return string
+     */
+    public function readCustomerId(
+        int $userId
+    ): string {
+        $mysqliResult = $this
+            ->query(
+                <<<SQL
+SELECT customer_id FROM $this->stripeCustomerTable WHERE user_id=?
+SQL,
+                $userId,
+            );
+
+        $stripeCustomerData = false;
+        if ($mysqliResult !== false) {
+            $stripeCustomerData = $mysqliResult->fetch_assoc();
+        }
+        $customerId = '';
+        if (
+            $stripeCustomerData !== false
+            && !is_null($stripeCustomerData)
+        ) {
+            $customerId = $stripeCustomerData['customer_id'] ?? '';
+        }
+
+        return $customerId;
+    }
+
     public function apiChangePassword()
     {
         $user = $this->session();
@@ -493,7 +664,7 @@ SQL,
             return $this->error('Password is the same as the previous password');
         }
         $password = password_hash($password, PASSWORD_DEFAULT);
-        if (!$this->query("UPDATE users SET password=? WHERE id=?", $password, $user['id'])) {
+        if (!$this->query("update users set password=? where id=?", $password, $user['id'])) {
             return $this->error('Unknown error');
         }
         return 'Password changed';
@@ -505,7 +676,7 @@ SQL,
         if (!is_array($user)) {
             return $this->error($user);
         }
-        $this->query("UPDATE users SET photo=? WHERE id=?", '', $user['id']);
+        $this->query("update users set photo=? where id=?", '', $user['id']);
         return 'Avatar removed';
     }
 
@@ -519,7 +690,7 @@ SQL,
         if (!file_exists(UPLOADS_PATH . $photo)) {
             return $this->error('Image not found');
         }
-        $this->query("UPDATE users SET photo=? WHERE id=?", $photo, $user['id']);
+        $this->query("update users set photo=? where id=?", $photo, $user['id']);
         return UPLOADS_LINK . $photo;
     }
 
@@ -635,9 +806,31 @@ HTML;
         }
         $result['allow'] = $allow;
 
-        $this->log(__FUNCTION__,['$result' => $result]);
+        $this->log(__FUNCTION__, ['$result' => $result]);
 
         return $result;
+    }
+
+    private function fields(array $data, array $on = [], array $off = [])
+    {
+        if (count($off)) {
+            $on = [];
+        }
+        $arr = [];
+        if (count($on)) {
+            foreach ($on as $v) {
+                $arr[$v] = isset($data[$v]) ? $data[$v] : '';
+            }
+        }
+        if (count($off)) {
+            $arr = $data;
+            foreach ($off as $v) {
+                if (isset($arr[$v])) {
+                    unset($arr[$v]);
+                }
+            }
+        }
+        return $arr;
     }
 
     public function apiSetProfile()
@@ -684,7 +877,7 @@ HTML;
                 return $this->error('Incorrect gender');
             }
             $this->query(
-                "UPDATE users SET week_type=?, name=?,surname=?,interests=?,about=?,gender=? WHERE id=?",
+                "update users set week_type=?, name=?,surname=?,interests=?,about=?,gender=? where id=?",
                 $week_type,
                 $name,
                 $surname,
@@ -732,7 +925,7 @@ SQL,
         $code = $this->param('code');
         $user = $this
             ->query(
-                "SELECT email,name,surname,id,verify_code FROM users WHERE verify_code=?",
+                "select email,name,surname,id,verify_code from users where verify_code=?",
                 $code
             )
             ->fetch_assoc();
@@ -745,7 +938,7 @@ SQL,
         if ($user['verify_code'] !== $code) {
             return $this->error('Incorrect verify code');
         }
-        if (!$this->query("UPDATE users SET verify=1 WHERE id=?", $user['id'])) {
+        if (!$this->query("update users set verify=1 where id=?", $user['id'])) {
             return $this->error('Unknown error');
         }
 
@@ -755,7 +948,7 @@ SQL,
     public function apiRecovery()
     {
         $email = $this->param('email');
-        $user = $this->query("SELECT * FROM users WHERE email=?", $email)->fetch_assoc();
+        $user = $this->query("select * from users where email=?", $email)->fetch_assoc();
         if (!$user) {
             return $this->error('User not found');
         }
@@ -764,7 +957,7 @@ SQL,
         }
         $newPassword = uniqid();
         if (!$this->query(
-            "UPDATE users SET recovery_password=? WHERE id=?",
+            "update users set recovery_password=? where id=?",
             password_hash($newPassword, PASSWORD_DEFAULT),
             $user['id']
         )) {
@@ -774,20 +967,25 @@ SQL,
         return 'New password has been generated and sent by email';
     }
 
+    private function sendPassword($email, $password)
+    {
+        Functions::mail($email, 'Account Recovery, Teacher Plan Builder', 'Account new password:<br>' . $password);
+    }
+
     public function apiSignout()
     {
         $user = $this->session();
         if (!is_array($user)) {
             return $this->error($user);
         }
-        if (!$this->query("DELETE FROM sessions WHERE id=?", $user['session']['id'])) {
+        if (!$this->query("delete from sessions where id=?", $user['session']['id'])) {
             return $this->error('Session not found');
         }
         $_SESSION['admin'] = 0;
         $_SESSION['isAllow'] = false;
         $_SESSION['token'] = '';
 
-        $this->log(__FUNCTION__,['$_SESSION' => $_SESSION]);
+        $this->log(__FUNCTION__, ['$_SESSION' => $_SESSION]);
 
         return 'Session destroyed';
     }
@@ -799,13 +997,13 @@ SQL,
     {
         $email = $this->param('email');
         $password = Functions::aesDecrypt($this->param('password'));
-        $user = $this->query("SELECT * FROM users WHERE email=?", $email)->fetch_assoc();
+        $user = $this->query("select * from users where email=?", $email)->fetch_assoc();
         $clientId = Functions::getClientToken();
         if (!$user) {
             return $this->error('User not found');
         }
         if ($user['recovery_password'] && password_verify($password, $user['recovery_password'])) {
-            $this->query("UPDATE users SET password=recovery_password,recovery_password='' WHERE id=?", $user['id']);
+            $this->query("update users set password=recovery_password,recovery_password='' where id=?", $user['id']);
         } elseif (!password_verify($password, $user['password'])) {
             return $this->error('Incorrect email or password');
         }
@@ -813,7 +1011,7 @@ SQL,
             $verifyCode = md5(Functions::getClientToken() . uniqid('calendar_') . microtime(1));
             $verifyCodeExpires = time() + VERIFY_LINK_EXPIRES;
             if (!$this->query(
-                "UPDATE users SET verify_code=?,verify_code_expires=? WHERE id=?",
+                "update users set verify_code=?,verify_code_expires=? where id=?",
                 $verifyCode,
                 $verifyCodeExpires,
                 $user['id']
@@ -826,9 +1024,9 @@ SQL,
             );
         }
         $token = md5($user['id'] . $clientId . uniqid('calendar_') . microtime(1));
-        $this->query("DELETE FROM sessions WHERE client=?", $clientId);
+        $this->query("delete from sessions where client=?", $clientId);
         if (!$this->query(
-            "INSERT INTO sessions (user_id,client,token,expires) VALUES (?,?,?,?)",
+            "insert into sessions (user_id,client,token,expires) values (?,?,?,?)",
             $user['id'],
             $clientId,
             $token,
@@ -836,7 +1034,7 @@ SQL,
         )) {
             return $this->error('Unknown error');
         }
-        $session = $this->query("SELECT * FROM sessions WHERE id=?", $this->db->insert_id)->fetch_assoc();
+        $session = $this->query("select * from sessions where id=?", $this->db->insert_id)->fetch_assoc();
         if (!$session) {
             return $this->error('Unknown error');
         }
@@ -846,15 +1044,32 @@ SQL,
         $_SESSION['isAllow'] = $isAllow || $user['admin'] === 1;
         $_SESSION['token'] = $session['id'] . '_' . $session['token'];
 
-        $this->log(__FUNCTION__,['$_SESSION' => $_SESSION]);
+        $this->log(__FUNCTION__, ['$_SESSION' => $_SESSION]);
 
-        return  $_SESSION['token'];
+        return $_SESSION['token'];
+    }
+
+    private function sendVerifyCode($email, $verifyCode)
+    {
+        $host = '';
+        if (defined('HOST')) {
+            $host = constant('HOST');
+        }
+        Functions::mail(
+            $email
+            ,
+            'Welcome to Teacher Plan Builder'
+            ,
+            <<<HTML
+Account activation link:<a href="$host?verify= $verifyCode">Click me to confirm account</a>
+HTML
+        );
     }
 
     /**
      * @throws ApiErrorException
      */
-    private function hasPaidSubscription(array $user):bool
+    private function hasPaidSubscription(array $user): bool
     {
         $has = false;
         $customerId = $this->readCustomerId($user['id']);
@@ -903,7 +1118,7 @@ SQL,
         if (preg_match('/[^A-z\d]/', $name)) {
             return $this->error('Name must be of Latin letters and Arabic numbers');
         }
-        $user = $this->query("SELECT * FROM users WHERE email=?", $email)->fetch_assoc();
+        $user = $this->query("select * from users where email=?", $email)->fetch_assoc();
         if ($user) {
             return $this->error('Email taken');
         }
@@ -911,7 +1126,7 @@ SQL,
         $verifyCode = md5(Functions::getClientToken() . uniqid('calendar_') . microtime(1));
         $verifyCodeExpires = time() + VERIFY_LINK_EXPIRES;
         if (!$this->query(
-            "INSERT INTO users (email,password,name,created,verify_code,verify_code_expires) VALUES (?,?,?,?,?,?)",
+            "insert into users (email,password,name,created,verify_code,verify_code_expires) values (?,?,?,?,?,?)",
             $email,
             $password,
             $name,
@@ -923,53 +1138,6 @@ SQL,
         }
         $this->sendVerifyCode($email, $verifyCode);
         return 'An email has been sent to your email with link to activate your account. Follow it and you will be able to successfully log in to the site. The link is valid for an hour.';
-    }
-
-    public function query(): mysqli_result|bool|int
-    {
-        return call_user_func_array([$this->db, 'query'], func_get_args());
-    }
-
-    public function param($name, $default = null)
-    {
-        if ($default !== null && !isset($_POST[$name])) {
-            $_POST[$name] = $default;
-        }
-        return $_POST[$name] ?? '';
-    }
-
-    public function paramId($name)
-    {
-        $id = intval($this->param($name));
-        return max($id, 0);
-    }
-
-    private function paramIds($name)
-    {
-        $list = [];
-        foreach (explode(",", $this->param($name)) as $id) {
-            $id = intval($id);
-            if ($id > 0) {
-                $list[$id] = true;
-            }
-        }
-        return array_keys($list);
-    }
-
-    public function handle()
-    {
-        $method = 'api' . (isset($_POST['method']) ? $_POST['method'] : '');
-        $response = $this->error('Method not found');
-        if (isset($_POST['method']) && method_exists($this, $method)) {
-            $response = call_user_func([$this, $method]);
-            if (!is_array($response) || !isset($response['error'])) {
-                $response = [
-                    'success' => $response
-                ];
-            }
-        }
-        header('Content-Type: application/json; charset=utf-8;');
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     public function uploadFile()
@@ -1021,183 +1189,6 @@ SQL,
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    private function fields(array $data, array $on = [], array $off = [])
-    {
-        if (count($off)) {
-            $on = [];
-        }
-        $arr = [];
-        if (count($on)) {
-            foreach ($on as $v) {
-                $arr[$v] = isset($data[$v]) ? $data[$v] : '';
-            }
-        }
-        if (count($off)) {
-            $arr = $data;
-            foreach ($off as $v) {
-                if (isset($arr[$v])) {
-                    unset($arr[$v]);
-                }
-            }
-        }
-        return $arr;
-    }
-
-    private function error($text)
-    {
-        return [
-            'error' => $text
-        ];
-    }
-
-    private function sendVerifyCode($email, $verifyCode)
-    {
-        $host = '';
-        if (defined('HOST')) {
-            $host = constant('HOST');
-        }
-        Functions::mail(
-            $email
-            ,
-            'Welcome to Teacher Plan Builder'
-            ,
-            <<<HTML
-Account activation link:<a href="$host?verify= $verifyCode">Click me to confirm account</a>
-HTML
-        );
-    }
-
-    private function sendPassword($email, $password)
-    {
-        Functions::mail($email, 'Account Recovery, Teacher Plan Builder', 'Account new password:<br>' . $password);
-    }
-
-    private function sendEmailCode($email, $code)
-    {
-        Functions::mail($email, 'Account Confirmation, Teacher Plan Builder', 'Confirm code:<br>' . $code);
-    }
-
-    public function session($isAdmin = false, $token = '')
-    {
-        if (!$token) {
-            $token = $this->param('token', '');
-        }
-        $tokenExplode = explode('_', $token);
-        if (count($tokenExplode) !== 2) {
-            return 'Incorrect token';
-        }
-        list($sessionId, $sessionToken) = $tokenExplode;
-        $session = $this
-            ->query(
-                "SELECT token,client,expires,user_id,id FROM sessions WHERE id=?",
-                intval($sessionId)
-            )
-            ->fetch_assoc();
-
-        if (!$session
-            || $session['token'] !== $sessionToken
-            || $session['client'] !== Functions::getClientToken()
-        ) {
-            return 'Session not found';
-        }
-        if (time() > $session['expires']) {
-            return 'Session expired';
-        }
-        $user = $this->query("SELECT * FROM users WHERE id=?", $session['user_id'])->fetch_assoc();
-        if (!$user) {
-            return 'Session not found';
-        }
-        if ($isAdmin && !$user['admin']) {
-            return 'No admin rights';
-        }
-        $user['session'] = $session;
-
-        return $user;
-    }
-
-    /**
-     * @param Throwable $e
-     * @param string $message
-     * @param array $context
-     * @return void
-     */
-    public function logException(
-        Throwable $e,
-        string $message = '',
-        array $context = [],
-    ): void {
-        $exceptionDetails = [
-            'Throwable' => var_export($e, true),
-        ];
-        $exceptionDetails += $context;
-
-        $this->log($message, $exceptionDetails);
-    }
-
-    /**
-     * @param string $message
-     * @param array $details
-     * @return void
-     */
-    public function log(
-        string $message,
-        array $details,
-    ): void {
-        $isPossible = $this->logPath !== '';
-
-        $testMode = 'unknown';
-        if ($isPossible && defined('TEST_MODE')) {
-            $testMode = constant('TEST_MODE');
-        }
-
-        if ($isPossible) {
-            $details['TEST_MODE'] = $testMode;
-            file_put_contents(
-                $this->logPath,
-                date(DATE_ATOM, time())
-                . ': '
-                . $message
-                . ', context: '
-                . json_encode(
-                    $details,
-                    JSON_NUMERIC_CHECK
-                    | JSON_UNESCAPED_SLASHES
-                    | JSON_UNESCAPED_UNICODE
-                ),
-            );
-        }
-    }
-
-    /**
-     * @param int $userId
-     * @return string
-     */
-    public function readCustomerId(
-        int $userId
-    ): string {
-        $mysqliResult = $this
-            ->query(
-                <<<SQL
-SELECT customer_id FROM $this->stripeCustomerTable WHERE user_id=?
-SQL,
-                $userId,
-            );
-
-        $stripeCustomerData = false;
-        if ($mysqliResult !== false) {
-            $stripeCustomerData = $mysqliResult->fetch_assoc();
-        }
-        $customerId = '';
-        if (
-            $stripeCustomerData !== false
-            && !is_null($stripeCustomerData)
-        ) {
-            $customerId = $stripeCustomerData['customer_id'] ?? '';
-        }
-
-        return $customerId;
-    }
-
     /**
      * @param array $user
      * @return string
@@ -1226,5 +1217,17 @@ SQL,
         );
 
         return $customerId;
+    }
+
+    private function paramIds($name)
+    {
+        $list = [];
+        foreach (explode(",", $this->param($name)) as $id) {
+            $id = intval($id);
+            if ($id > 0) {
+                $list[$id] = true;
+            }
+        }
+        return array_keys($list);
     }
 }
