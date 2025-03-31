@@ -596,13 +596,13 @@ function getUserProfile() {
             });
             $("#calendar-day-holiday-color").click(function () {
                 if (selectDay) {
-                    var color = '#ea868f';
+                    const color = '#ea868f';
                     selectDay.css({backgroundColor: color}).attr('color', color);
                 }
             });
             $("#calendar-day-clear-color").click(function () {
                 if (selectDay) {
-                    var color = '#ffffff';
+                    const color = '#ffffff';
                     selectDay.css({backgroundColor: color}).attr('color', color);
                 }
             });
