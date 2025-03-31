@@ -243,7 +243,7 @@ body {
 }
 
 .calendar-table td.day-off {
-    background: rgb(255, 122, 122) !important;
+    background: rgb(255, 200, 200) !important;
 }
 
 .calendar-table td.disabled {
