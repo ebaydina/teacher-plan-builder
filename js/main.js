@@ -1078,7 +1078,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
                 cellColor = sheet.data.calendar[cellKey];
             }
             html += `
-                <td item-id="` + (i * 7 + k) + `"` + (disabled || dayOff ? '' : ' item-month-id="' + current + '"') + ` class="` + (dayOff ? ' day-off' : '') + (disabled ? ' disabled' : '') + (disabled ? '' : ' enabled') + `"` + (cellColor ? ' color="' + cellColor + '" style="background: ' + cellColor + ';"' : '') + `>
+                <td item-id="` + (i * 7 + k) + `"` + (disabled ? '' : ' item-month-id="' + current + '"') + ` class="` + (dayOff ? ' day-off' : '') + (disabled ? ' disabled' : '') + (disabled ? '' : ' enabled') + `"` + (cellColor ? ' color="' + cellColor + '" style="background: ' + cellColor + ';"' : '') + `>
                     <div class="calendar-td cube">
                         <span class="num">` + current + `</span>
                     </div>
