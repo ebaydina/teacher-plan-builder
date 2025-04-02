@@ -906,7 +906,7 @@ if ($dev !== 0) {
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <p class="text-md-center">Author: Elena&nbsp;Baydina©2025
+                <p class="text-md-center">Elena&nbsp;Baydina©2025
                     <a href="mailto:by.elena@yahoo.com">
                         by.elena@yahoo.com
                     </a>
