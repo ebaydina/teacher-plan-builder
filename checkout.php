@@ -49,8 +49,7 @@ try {
             );
         }
     }
-}
-if (!isset($api)) {
+
     exit;
 }
 

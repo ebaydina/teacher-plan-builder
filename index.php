@@ -49,6 +49,8 @@ try {
             );
         }
     }
+
+    exit;
 }
 
 if (!isset($_COOKIE['csrf_token'])) {
