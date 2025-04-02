@@ -886,6 +886,7 @@ function showCalendarMonthSelector() {
 }
 
 function showCalendarConstructor(mode, id, noShowPageCallback) {
+    let i;
     if (noShowPageCallback === undefined) {
         $('.page').addClass('d-none');
         loader(true, $("#page-loader"), 'Download resources (<span id="id-da-prc">0%</span>)');
@@ -1049,7 +1050,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     var weekType = $("#select-week-type").val();
     var week = weekType == 0 ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] : ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
     weekHtml = [];
-    for (var i = 0; i < week.length; i++) {
+    for (i = 0; i < week.length; i++) {
         weekHtml.push('<td class="week-day">' + week[i] + '</td>');
     }
     html = `
@@ -1057,13 +1058,13 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
             ` + weekHtml.join("") + `
         </tr>
     `;
-    var start = weekDay > 0 ? (weekType == 1 ? 1 : 0) - weekDay : 0;
-    for (var i = 0; i < 5; i++) {
+    var start = weekDay > 0 ? (weekType === 1 ? 1 : 0) - weekDay : 0;
+    for (i = 0; i < 5; i++) {
         html += '<tr>';
         for (var k = 1; k <= 7; k++) {
-            var current = i * 7 + k + start;
-            var disabled = false;
-            var dayOff = k == 1 || k == 7;
+            let current = i * 7 + k + start;
+            let disabled = false;
+            const dayOff = k === 1 || k === 7;
             if (current > currentMonthCountDays) {
                 current = current - currentMonthCountDays;
                 disabled = true;
@@ -1072,13 +1073,23 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
                 current = prevMonthCountDays + current;
                 disabled = true;
             }
-            var cellColor = false;
-            var cellKey = i + '_' + (k - 1);
+            let cellColor = false;
+            const cellKey = i + '_' + (k - 1);
             if (sheet.id !== undefined && sheet.data && sheet.data.calendar[cellKey] !== undefined) {
                 cellColor = sheet.data.calendar[cellKey];
             }
+
+            const itemId = ` item-id="` + (i * 7 + k) + `"`;
+            const monthId = disabled ? '' : ' item-month-id="' + current + '"';
+            const colorAttribute = cellColor ? ' color="' + cellColor + '" style="background: ' + cellColor + ';"' : '';
+
+            const classDayOff = dayOff ? ' day-off' : '';
+            const classDisabled = disabled ? ' disabled' : '';
+            const classEnabled = disabled ? '' : ' enabled';
+
+            const classAttribute = ` class="` + (classDayOff) + (classDisabled) + (classEnabled) + `"`;
             html += `
-                <td item-id="` + (i * 7 + k) + `"` + (disabled ? '' : ' item-month-id="' + current + '"') + ` class="` + (dayOff ? ' day-off' : '') + (disabled ? ' disabled' : '') + (disabled ? '' : ' enabled') + `"` + (cellColor ? ' color="' + cellColor + '" style="background: ' + cellColor + ';"' : '') + `>
+                <td ` + (itemId) + (monthId) + (colorAttribute) + (classAttribute) + `>
                     <div class="calendar-td cube">
                         <span class="num">` + current + `</span>
                     </div>
@@ -1162,12 +1173,12 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
         img.src = src;
     }
 
-    for (var i = 0; i < countAll; i++) {
+    for (i = 0; i < countAll; i++) {
         downloadImage(images[i] + '?v=' + Version);
     }
     if (sheet.id !== undefined || loadData !== false) {
         CalendarElements = [];
-        for (var i = 0; i < sheet.data.elements.length; i++) {
+        for (i = 0; i < sheet.data.elements.length; i++) {
             CalendarElements.push(sheet.data.elements[i]);
             renderElement(i);
         }
