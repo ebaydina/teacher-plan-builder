@@ -1272,7 +1272,7 @@ function selectElement(id) {
     const domElement = $("#calendar-element-" + id);
     if (domElement.length) {
         setTimeout(function () {
-            if (selectedElement !== undefined) {
+            if (selectedElement !== false) {
                 $("#calendar-element-" + selectedElement).removeClass('selected').draggable('option', 'disabled', true).resizable('option', 'disabled', true);
             }
             domElement.addClass('selected').draggable('option', 'disabled', false).resizable('option', 'disabled', false);
