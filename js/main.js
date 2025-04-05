@@ -1455,7 +1455,12 @@ function randCell(mode) {
             let empty = true;
             for (let k = 0; k < CalendarElements.length; k++) {
                 const calendarElement = CalendarElements[k];
-                if (calendarElement.x >= tdx && calendarElement.x <= tdx + w && calendarElement.y >= tdy && calendarElement.y <= tdy + h) {
+                if (
+                    calendarElement !== undefined
+                    && calendarElement.x >= tdx
+                    && calendarElement.x <= tdx + w
+                    && calendarElement.y >= tdy
+                    && calendarElement.y <= tdy + h) {
                     empty = false;
                 }
             }
