@@ -1,7 +1,3 @@
-function p2mm(px) {
-    return (72 / 96) * (25.4 / 72) * px;
-}
-
 function rand(min, max) {
     if (max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -373,7 +369,6 @@ function getUserProfile() {
             $("#menu-item-name-constructor-btn").addClass('d-none');
         }
         if (user['allow'] === true) {
-            /* let i; */
             $("#menu-item-draft-btn").removeClass('d-none');
             $("#menu-item-name-constructor-btn").removeClass('d-none');
 
@@ -432,16 +427,6 @@ function getUserProfile() {
                         unit: 'mm',
                         format: 'a4'
                     });
-                    /*
-                    var dpi = 300;
-                    var mmInch = 25.4;
-                    doc.internal.scaleFactor = dpi / 72;
-                    doc.internal.pageSize.getWidth = function() {
-                        return this.width / this.scaleFactor;
-                    };
-                    doc.internal.pageSize.getHeight = function() {
-                        return this.height / this.scaleFactor;
-                    }; */
                     canvas.webkitImageSmoothingEnabled = false;
                     canvas.mozImageSmoothingEnabled = false;
                     canvas.imageSmoothingEnabled = false;
@@ -1377,10 +1362,6 @@ function renderElement(id) {
                 color: element.color
             }).find('.text').html(element.text.replace("\n", '<br>'));
         } else if (element.type == 'image') {
-            /*domElement.find('.image').css({
-                backgroundImage: 'url("'+HostClear+element.image+'?v='+Version+'")',
-                backgroundSize: '100% 100%'
-            });*/
             domElement.find('.image').html('<img src="' + HostClear + element.image + '?v=' + Version + '">');
         }
         calendarAutoSave();
@@ -1649,16 +1630,6 @@ function calendarPrint(id, list, callback) {
             unit: 'mm',
             format: 'a4'
         });
-        /*
-        var dpi = 300;
-        var mmInch = 25.4;
-        doc.internal.scaleFactor = dpi / 72;
-        doc.internal.pageSize.getWidth = function() {
-            return this.width / this.scaleFactor;
-        };
-        doc.internal.pageSize.getHeight = function() {
-            return this.height / this.scaleFactor;
-        }; */
         canvas.webkitImageSmoothingEnabled = true;
         canvas.mozImageSmoothingEnabled = true;
         canvas.imageSmoothingEnabled = true;
