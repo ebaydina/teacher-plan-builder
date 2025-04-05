@@ -13,7 +13,7 @@ function rand(min, max) {
 function upload(success, error, init) {
     $("#image-uploader").off('change');
     $("#image-uploader").on('change', function () {
-        var formData = new FormData();
+        const formData = new FormData();
         formData.append('token', userToken);
         formData.append('photo', this.files[0]);
         if (typeof (init) == "function") {
@@ -32,7 +32,7 @@ function upload(success, error, init) {
                     }
                 } else {
                     if (typeof (res) !== "object") {
-                        err('Incrorrect data');
+                        err('Incorrect data');
                         res = {error: ""};
                     }
                     if (typeof (error) == "function") {
@@ -65,7 +65,7 @@ function showSignInForm() {
 }
 
 function getMonth(num) {
-    var months = [
+    const months = [
         "January",
         "February",
         "March",
@@ -94,23 +94,19 @@ function renderCalendarConstructorImage(item) {
 }
 
 function eventsCalendarConstructorImages(id) {
-    var items = $("#month-images .item, #letter-images .item").not('.init-events');
+    const items = $("#month-images .item, #letter-images .item").not('.init-events');
     items.addClass('init-events');
     items.disableSelection();
     items.click(function (e) {
         const self = $(this);
-        var image = self.find('img').attr('src');
+        const image = self.find('img').attr('src');
         self.addClass('selected');
         if (id !== undefined && id >= 0) {
             editImageElement(id, image);
             $("#calendar-images-window").modal('hide');
         } else {
-            var x = -1;
-            var y = -1;
-            var cell = randCell();
-            y = cell.y;
-            x = cell.x;
-            addImageElement(image, x, y);
+            const cell = randCell();
+            addImageElement(image, cell.x, cell.y);
         }
     });
 }
@@ -145,7 +141,7 @@ function eventsCalendarConstructorSheets() {
     $("#draft-list .item-print").click(function () {
         const self = $(this);
         spinner(self, true);
-        var id = parseInt(self.parent().parent().parent().attr('item-id')) || 0;
+        const id = parseInt(self.parent().parent().parent().attr('item-id')) || 0;
         showCalendarConstructor(false, id, function (res) {
             if (res) {
                 calendarPrint(id, '#calendar-constructor-tmp .a4', function (res) {
@@ -197,20 +193,20 @@ function eventsCalendarConstructorSheets() {
 }
 
 function aesEncrypt(text) {
-    var iv = CryptoJS.lib.WordArray.random(16);
-    var salt = CryptoJS.lib.WordArray.random(256);
-    var iterations = 999;
-    var hashKey = CryptoJS.PBKDF2(clientToken, salt, {
+    const iv = CryptoJS.lib.WordArray.random(16);
+    const salt = CryptoJS.lib.WordArray.random(256);
+    const iterations = 999;
+    const hashKey = CryptoJS.PBKDF2(clientToken, salt, {
         'hasher': CryptoJS.algo.SHA512,
         'keySize': (64 / 8),
         'iterations': iterations
     });
-    var encrypted = CryptoJS.AES.encrypt(text, hashKey, {
+    const encrypted = CryptoJS.AES.encrypt(text, hashKey, {
         'mode': CryptoJS.mode.CBC,
         'iv': iv
     });
-    var encryptedString = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-    var output = {
+    const encryptedString = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+    const output = {
         'text': encryptedString,
         'iv': CryptoJS.enc.Hex.stringify(iv),
         'salt': CryptoJS.enc.Hex.stringify(salt),
@@ -262,7 +258,7 @@ function api(method, params, success, error) {
 
 function loader(status, el, text) {
     if (typeof (text) != "string") {
-        text = '';
+        text = "";
     }
     if (el === undefined) {
         el = $("#loader");
@@ -270,9 +266,9 @@ function loader(status, el, text) {
         text = el;
         el = $("#loader");
     }
-    var elText = el.find('.loader-text');
+    const elText = el.find('.loader-text');
     if (elText.length) {
-        if (text == "") {
+        if (text === "") {
             elText.addClass('d-none');
         } else {
             elText.html(text);
@@ -387,12 +383,12 @@ function getUserProfile() {
             $("#name-constructor-generate").click(function () {
                 const self = $(this);
                 spinner(self, true);
-                var name = $("#name-constructor-name").val().replace(/[^A-z]/, '').split('');
+                const name = $("#name-constructor-name").val().replace(/[^A-z]/, '').split('');
 
                 function generateRow(name, isLines) {
-                    var html = '<div class="item-row">';
-                    for (var i = 0; i < name.length; i++) {
-                        var letter = name[i];
+                    let html = '<div class="item-row">';
+                    for (let i = 0; i < name.length; i++) {
+                        const letter = name[i];
                         html += `
                     <div class="item` + (isLines === true ? ' line' : '') + `">
                         <img src="img/alphabet/` + letter.toLowerCase() + (letter === letter.toUpperCase() ? '_' : '') + `.png?v=` + Version + `">
@@ -404,7 +400,7 @@ function getUserProfile() {
                     return html;
                 }
 
-                var html = '';
+                let html = '';
                 if (name.length) {
                     html += generateRow(name);
                     html += generateRow(name);
@@ -431,7 +427,7 @@ function getUserProfile() {
                     dpi: 300,
                     scale: 5
                 }).then(canvas => {
-                    var doc = new jspdf.jsPDF({
+                    const doc = new jspdf.jsPDF({
                         orientation: 'p',
                         unit: 'mm',
                         format: 'a4'
@@ -466,14 +462,14 @@ function getUserProfile() {
             });
             $("#calendar-constructor-saved").click(function () {
                 const self = $(this);
-                var name = $("#calendar-save-sheet-name").val();
+                const name = $("#calendar-save-sheet-name").val();
                 if (!name.length) {
                     return err("Enter calendar name", $("#calendar-constructor-saved-result"));
                 }
                 spinner(self, true);
-                var data = getCalendarData();
+                let data = getCalendarData();
                 data = JSON.stringify(data);
-                var params = {
+                const params = {
                     name: name,
                     data: data
                 };
@@ -503,7 +499,7 @@ function getUserProfile() {
                 $('.page').addClass('d-none');
                 loader(true, $("#page-loader"));
                 api('getCalendarConstructorSheets', function (res) {
-                    var list = $("#draft-list");
+                    const list = $("#draft-list");
                     sheets = {};
                     if (!res.length) {
                         list.html(`
@@ -512,9 +508,9 @@ function getUserProfile() {
                     </tr>
                 `);
                     } else {
-                        var html = [];
-                        for (var i = 0; i < res.length; i++) {
-                            var item = res[i];
+                        const html = [];
+                        for (let i = 0; i < res.length; i++) {
+                            const item = res[i];
                             html.push(renderCalendarConstructorSheet(item));
                             sheets[item.id] = item;
                         }
@@ -549,7 +545,7 @@ function getUserProfile() {
             $("#calendar-autosaved-new").click(function () {
                 const self = $(this);
                 localStorage.removeItem('calendar-autosave');
-                var itemId = parseInt(self.attr('item-id')) || 0;
+                const itemId = parseInt(self.attr('item-id')) || 0;
                 if (itemId > 0) {
                     showCalendarConstructor(false, itemId);
                     return;
@@ -590,7 +586,7 @@ function getUserProfile() {
             });
             $("#calendar-day-color-save").click(function () {
                 if (selectDay) {
-                    var color = $("#calendar-day-color").val();
+                    const color = $("#calendar-day-color").val();
                     selectDay.css({backgroundColor: color}).attr('color', color);
                 }
             });
@@ -625,7 +621,7 @@ function getUserProfile() {
             $("#calendar-text-editor-add-confirmed").click(function () {
                 if (selectedConcept) {
                     function addNodes(nodes) {
-                        for (var i = 0; i < nodes.length; i++) {
+                        for (let i = 0; i < nodes.length; i++) {
                             if (nodes[i].nodes) {
                                 addNodes(nodes[i].nodes);
                             } else {
@@ -641,7 +637,7 @@ function getUserProfile() {
                 $("#dialog-confirm-add-text").modal('hide');
             });
             $(document).click(function (e) {
-                var els = $(".calendar-element");
+                const els = $(".calendar-element");
                 if (!els.is(e.target) && els.has(e.target).length === 0) {
                     selectedElement = false;
                     els.removeClass('selected');
@@ -649,12 +645,12 @@ function getUserProfile() {
             });
             $("#letter-images-search")
                 .on('input change', function () {
-                    var alphabetImages = [];
+                    let alphabetImages = [];
                     if (calendarImages !== undefined && calendarImages.alphabet != undefined) {
                         alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet, $(this).val());
                     }
-                    var html = [];
-                    for (var i = 0; i < alphabetImages.length; i++) {
+                    const html = [];
+                    for (let i = 0; i < alphabetImages.length; i++) {
                         html.push(renderCalendarConstructorImage(alphabetImages[i]));
                     }
                     $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
@@ -724,7 +720,7 @@ function getUserProfile() {
             $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
                 .on('input change', function (e) {
                     const self = $(this);
-                    var value = $(this).val();
+                    const value = $(this).val();
                     calendarTextEditorPreview();
                     if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
                         self.removeAttr('text');
@@ -732,7 +728,7 @@ function getUserProfile() {
                     }
                 });
             $("#calendar-constructor-edit-text").focus(function () {
-                var value = $(this).val();
+                const value = $(this).val();
                 renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
             });
         }
@@ -799,9 +795,9 @@ function getUserProfile() {
         if (user.admin) {
             $("#name-constructor-photos").sortable({
                 stop: function () {
-                    var sortList = [];
+                    const sortList = [];
                     $("#name-constructor-photos .item").each(function (i, e) {
-                        var id = parseInt($(e).attr('item-id')) || 0;
+                        const id = parseInt($(e).attr('item-id')) || 0;
                         if (id > 0) {
                             sortList.push(id);
                         }
@@ -844,7 +840,7 @@ function showNameConstructor() {
     $('.page').addClass('d-none');
     loader(true, $("#page-loader"), 'Download resources (<span id="id-da-prc">0%</span>)');
     title('Name constructor');
-    var countAll = alphabet.length * 2;
+    let countAll = alphabet.length * 2;
 
     function downloadImage(src) {
         const img = new Image();
@@ -866,8 +862,8 @@ function showNameConstructor() {
         img.src = src;
     }
 
-    for (var id in alphabet) {
-        var letter = alphabet[id];
+    for (const id in alphabet) {
+        const letter = alphabet[id];
         downloadImage('img/alphabet/' + letter + '.png?v=' + Version);
         downloadImage('img/alphabet/' + letter + '_.png?v=' + Version);
     }
@@ -891,9 +887,9 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
         $('.page').addClass('d-none');
         loader(true, $("#page-loader"), 'Download resources (<span id="id-da-prc">0%</span>)');
     }
-    var month;
-    var year;
-    var loadData = false;
+    let month;
+    let year;
+    let loadData = false;
     if (typeof (mode) == "object") {
         loadData = mode;
         mode = loadData.id === undefined;
@@ -923,14 +919,14 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
         month = sheet.data.month;
         year = sheet.data.year;
     }
-    var sheetMonthNameImg = 'img/months/' + getMonth(month) + '.png';
-    var calendarPage = $("#calendar-constructor-list-content .a4");
+    const sheetMonthNameImg = 'img/months/' + getMonth(month) + '.png';
+    let calendarPage = $("#calendar-constructor-list-content .a4");
     if (noShowPageCallback !== undefined) {
         $("#calendar-constructor-tmp").html('<div class="a4"></div>');
         calendarPage = $("#calendar-constructor-tmp .a4");
     }
     currentCalendarConstructorContainer = calendarPage;
-    var html = `
+    let html = `
         <table class="calendar-table-top">
             <tbody>
                 <tr class="line">
@@ -1030,25 +1026,25 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
         </div>
     `;
     calendarPage.html(html);
-    var date = new Date;
-    var currentYear = year;
-    var currentMonth = month - 1;
+    let date = new Date;
+    const currentYear = year;
+    const currentMonth = month - 1;
     date.setFullYear(currentYear);
     date.setMonth(currentMonth + 1);
     date.setDate(0);
-    var currentMonthCountDays = date.getDate();
+    const currentMonthCountDays = date.getDate();
     date.setFullYear(currentYear);
     date.setMonth(currentMonth);
     date.setDate(0);
-    var prevMonthCountDays = date.getDate();
+    const prevMonthCountDays = date.getDate();
     date = new Date;
     date.setFullYear(currentYear);
     date.setMonth(currentMonth);
     date.setDate(1);
-    var weekDay = date.getDay();
-    var calendarTable = calendarPage.find("#calendar-table");
-    var weekType = $("#select-week-type").val();
-    var week = weekType == 0 ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] : ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+    const weekDay = date.getDay();
+    const calendarTable = calendarPage.find("#calendar-table");
+    const weekType = $("#select-week-type").val();
+    const week = weekType == 0 ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] : ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
     weekHtml = [];
     for (i = 0; i < week.length; i++) {
         weekHtml.push('<td class="week-day">' + week[i] + '</td>');
@@ -1058,10 +1054,10 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
             ` + weekHtml.join("") + `
         </tr>
     `;
-    var start = weekDay > 0 ? (weekType === 1 ? 1 : 0) - weekDay : 0;
+    const start = weekDay > 0 ? (weekType === 1 ? 1 : 0) - weekDay : 0;
     for (i = 0; i < 5; i++) {
         html += '<tr>';
-        for (var k = 1; k <= 7; k++) {
+        for (let k = 1; k <= 7; k++) {
             let current = i * 7 + k + start;
             let disabled = false;
             const dayOff = k === 1 || k === 7;
@@ -1101,7 +1097,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     calendarTable.html(html);
     calendarTable.find('.enabled').click(function () {
         const self = $(this);
-        var color = self.attr('color');
+        let color = self.attr('color');
         if (!color) {
             color = '#000000';
         }
@@ -1119,14 +1115,14 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     });
 
     function getImages(obj) {
-        var arr = [];
-        for (var prop in obj) {
-            var image = obj[prop];
+        const arr = [];
+        for (const prop in obj) {
+            const image = obj[prop];
             if (typeof (image) == "string") {
                 arr.push(image)
             } else if (typeof (image) == "object") {
-                var tmpArr = getImages(image);
-                for (var i = 0; i < tmpArr.length; i++) {
+                const tmpArr = getImages(image);
+                for (let i = 0; i < tmpArr.length; i++) {
                     arr.push(tmpArr[i]);
                 }
             }
@@ -1135,15 +1131,15 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     }
 
     const images = getImages(calendarImages);
-    var countAll = images.length;
-    var renderCompleted = false;
+    let countAll = images.length;
+    let renderCompleted = false;
 
     function downloadImage(src) {
         const img = new Image();
         img.onload = function () {
             countAll--;
             if (countAll === 0) {
-                var __checkRender = setInterval(function () {
+                const __checkRender = setInterval(function () {
                     if (renderCompleted) {
                         if (noShowPageCallback === undefined) {
                             loader(false, $("#page-loader"));
@@ -1186,7 +1182,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     if (sheet.data.texts === undefined) {
         sheet.data.texts = {};
     }
-    for (var itemId in sheet.data.texts) {
+    for (const itemId in sheet.data.texts) {
         $(".line-edit[item-id='" + itemId + "']").find('.text').html(sheet.data.texts[itemId]);
     }
     renderCompleted = true;
@@ -1198,14 +1194,14 @@ function calendarCorrectText(text) {
 }
 
 function calendarTextEditorPreview() {
-    var size = parseInt($("#calendar-constructor-edit-size").val()) || 0;
+    let size = parseInt($("#calendar-constructor-edit-size").val()) || 0;
     if (size < 8) {
         size = 8;
     }
     if (size > 100) {
         size = 100;
     }
-    var text = $("#calendar-constructor-edit-text").attr('text');
+    let text = $("#calendar-constructor-edit-text").attr('text');
     if (typeof (text) !== "string" || !text.length) {
         text = $("#calendar-constructor-edit-text").val();
     } else {
@@ -1219,12 +1215,12 @@ function calendarTextEditorPreview() {
 }
 
 function addTextElement(text, size, color) {
-    var x = -1;
-    var y = -1;
-    var cell = randCell(true);
+    let x = -1;
+    let y = -1;
+    let cell = randCell(true);
     x = cell.x;
     y = cell.y;
-    if (x == -1 && y == -1) {
+    if (x === -1 && y === -1) {
         cell = randCell(false);
         x = cell.x;
         y = cell.y;
@@ -1239,7 +1235,7 @@ function addTextElement(text, size, color) {
         size: size,
         color: color
     });
-    var id = CalendarElements.length - 1;
+    const id = CalendarElements.length - 1;
     renderElement(id);
     selectElement(id);
 }
@@ -1249,7 +1245,7 @@ function addImageElement(image, x, y, w, h) {
     y = typeof (y) == "number" ? y : -1;
     w = typeof (w) == "number" ? w : -1;
     h = typeof (h) == "number" ? h : -1;
-    var a = document.createElement('a');
+    const a = document.createElement('a');
     a.href = image;
     a.remove();
     CalendarElements.push({
@@ -1260,17 +1256,17 @@ function addImageElement(image, x, y, w, h) {
         h: h,
         image: a.pathname
     });
-    var id = CalendarElements.length - 1;
+    const id = CalendarElements.length - 1;
     renderElement(id);
     selectElement(id);
     return id;
 }
 
 function editImageElement(id, image) {
-    var element = CalendarElements[id];
+    const element = CalendarElements[id];
     if (element !== undefined) {
         element.image = image;
-        var a = document.createElement('a');
+        const a = document.createElement('a');
         a.href = image;
         a.remove();
         renderElement(id);
@@ -1279,7 +1275,7 @@ function editImageElement(id, image) {
 }
 
 function selectElement(id) {
-    var domElement = $("#calendar-element-" + id);
+    const domElement = $("#calendar-element-" + id);
     if (domElement.length) {
         setTimeout(function () {
             if (selectedElement !== undefined) {
@@ -1300,20 +1296,20 @@ function editTextElement(id, text, size, color) {
 }
 
 function calendarAutoSave() {
-    var calendarData = {
+    const calendarData = {
         id: sheet.id,
         data: getCalendarData()
-    }
+    };
     localStorage.setItem('calendar-autosave', JSON.stringify(calendarData));
 }
 
 function renderElement(id) {
     if (CalendarElements[id] !== undefined) {
-        var element = CalendarElements[id];
+        const element = CalendarElements[id];
         const container = currentCalendarConstructorContainer;
-        var domElement = container.find("#calendar-element-" + id);
+        let domElement = container.find("#calendar-element-" + id);
         if (!domElement.length) {
-            var elementHtml = '';
+            let elementHtml = '';
             if (element.type == 'text') {
                 elementHtml = '<div class="text"></div>';
             } else if (element.type == 'image') {
@@ -1331,7 +1327,7 @@ function renderElement(id) {
                 containment: "#calendar-constructor-list-content",
                 disabled: true,
                 stop: function () {
-                    var calendarElement = CalendarElements[id];
+                    const calendarElement = CalendarElements[id];
                     if (calendarElement !== undefined) {
                         calendarElement.x = domElement.position().left;
                         calendarElement.y = domElement.position().top;
@@ -1342,7 +1338,7 @@ function renderElement(id) {
                 handles: "n, e, s, w, ne, se, sw, nw",
                 disabled: true,
                 stop: function () {
-                    var calendarElement = CalendarElements[id];
+                    const calendarElement = CalendarElements[id];
                     if (calendarElement !== undefined) {
                         calendarElement.w = domElement.width();
                         calendarElement.h = domElement.height();
@@ -1358,7 +1354,7 @@ function renderElement(id) {
                 return false;
             });
         }
-        var elementPosInfo = {};
+        const elementPosInfo = {};
         if (element.x == -1) {
             element.x = (container.width() - domElement.width()) / 2;
         }
@@ -1394,7 +1390,7 @@ function renderElement(id) {
 function removeElement(id) {
     const element = CalendarElements[id];
     if (element !== undefined) {
-        var calendarElement = $("#calendar-element-" + id);
+        const calendarElement = $("#calendar-element-" + id);
         if (calendarElement.length) {
             calendarElement.remove();
         }
@@ -1409,18 +1405,18 @@ function showAddText() {
 }
 
 function getCalendarMonthImages(obj) {
-    var arr = [];
+    const arr = [];
     if (typeof (obj) == "object") {
-        for (var prop in obj) {
-            var image = obj[prop];
+        for (const prop in obj) {
+            const image = obj[prop];
             if (typeof (image) == "string") {
                 arr.push({
                     name: prop,
                     photo: image + '?v=' + Version
                 });
             } else {
-                var tmpArr = getCalendarMonthImages(image);
-                for (var i = 0; i < tmpArr.length; i++) {
+                const tmpArr = getCalendarMonthImages(image);
+                for (let i = 0; i < tmpArr.length; i++) {
                     arr.push(tmpArr[i]);
                 }
             }
@@ -1430,10 +1426,10 @@ function getCalendarMonthImages(obj) {
 }
 
 function getCalendarAlphabetImages(obj, search) {
-    var arr = [];
+    const arr = [];
     if (typeof (obj) == "object") {
-        for (var prop in obj) {
-            var image = obj[prop];
+        for (const prop in obj) {
+            const image = obj[prop];
             if (typeof (image) == "string") {
                 if (typeof (search) == "string" && search.length && prop.toLowerCase().indexOf(search.toLowerCase()) == -1) {
                     continue;
@@ -1443,8 +1439,8 @@ function getCalendarAlphabetImages(obj, search) {
                     photo: image
                 });
             } else {
-                var tmpArr = getCalendarAlphabetImages(image);
-                for (var i = 0; i < tmpArr.length; i++) {
+                const tmpArr = getCalendarAlphabetImages(image);
+                for (let i = 0; i < tmpArr.length; i++) {
                     arr.push(tmpArr[i]);
                 }
             }
@@ -1454,21 +1450,21 @@ function getCalendarAlphabetImages(obj, search) {
 }
 
 function randCell(mode) {
-    var x = -1;
-    var y = -1;
+    let x = -1;
+    let y = -1;
     if (sheet) {
-        var table = $('.calendar-table');
-        var tds = mode === true ? $('.calendar-table td[item-month-id]') : $('.calendar-table td[item-id]');
-        var emptyPositions = [];
+        const table = $('.calendar-table');
+        const tds = mode === true ? $('.calendar-table td[item-month-id]') : $('.calendar-table td[item-id]');
+        const emptyPositions = [];
         tds.each(function (i, e) {
-            var td = $(e);
-            var tdy = table.position().top + td.position().top + 1;
-            var tdx = table.position().left + td.position().left + 1;
-            var w = td.width();
-            var h = td.height();
-            var empty = true;
-            for (var k = 0; k < CalendarElements.length; k++) {
-                var calendarElement = CalendarElements[k];
+            const td = $(e);
+            const tdy = table.position().top + td.position().top + 1;
+            const tdx = table.position().left + td.position().left + 1;
+            const w = td.width();
+            const h = td.height();
+            let empty = true;
+            for (let k = 0; k < CalendarElements.length; k++) {
+                const calendarElement = CalendarElements[k];
                 if (calendarElement.x >= tdx && calendarElement.x <= tdx + w && calendarElement.y >= tdy && calendarElement.y <= tdy + h) {
                     empty = false;
                 }
@@ -1480,7 +1476,7 @@ function randCell(mode) {
                 });
             }
         });
-        var position = emptyPositions[rand(0, emptyPositions.length - 1)];
+        const position = emptyPositions[rand(0, emptyPositions.length - 1)];
         if (typeof (position) == "object") {
             x = position.x;
             y = position.y;
@@ -1493,24 +1489,25 @@ function randCell(mode) {
 }
 
 function showAddImage(mode) {
-    var imageId = -1;
+    let i;
+    let imageId = -1;
     if (typeof (mode) == "number") {
         imageId = mode;
         mode = false;
     }
-    var month = getMonth(sheet.data.month);
-    var monthImages = [];
+    const month = getMonth(sheet.data.month);
+    let monthImages = [];
     if (calendarImages !== undefined && calendarImages.images != undefined && calendarImages.images[month] !== undefined) {
         monthImages = getCalendarMonthImages(calendarImages.images[month]);
     }
-    var html = [];
-    for (var i = 0; i < monthImages.length; i++) {
+    let html = [];
+    for (i = 0; i < monthImages.length; i++) {
         if (mode === true) {
-            var y = Math.floor(i / 7);
-            var x = i - (y * 7);
+            let y = Math.floor(i / 7);
+            let x = i - (y * 7);
             x = 35 + (x * 100);
             y = 65 + (y * 100);
-            var cell = randCell();
+            const cell = randCell();
             y = cell.y;
             x = cell.x;
             addImageElement(monthImages[i].photo, x, y);
@@ -1522,18 +1519,18 @@ function showAddImage(mode) {
         return true;
     }
     $("#month-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
-    var alphabetImages = [];
+    let alphabetImages = [];
     if (calendarImages !== undefined && calendarImages.alphabet != undefined) {
         alphabetImages = getCalendarAlphabetImages(calendarImages.alphabet);
     }
     html = [];
-    for (var i = 0; i < alphabetImages.length; i++) {
+    for (i = 0; i < alphabetImages.length; i++) {
         html.push(renderCalendarConstructorImage(alphabetImages[i]));
     }
     $("#letter-images").html(html.length ? html.join("") : '<div class="empty">No images</div>');
     eventsCalendarConstructorImages(imageId);
     if (imageId >= 0) {
-        var image = CalendarElements[imageId];
+        const image = CalendarElements[imageId];
         if (image !== undefined) {
             $("#calendar-images-window").find('[src="' + image.image + '"]').parent().parent().addClass('selected');
         }
@@ -1542,20 +1539,20 @@ function showAddImage(mode) {
 }
 
 function searchInCalendarTexts(text) {
-    var search = {};
+    const search = {};
 
     function searchInObj(obj, v) {
-        var newObj = {};
-        var search = false;
-        for (var prop in obj) {
-            var value = obj[prop];
+        const newObj = {};
+        let search = false;
+        for (const prop in obj) {
+            const value = obj[prop];
             if (typeof (value) == "string") {
                 if (prop.indexOf(v) !== -1) {
                     newObj[prop] = value;
                     search = true;
                 }
             } else if (typeof (value) == "object") {
-                var newValue = searchInObj(value, v);
+                const newValue = searchInObj(value, v);
                 if (newValue !== false) {
                     newObj[prop] = newValue;
                     search = true;
@@ -1573,12 +1570,12 @@ function renderSearchTexts(texts, text) {
 
     function _renderSearchTexts(obj, name) {
         name = typeof (name) == "string" ? name : '';
-        var html = '';
+        let html = '';
         if (name.length) {
             html += '<div class="text-block"><div class="text-title">' + name + '</div>';
         }
-        for (var prop in obj) {
-            var value = obj[prop];
+        for (const prop in obj) {
+            const value = obj[prop];
             if (typeof (value) == "string") {
                 html += '<div class="text"><span class="txt" text="' + btoa(value) + '">' + prop.replace(text, '<b>' + text + '</b>') + '</span> <i class="bi bi-plus-circle"></i></div>';
             } else if (typeof (value) == "object") {
@@ -1591,8 +1588,8 @@ function renderSearchTexts(texts, text) {
         return html;
     }
 
-    var html = _renderSearchTexts(texts);
-    var textSearchList = $("#calendar-constructor-edit-text-search").html(html);
+    const html = _renderSearchTexts(texts);
+    const textSearchList = $("#calendar-constructor-edit-text-search").html(html);
     textSearchList.find('.txt').click(function (e) {
         $("#calendar-constructor-edit-text").val(calendarCorrectText($(this).text())).attr('text', $(this).attr('text'));
         calendarTextEditorPreview();
@@ -1611,20 +1608,20 @@ function renderSearchTexts(texts, text) {
 }
 
 function getCalendarData() {
-    var data = {};
+    const data = {};
     data.elements = [];
-    for (var i = 0; i < CalendarElements.length; i++) {
-        var el = CalendarElements[i];
+    for (let i = 0; i < CalendarElements.length; i++) {
+        const el = CalendarElements[i];
         if (el !== undefined) {
             data.elements.push(el);
         }
     }
     data.calendar = {};
     $("#calendar-table tr").each(function (i, e) {
-        var tr = $(e);
+        const tr = $(e);
         tr.find('td.enabled').each(function (i, e) {
-            var td = $(e);
-            var color = td.attr('color');
+            const td = $(e);
+            const color = td.attr('color');
             if (typeof (color) == "string" && color.length) {
                 data.calendar[(tr.index() - 1) + '_' + td.index()] = color;
             }
@@ -1634,7 +1631,7 @@ function getCalendarData() {
     data.year = sheet.data.year;
     data.texts = {};
     $('.line-edit[item-id]').each(function (i, e) {
-        var el = $(e);
+        const el = $(e);
         data.texts[el.attr('item-id')] = el.find('.text').html();
     });
     return data;
@@ -1647,7 +1644,7 @@ function calendarPrint(id, list, callback) {
         dpi: 300,
         scale: 5
     }).then(canvas => {
-        var doc = new jspdf.jsPDF({
+        const doc = new jspdf.jsPDF({
             orientation: 'p',
             unit: 'mm',
             format: 'a4'
@@ -1816,14 +1813,14 @@ $(document).ready(function () {
     $("#settings-avatar-upload-btn").click(function () {
         const self = $(this);
         upload(function (res) {
-            var name = res.name;
-            var photo = res.photo;
+            const name = res.name;
+            const photo = res.photo;
             api('profileSaveAvatar', {
                 photo: name
             }, function (res) {
                 user.photo = res;
-                var avatar = $("#user-avatar");
-                var settingsAvatar = $("#settings-user-avatar");
+                const avatar = $("#user-avatar");
+                const settingsAvatar = $("#settings-user-avatar");
                 spinner(self, false);
                 avatar.addClass('d-none');
                 settingsAvatar.addClass('d-none');
@@ -1859,8 +1856,8 @@ $(document).ready(function () {
     });
     $("#settings-password-btn").click(function () {
         const self = $(this);
-        var password = $("#settings-password").val();
-        var rpassword = $("#settings-rpassword").val();
+        const password = $("#settings-password").val();
+        const rpassword = $("#settings-rpassword").val();
         if (password !== rpassword) {
             err('Password mismatch', '#settings-password-result');
         } else {
@@ -1878,9 +1875,9 @@ $(document).ready(function () {
     });
     $("#settings-email-btn").click(function () {
         const self = $(this);
-        var codeInput = $("#settings-email-code");
-        var email = $("#settings-email").val();
-        var code = $("#settings-email-code").val();
+        const codeInput = $("#settings-email-code");
+        const email = $("#settings-email").val();
+        const code = $("#settings-email-code").val();
         spinner(self, true);
         if (codeInput.hasClass('d-none')) {
             api('changeEmailCode', {
