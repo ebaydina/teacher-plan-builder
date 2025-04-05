@@ -1042,6 +1042,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     const start = weekDay > 0 ? (weekType === 1 ? 1 : 0) - weekDay : 0;
     for (i = 0; i < 5; i++) {
         html += '<tr>';
+        let useGreen = false;
         for (let k = 1; k <= 7; k++) {
             let current = i * 7 + k + start;
             let disabled = false;
@@ -1064,7 +1065,15 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
             const monthId = disabled ? '' : ' item-month-id="' + current + '"';
             const colorAttribute = cellColor ? ' color="' + cellColor + '" style="background: ' + cellColor + ';"' : '';
 
-            const classDayOff = dayOff ? ' day-off' : '';
+            useGreen = dayOff ? !useGreen : useGreen;
+            let classDayOffColor = useGreen
+                ? ' day-off-green'
+                : ' day-off-yellow';
+
+            classDayOffColor = colorAttribute === '' ? classDayOffColor : '';
+
+            const classDayOff = dayOff ? ' day-off' + classDayOffColor : '';
+
             const classDisabled = disabled ? ' disabled' : '';
             const classEnabled = disabled ? '' : ' enabled';
 
