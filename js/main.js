@@ -1281,6 +1281,31 @@ function selectElement(id) {
     }
 }
 
+function removeSelectedElement(e) {
+    if (e.code !== "Delete" || e.altKey || e.ctrlKey || e.shiftKey ){
+        return;
+    }
+    e.stopPropagation();
+    setTimeout(function () {
+        let wasRemoved = false;
+        let lastIndex = selectedElement;
+        if (selectedElement !== false) {
+            removeElement(selectedElement);
+            wasRemoved = true;
+            selectedElement = false;
+        }
+        if (wasRemoved) {
+            for (let k = lastIndex; k >= 0; --k) {
+                const calendarElement = CalendarElements[k];
+                if (calendarElement !== undefined) {
+                    selectElement(k);
+                    break;
+                }
+            }
+        }
+    }, 100);
+}
+
 function editTextElement(id, text, size, color) {
     CalendarElements[id].text = text;
     CalendarElements[id].size = size;
@@ -1661,6 +1686,14 @@ $(document).ready(function () {
     if (storedEmail !== null) {
         $("#signin-email").val(storedEmail);
     }
+
+    window.addEventListener(
+        "keyup",
+        function (event) {
+            removeSelectedElement(event);
+        }
+    );
+
     $("#btn-signin").click(function () {
         const email = $("#signin-email").val().trim();
         const rememberMe =
