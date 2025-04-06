@@ -1282,7 +1282,7 @@ function selectElement(id) {
 }
 
 function removeSelectedElement(e) {
-    if (e.code !== "Delete" || e.altKey || e.ctrlKey || e.shiftKey ){
+    if (e.code !== "Delete" || e.altKey || e.ctrlKey || e.shiftKey) {
         return;
     }
     e.stopPropagation();
@@ -1517,7 +1517,11 @@ function showAddImage(mode) {
     }
     const month = getMonth(sheet.data.month);
     let monthImages = [];
-    if (calendarImages !== undefined && calendarImages.images != undefined && calendarImages.images[month] !== undefined) {
+    if (
+        calendarImages !== undefined
+        && calendarImages.images !== undefined
+        && calendarImages.images[month] !== undefined
+    ) {
         monthImages = getCalendarMonthImages(calendarImages.images[month]);
     }
     let html = [];

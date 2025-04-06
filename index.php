@@ -923,7 +923,8 @@ if ($dev !== 0) {
     var clientToken = '<?=$_COOKIE['csrf_token']?>';
     var userToken = '';
     var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    var user, nameConstructorImages, calendarConstructorImages, sheets = {}, CalendarElements = [], selectedElement = false,
+    var user, nameConstructorImages, calendarConstructorImages,
+        sheets = {}, CalendarElements = [], selectedElement = false,
         selectDay, searchText = '';
     var currentCalendarConstructorContainer = $("#calendar-constructor-list-content .a4");
     var sheet = false;
