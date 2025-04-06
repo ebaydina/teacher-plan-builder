@@ -155,7 +155,10 @@ class Api
             'data' => []
         ];
         $lastModify = filemtime($fileName);
-        if ($dataJson['last_modify'] == $dataJson) {
+        if (
+            $lastModify !== false
+            && $dataJson['last_modify'] === $lastModify
+        ) {
             return $dataJson['data'];
         }
         $reader = new Xlsx();
@@ -234,7 +237,7 @@ class Api
             $data[$title] = $rowsData;
         }
         $data = $this->correctConcepts($data);
-        $dataJson['last_modify'] = time();
+        $dataJson['last_modify'] = $lastModify;
         $dataJson['data'] = $data;
         file_put_contents($fileJson, json_encode($dataJson));
 
