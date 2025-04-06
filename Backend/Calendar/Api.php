@@ -138,7 +138,7 @@ class Api
         }
     }
 
-    public function apiGetConcepts()
+    public function apiGetConcepts(): array
     {
         if (!($_SESSION['isAllow'] ?? false)) {
             return [];
@@ -150,10 +150,12 @@ class Api
         if (!file_exists($fileName)) {
             return $list;
         }
-        $dataJson = file_exists($fileJson) ? json_decode(file_get_contents($fileJson), true) : [
-            'last_modify' => 0,
-            'data' => []
-        ];
+        $dataJson = file_exists($fileJson)
+            ? json_decode(file_get_contents($fileJson), true)
+            : [
+                'last_modify' => 0,
+                'data' => []
+            ];
         $lastModify = filemtime($fileName);
         if (
             $lastModify !== false
