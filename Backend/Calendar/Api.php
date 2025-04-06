@@ -165,10 +165,6 @@ class Api
         $spreadsheet = $reader->load($fileName);
         $data = [];
         foreach ($spreadsheet->getAllSheets() as $sheet) {
-            $title = trim($sheet->getTitle());
-            if (!isset($data[$title])) {
-                $data[$title] = [];
-            }
             $columns = false;
             $rowsData = [];
             foreach ($sheet->getRowIterator() as $i => $row) {
@@ -234,7 +230,11 @@ class Api
             } else {
                 $rowsData = $this->correctConceptList($rowsData);
             }
-            $data[$title] = $rowsData;
+
+            $title = trim($sheet->getTitle());
+            if (!isset($data[$title])) {
+                $data[$title] = $rowsData;
+            }
         }
         $data = $this->correctConcepts($data);
         $dataJson['last_modify'] = $lastModify;
