@@ -329,8 +329,7 @@ class Api
         if (is_dir($path)) {
             $list = [];
             foreach (scandir($path) as $file) {
-                if ($file != '.' && $file != '..') {
-                    $fileExt = false;
+                if ($file !== '.' && $file !== '..') {
                     $filePath = $path . $file;
                     $fileInfo = pathinfo($filePath);
                     $fileExt = isset($fileInfo['extension']) ? mb_strtolower($fileInfo['extension']) : '';
