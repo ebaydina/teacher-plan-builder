@@ -569,6 +569,35 @@ function getUserProfile() {
                     $("#calendar-text-editor").modal('hide');
                 }
             });
+            $("#calendar-image-editor-add").click(function () {
+                if (!selectedConcept) {
+                    err("Please select concept", "#calendar-image-editor-result");
+                    return false;
+                }
+                let count = 1;
+
+                function getCountChilds(arr) {
+                    let countElements = arr.length;
+                    for (let i = 0; i < arr.length; i++) {
+                        if (arr[i].nodes) {
+                            countElements += getCountChilds(arr[i].nodes);
+                        }
+                    }
+                    return countElements;
+                }
+
+                if (selectedConcept.nodes) {
+                    count += getCountChilds(selectedConcept.nodes);
+                }
+                if (count > 1) {
+                    $("#dialog-confirm-add-text-selected").text(count);
+                    $("#calendar-text-editor").modal('hide');
+                    $("#dialog-confirm-add-text").modal('show');
+                } else {
+                    addTextElement(selectedConcept.text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
+                    $("#calendar-text-editor").modal('hide');
+                }
+            });
             $("#calendar-day-color-save").click(function () {
                 if (selectDay) {
                     const color = $("#calendar-day-color").val();
@@ -678,8 +707,36 @@ function getUserProfile() {
                     selectedConcept = false;
                 }
             });
+
+            $("#calendar-constructor-edit-image-search").treeview({
+                levels: 1,
+                data: conceptsList,
+                expandIcon: 'bi bi-chevron-down',
+                collapseIcon: 'bi bi-chevron-right',
+                emptyIcon: 'no-icon',
+                nodeIcon: '',
+                selectedIcon: '',
+                checkedIcon: '',
+                uncheckedIcon: '',
+                highlightSelected: true,
+                selectedBackColor: '#0d6efd',
+                selectedColor: 'white',
+                borderColor: false,
+                backColor: false,
+                color: false,
+                onNodeSelected: function (a, b, c) {
+                    selectedConcept = b;
+                },
+                onNodeUnselected: function () {
+                    selectedConcept = false;
+                }
+            });
             tippy('#calendar-editor-helper', {
                 content: `Select the item you want to add`,
+                allowHTML: true,
+            });
+            tippy('#calendar-image-editor-helper', {
+                content: `Select the category you want to add`,
                 allowHTML: true,
             });
             tippy('.calendar-images-window-help', {

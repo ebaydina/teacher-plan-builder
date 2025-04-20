@@ -731,9 +731,26 @@ if ($dev !== 0) {
                                 class="bi bi-image-fill"></i> One image
                     </button>
                 </div>
+                <div class="row">
+                    <div class="col col-md-6 mt-3">
+                        <label class="form-label">Image Group
+                            <i id="calendar-image-editor-helper"
+                               class="bi bi-question-circle-fill">
+                            </i>
+                        </label>
+                        <div id="calendar-constructor-edit-image-search"></div>
+                    </div>
+                    <div class="col">
+                        <div id="calendar-image-editor-result" class="alert alert-danger mt-2 d-none"></div>
+                    </div>
+
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="calendar-image-editor-add" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    Add
+                </button>
             </div>
         </div>
     </div>
