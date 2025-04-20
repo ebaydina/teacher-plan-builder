@@ -702,20 +702,12 @@ function getUserProfile() {
                     $("#name-constructor-generate").removeAttr('disabled');
                 }
             });
-            $("#calendar-constructor-edit-text, #calendar-constructor-edit-size, #calendar-constructor-edit-color")
+            $("#calendar-constructor-edit-size, #calendar-constructor-edit-color")
                 .on('input change', function (e) {
                     const self = $(this);
                     const value = $(this).val();
                     calendarTextEditorPreview();
-                    if (self.attr('id') == "calendar-constructor-edit-text" && e.type != 'change') {
-                        self.removeAttr('text');
-                        renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-                    }
                 });
-            $("#calendar-constructor-edit-text").focus(function () {
-                const value = $(this).val();
-                renderSearchTexts(value.length > 0 ? searchInCalendarTexts(value) : calendarTexts, value);
-            });
         }
 
         $("td form").each(function (key, value) {
@@ -1181,12 +1173,6 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     }
     renderCompleted = true;
 }
-
-function calendarCorrectText(text) {
-    text = text.replace(/\\n/g, '<br>').replace("\n", '<br>');
-    return text;
-}
-
 function calendarTextEditorPreview() {
     let size = parseInt($("#calendar-constructor-edit-size").val()) || 0;
     if (size < 8) {
@@ -1194,12 +1180,6 @@ function calendarTextEditorPreview() {
     }
     if (size > 100) {
         size = 100;
-    }
-    let text = $("#calendar-constructor-edit-text").attr('text');
-    if (typeof (text) !== "string" || !text.length) {
-        text = $("#calendar-constructor-edit-text").val();
-    } else {
-        text = atob(text);
     }
     $("#calendar-constructor-edit-preview").css({
         fontSize: size + 'px',
@@ -1305,15 +1285,6 @@ function removeSelectedElement(e) {
         }
     }, 100);
 }
-
-function editTextElement(id, text, size, color) {
-    CalendarElements[id].text = text;
-    CalendarElements[id].size = size;
-    CalendarElements[id].color = color;
-    renderElement(id);
-    selectElement(id);
-}
-
 function calendarAutoSave() {
     const calendarData = {
         id: sheet.id,
@@ -1561,76 +1532,6 @@ function showAddImage(mode) {
     }
     $("#calendar-images-window").modal('show');
 }
-
-function searchInCalendarTexts(text) {
-    const search = {};
-
-    function searchInObj(obj, v) {
-        const newObj = {};
-        let search = false;
-        for (const prop in obj) {
-            const value = obj[prop];
-            if (typeof (value) == "string") {
-                if (prop.indexOf(v) !== -1) {
-                    newObj[prop] = value;
-                    search = true;
-                }
-            } else if (typeof (value) == "object") {
-                const newValue = searchInObj(value, v);
-                if (newValue !== false) {
-                    newObj[prop] = newValue;
-                    search = true;
-                }
-            }
-        }
-        return search ? newObj : false;
-    }
-
-    return searchInObj(calendarTexts, text);
-}
-
-function renderSearchTexts(texts, text) {
-    return;
-
-    function _renderSearchTexts(obj, name) {
-        name = typeof (name) == "string" ? name : '';
-        let html = '';
-        if (name.length) {
-            html += '<div class="text-block"><div class="text-title">' + name + '</div>';
-        }
-        for (const prop in obj) {
-            const value = obj[prop];
-            if (typeof (value) == "string") {
-                html += '<div class="text"><span class="txt" text="' + btoa(value) + '">' + prop.replace(text, '<b>' + text + '</b>') + '</span> <i class="bi bi-plus-circle"></i></div>';
-            } else if (typeof (value) == "object") {
-                html += _renderSearchTexts(value, prop);
-            }
-        }
-        if (name.length) {
-            html += '</div>';
-        }
-        return html;
-    }
-
-    const html = _renderSearchTexts(texts);
-    const textSearchList = $("#calendar-constructor-edit-text-search").html(html);
-    textSearchList.find('.txt').click(function (e) {
-        $("#calendar-constructor-edit-text").val(calendarCorrectText($(this).text())).attr('text', $(this).attr('text'));
-        calendarTextEditorPreview();
-        $("#calendar-constructor-edit-text-search").addClass('d-none');
-    });
-    textSearchList.find('.text i').click(function () {
-        const self = $(this);
-        addTextElement(atob(self.prev().attr('text')), $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
-        self.removeClass('bi-plus-circle').addClass('bi-plus-circle-fill added');
-    });
-    if (html.length) {
-        $("#calendar-constructor-edit-text-search").removeClass('d-none');
-    } else {
-        $("#calendar-constructor-edit-text-search").addClass('d-none');
-    }
-}
-
 function getCalendarData() {
     const data = {};
     data.elements = [];
