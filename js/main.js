@@ -574,29 +574,9 @@ function getUserProfile() {
                     err("Please select image group", "#calendar-image-editor-result");
                     return false;
                 }
-                let count = 1;
 
-                function getCountOfChildren(arr) {
-                    let countElements = arr.length;
-                    for (let i = 0; i < arr.length; i++) {
-                        if (arr[i].nodes) {
-                            countElements += getCountOfChildren(arr[i].nodes);
-                        }
-                    }
-                    return countElements;
-                }
-
-                if (selectedConcept.nodes) {
-                    count += getCountOfChildren(selectedConcept.nodes);
-                }
-                if (count > 1) {
-                    $("#dialog-confirm-add-text-selected").text(count);
-                    $("#calendar-text-editor").modal('hide');
-                    $("#dialog-confirm-add-text").modal('show');
-                } else {
-                    addTextElement(selectedConcept.text, $("#calendar-constructor-edit-size").val(), $("#calendar-constructor-edit-color").val());
-                    $("#calendar-text-editor").modal('hide');
-                }
+                addCategoryImages(selectedConcept.text);
+                $("#calendar-text-editor").modal('hide');
             });
             $("#calendar-day-color-save").click(function () {
                 if (selectDay) {
@@ -1614,6 +1594,52 @@ function showAddImage(mode) {
         }
     }
     $("#calendar-images-window").modal('show');
+}
+
+function addCategoryImages(category) {
+    let i;
+
+    let monthImages = [];
+
+    function getCategoryImages(calendarImages, category) {
+
+        let categoryNodes = [];
+        for (let key in calendarImages) {
+            if (key === category) {
+                categoryNodes.push(calendarImages[key]);
+                break;
+            }
+            if (typeof (calendarImages[key]) === "object") {
+                const child = calendarImages[key];
+                const nodes = getCategoryImages(child, category);
+
+                if (nodes.length > 0) {
+                    categoryNodes = nodes;
+                }
+            }
+        }
+
+        return categoryNodes;
+    }
+
+    if (
+        calendarImages !== undefined
+    ) {
+        const images = getCategoryImages(calendarImages, category);
+        monthImages = getCalendarMonthImages(images);
+    }
+    for (i = 0; i < monthImages.length; i++) {
+        let y = Math.floor(i / 7);
+        let x = i - (y * 7);
+        x = 35 + (x * 100);
+        y = 65 + (y * 100);
+        const cell = randCell();
+        y = cell.y;
+        x = cell.x;
+        addImageElement(monthImages[i].photo, x, y);
+    }
+
+    return true;
 }
 
 function getCalendarData() {
