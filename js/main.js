@@ -571,7 +571,7 @@ function getUserProfile() {
             });
             $("#calendar-image-editor-add").click(function () {
                 if (!selectedConcept) {
-                    err("Please select concept", "#calendar-image-editor-result");
+                    err("Please select image group", "#calendar-image-editor-result");
                     return false;
                 }
                 let count = 1;
