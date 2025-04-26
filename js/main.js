@@ -708,9 +708,33 @@ function getUserProfile() {
                 }
             });
 
+            function extractImages(obj) {
+                const myNodes = [];
+                for (let key in obj) {
+                    if (typeof (obj[key]) === "object") {
+                        const child = obj[key];
+
+                        const nodes = extractImages(child);
+
+                        let node = [];
+                        if (nodes.length === 0) {
+                            node = {"text": key};
+                        }
+                        if (nodes.length !== 0) {
+                            node = {"text": key, "nodes": nodes};
+                        }
+
+                        myNodes.push(node);
+                    }
+                }
+                return myNodes;
+            }
+
+            const imagesList = extractImages(calendarImages);
+
             $("#calendar-constructor-edit-image-search").treeview({
                 levels: 1,
-                data: conceptsList,
+                data: imagesList,
                 expandIcon: 'bi bi-chevron-down',
                 collapseIcon: 'bi bi-chevron-right',
                 emptyIcon: 'no-icon',
