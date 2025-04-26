@@ -576,18 +576,18 @@ function getUserProfile() {
                 }
                 let count = 1;
 
-                function getCountChilds(arr) {
+                function getCountOfChildren(arr) {
                     let countElements = arr.length;
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].nodes) {
-                            countElements += getCountChilds(arr[i].nodes);
+                            countElements += getCountOfChildren(arr[i].nodes);
                         }
                     }
                     return countElements;
                 }
 
                 if (selectedConcept.nodes) {
-                    count += getCountChilds(selectedConcept.nodes);
+                    count += getCountOfChildren(selectedConcept.nodes);
                 }
                 if (count > 1) {
                     $("#dialog-confirm-add-text-selected").text(count);
@@ -1230,6 +1230,7 @@ function showCalendarConstructor(mode, id, noShowPageCallback) {
     }
     renderCompleted = true;
 }
+
 function calendarTextEditorPreview() {
     let size = parseInt($("#calendar-constructor-edit-size").val()) || 0;
     if (size < 8) {
@@ -1342,6 +1343,7 @@ function removeSelectedElement(e) {
         }
     }, 100);
 }
+
 function calendarAutoSave() {
     const calendarData = {
         id: sheet.id,
@@ -1589,6 +1591,7 @@ function showAddImage(mode) {
     }
     $("#calendar-images-window").modal('show');
 }
+
 function getCalendarData() {
     const data = {};
     data.elements = [];
