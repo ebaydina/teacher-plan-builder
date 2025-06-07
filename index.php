@@ -37,6 +37,7 @@ $version = time();
 </header>
 <nav class="py-4 px-8 m-auto">
     <a href="teacher-plan-builder.php"
+       target="_blank"
        class="outline-4 py-4 px-8 outline-blue-700 rounded-xl"
     >
         Open Teacher Plan Builder Application
@@ -47,7 +48,8 @@ $version = time();
     <div class="flex flex-col">
         <p class="py-4 px-8 text-justify">
             Welcome to
-            <a href="www.teacherplanbuilder.com"
+            <a href="https://www.teacherplanbuilder.com"
+               target="_blank"
                class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
             >www.teacherplanbuilder.com</a> -
             <b>a comprehensive lesson-planning tool created
