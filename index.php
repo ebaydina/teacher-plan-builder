@@ -733,7 +733,7 @@ if ($dev !== 0) {
                 </div>
                 <div class="row">
                     <div class="col col-md-6 mt-3">
-                        <label class="form-label">Image Group
+                        <label class="form-label">Image Categories
                             <i id="calendar-image-editor-helper"
                                class="bi bi-question-circle-fill">
                             </i>
