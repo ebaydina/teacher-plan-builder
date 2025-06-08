@@ -334,12 +334,91 @@ function getUserProfile() {
 
         api('CalendarConstructorImages', function (res) {
             calendarImages = res;
+            const filesOfAllCategories = getFilesOfAllCategories(
+                calendarImages
+            );
+
+            function extractCategoriesImages(obj) {
+                const myNodes = [];
+                for (let key in obj) {
+                    let nodes = [];
+                    if (typeof (obj[key]) === "object") {
+                        const child = obj[key];
+
+                        nodes = extractCategoriesImages(child);
+                    }
+
+                    let node = [];
+                    if (nodes.length === 0) {
+                        node = {"text": key};
+                    }
+                    if (nodes.length !== 0) {
+                        node = {"text": key, "nodes": nodes};
+                    }
+
+                    myNodes.push(node);
+                }
+                return myNodes;
+            }
+            const imagesList = extractCategoriesImages(
+                filesOfAllCategories
+            );
+
+            $("#calendar-constructor-edit-image-search").treeview({
+                levels: 1,
+                data: imagesList,
+                expandIcon: 'bi bi-chevron-down',
+                collapseIcon: 'bi bi-chevron-right',
+                emptyIcon: 'no-icon',
+                nodeIcon: '',
+                selectedIcon: '',
+                checkedIcon: '',
+                uncheckedIcon: '',
+                highlightSelected: true,
+                selectedBackColor: '#0d6efd',
+                selectedColor: 'white',
+                borderColor: false,
+                backColor: false,
+                color: false,
+                onNodeSelected: function (a, b, c) {
+                    selectedConcept = b;
+                },
+                onNodeUnselected: function () {
+                    selectedConcept = false;
+                }
+            });
+
         }, function (error) {
             err(error)
         });
 
         api('GetConcepts', function (res) {
             conceptsList = res;
+
+            $("#calendar-constructor-edit-text-search").treeview({
+                levels: 1,
+                data: conceptsList,
+                expandIcon: 'bi bi-chevron-down',
+                collapseIcon: 'bi bi-chevron-right',
+                emptyIcon: 'no-icon',
+                nodeIcon: '',
+                selectedIcon: '',
+                checkedIcon: '',
+                uncheckedIcon: '',
+                highlightSelected: true,
+                selectedBackColor: '#0d6efd',
+                selectedColor: 'white',
+                borderColor: false,
+                backColor: false,
+                color: false,
+                onNodeSelected: function (a, b, c) {
+                    selectedConcept = b;
+                },
+                onNodeUnselected: function () {
+                    selectedConcept = false;
+                }
+            });
+
         }, function (error) {
             err(error)
         });
@@ -756,81 +835,6 @@ function getUserProfile() {
             }
             $("#calendar-years").html(yearsOptions.join());
 
-            $("#calendar-constructor-edit-text-search").treeview({
-                levels: 1,
-                data: conceptsList,
-                expandIcon: 'bi bi-chevron-down',
-                collapseIcon: 'bi bi-chevron-right',
-                emptyIcon: 'no-icon',
-                nodeIcon: '',
-                selectedIcon: '',
-                checkedIcon: '',
-                uncheckedIcon: '',
-                highlightSelected: true,
-                selectedBackColor: '#0d6efd',
-                selectedColor: 'white',
-                borderColor: false,
-                backColor: false,
-                color: false,
-                onNodeSelected: function (a, b, c) {
-                    selectedConcept = b;
-                },
-                onNodeUnselected: function () {
-                    selectedConcept = false;
-                }
-            });
-
-            function extractCategoriesImages(obj) {
-                const myNodes = [];
-                for (let key in obj) {
-                    let nodes = [];
-                    if (typeof (obj[key]) === "object") {
-                        const child = obj[key];
-
-                        nodes = extractCategoriesImages(child);
-                    }
-
-                    let node = [];
-                    if (nodes.length === 0) {
-                        node = {"text": key};
-                    }
-                    if (nodes.length !== 0) {
-                        node = {"text": key, "nodes": nodes};
-                    }
-
-                    myNodes.push(node);
-                }
-                return myNodes;
-            }
-
-            const filesOfAllCategories = getFilesOfAllCategories();
-            const imagesList = extractCategoriesImages(
-                filesOfAllCategories
-            );
-
-            $("#calendar-constructor-edit-image-search").treeview({
-                levels: 1,
-                data: imagesList,
-                expandIcon: 'bi bi-chevron-down',
-                collapseIcon: 'bi bi-chevron-right',
-                emptyIcon: 'no-icon',
-                nodeIcon: '',
-                selectedIcon: '',
-                checkedIcon: '',
-                uncheckedIcon: '',
-                highlightSelected: true,
-                selectedBackColor: '#0d6efd',
-                selectedColor: 'white',
-                borderColor: false,
-                backColor: false,
-                color: false,
-                onNodeSelected: function (a, b, c) {
-                    selectedConcept = b;
-                },
-                onNodeUnselected: function () {
-                    selectedConcept = false;
-                }
-            });
             tippy('#calendar-editor-helper', {
                 content: `Select the item you want to add`,
                 allowHTML: true,
@@ -1619,8 +1623,9 @@ function showAddImage(mode) {
     $("#calendar-images-window").modal('show');
 }
 
-function getFilesOfAllCategories() {
-    return calendarImages["categories"] ?? [];
+function getFilesOfAllCategories(imagesWithCategories) {
+
+    return imagesWithCategories["categories"] ?? [];
 }
 
 function addCategoryImages(category) {
@@ -1628,16 +1633,16 @@ function addCategoryImages(category) {
 
     let monthImages = [];
 
-    function getCategoryImages(category, calendarImages) {
+    function getCategoryImages(category, allImages) {
 
         let categoryNodes = [];
-        for (let key in calendarImages) {
+        for (let key in allImages) {
             if (key === category) {
-                categoryNodes.push(calendarImages[key]);
+                categoryNodes.push(allImages[key]);
                 break;
             }
-            if (typeof (calendarImages[key]) === "object") {
-                const child = calendarImages[key];
+            if (typeof (allImages[key]) === "object") {
+                const child = allImages[key];
                 const nodes = getCategoryImages(category, child);
 
                 if (nodes.length > 0) {
@@ -1653,7 +1658,9 @@ function addCategoryImages(category) {
     if (
         calendarImages !== undefined
     ) {
-        const filesOfAllCategories = getFilesOfAllCategories();
+        const filesOfAllCategories = getFilesOfAllCategories(
+            calendarImages
+        );
         const images = getCategoryImages(
             category,
             filesOfAllCategories,
