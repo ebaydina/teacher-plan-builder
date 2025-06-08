@@ -688,29 +688,33 @@ function getUserProfile() {
                 }
             });
 
-            function extractImages(obj) {
+            function extractCategoriesImages(obj) {
                 const myNodes = [];
                 for (let key in obj) {
+                    let nodes = [];
                     if (typeof (obj[key]) === "object") {
                         const child = obj[key];
 
-                        const nodes = extractImages(child);
-
-                        let node = [];
-                        if (nodes.length === 0) {
-                            node = {"text": key};
-                        }
-                        if (nodes.length !== 0) {
-                            node = {"text": key, "nodes": nodes};
-                        }
-
-                        myNodes.push(node);
+                        nodes = extractCategoriesImages(child);
                     }
+
+                    let node = [];
+                    if (nodes.length === 0) {
+                        node = {"text": key};
+                    }
+                    if (nodes.length !== 0) {
+                        node = {"text": key, "nodes": nodes};
+                    }
+
+                    myNodes.push(node);
                 }
                 return myNodes;
             }
 
-            const imagesList = extractImages(calendarImages);
+            const filesOfAllCategories = getFilesOfAllCategories();
+            const imagesList = extractCategoriesImages(
+                filesOfAllCategories
+            );
 
             $("#calendar-constructor-edit-image-search").treeview({
                 levels: 1,
@@ -1596,12 +1600,16 @@ function showAddImage(mode) {
     $("#calendar-images-window").modal('show');
 }
 
+function getFilesOfAllCategories() {
+    return calendarImages["categories"] ?? [];
+}
+
 function addCategoryImages(category) {
     let i;
 
     let monthImages = [];
 
-    function getCategoryImages(calendarImages, category) {
+    function getCategoryImages(category, calendarImages) {
 
         let categoryNodes = [];
         for (let key in calendarImages) {
@@ -1611,10 +1619,11 @@ function addCategoryImages(category) {
             }
             if (typeof (calendarImages[key]) === "object") {
                 const child = calendarImages[key];
-                const nodes = getCategoryImages(child, category);
+                const nodes = getCategoryImages(category, child);
 
                 if (nodes.length > 0) {
                     categoryNodes = nodes;
+                    break;
                 }
             }
         }
@@ -1625,7 +1634,11 @@ function addCategoryImages(category) {
     if (
         calendarImages !== undefined
     ) {
-        const images = getCategoryImages(calendarImages, category);
+        const filesOfAllCategories = getFilesOfAllCategories();
+        const images = getCategoryImages(
+            category,
+            filesOfAllCategories,
+            );
         monthImages = getCalendarMonthImages(images);
     }
     for (i = 0; i < monthImages.length; i++) {
