@@ -326,12 +326,6 @@ function getUserProfile() {
     api('getProfile', function (res) {
         user = res;
 
-        api('CalendarConstructorTexts', function (res) {
-            calendarTexts = res;
-        }, function (error) {
-            err(error)
-        });
-
         api('CalendarConstructorImages', function (res) {
             calendarImages = res;
             const filesOfAllCategories = getFilesOfAllCategories(

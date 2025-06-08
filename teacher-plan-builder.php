@@ -946,9 +946,8 @@ if ($dev !== 0) {
     var currentCalendarConstructorContainer = $("#calendar-constructor-list-content .a4");
     var sheet = false;
     var autoSaveData = null;
-    var calendarTexts = <?=json_encode($api->apiCalendarConstructorTexts(), JSON_UNESCAPED_UNICODE)?>;
-    var calendarImages = <?=json_encode($api->apiCalendarConstructorImages(), JSON_UNESCAPED_UNICODE)?>;
-    var conceptsList = <?=json_encode($api->apiGetConcepts(), JSON_UNESCAPED_UNICODE)?>;
+    var calendarImages;
+    var conceptsList;
     var selectedConcept = false;
     var guestMenuWasInitialized;
     var constructorWasInitialized;
