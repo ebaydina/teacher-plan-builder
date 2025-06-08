@@ -372,6 +372,98 @@ function getUserProfile() {
             $("#menu-item-draft-btn").removeClass('d-none');
             $("#menu-item-name-constructor-btn").removeClass('d-none');
 
+            $("td form").each(function (key, value) {
+                if (this.action.indexOf('&token=') === -1) {
+                    this.action = `${this.action}\&token=${userToken}`;
+                }
+            });
+
+            const emptySubscriptionList = `
+<table
+        id='subscription-list'
+        class="table table-hover table-bordered border-primary">
+    <caption>
+        List of my actual subscriptions
+    </caption>
+    <thead>
+    <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Type</th>
+        <th scope="col">Starts</th>
+        <th scope="col">Ends</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+`;
+
+            document
+                .getElementById("subscription-list")
+                .outerHTML =
+                res["subscription-list"]
+                ?? emptySubscriptionList;
+            delete res["subscription-list"];
+
+            $("#panel").removeClass('d-none');
+            $("#settings-name").val(user.name);
+            $("#settings-surname").val(user.surname);
+            $("#settings-interests").val(user.interests);
+            $("#settings-about").val(user.about);
+            $("#settings-email").val(user.email);
+            $("#settings-gender").val(user.gender.toString());
+            $("#select-week-type").val(parseInt(user.week_type) || 0);
+            if (user.photo.length) {
+                spinner($("#user-avatar").parent(), true);
+                spinner($("#settings-user-avatar").parent(), true);
+                $("#user-avatar, #settings-user-avatar").each(function (i, e) {
+                    e.src = user.photo;
+                });
+                $("#settings-avatar-remove-btn").removeClass('d-none');
+            } else {
+                $("#settings-avatar-remove-btn").addClass('d-none');
+            }
+
+            if (user.admin) {
+                $('body').removeClass('is-user').addClass('is-admin');
+                $("#filemanager-btn").removeClass('d-none');
+            } else {
+                $('body').removeClass('is-admin').addClass('is-user');
+                $("#filemanager-btn").addClass('d-none');
+            }
+            if (user.admin) {
+                $("#name-constructor-photos").sortable({
+                    stop: function () {
+                        const sortList = [];
+                        $("#name-constructor-photos .item").each(function (i, e) {
+                            const id = parseInt($(e).attr('item-id')) || 0;
+                            if (id > 0) {
+                                sortList.push(id);
+                            }
+                        });
+                        api('nameConstructorSortPhotos', {ids: sortList.join(",")});
+                    }
+                });
+            }
+
+            if (
+                constructorWasInitialized !== undefined
+                && constructorWasInitialized === true
+            ) {
+
+                if (user['allow'] === true) {
+                    $("#draft-btn").click();
+                }
+                if (user['allow'] === false) {
+                    $("#subscription-btn").click();
+                }
+
+                loader(false);
+
+                return;
+            }
+            constructorWasInitialized = true;
+
             $("#name-constructor-btn").click(function () {
                 showNameConstructor();
             });
@@ -775,79 +867,6 @@ function getUserProfile() {
                 });
         }
 
-        $("td form").each(function (key, value) {
-            if (this.action.indexOf('&token=') === -1) {
-                this.action = `${this.action}\&token=${userToken}`;
-            }
-        });
-
-        const emptySubscriptionList = `
-<table
-        id='subscription-list'
-        class="table table-hover table-bordered border-primary">
-    <caption>
-        List of my actual subscriptions
-    </caption>
-    <thead>
-    <tr>
-        <th scope="col">Title</th>
-        <th scope="col">Type</th>
-        <th scope="col">Starts</th>
-        <th scope="col">Ends</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-`;
-
-        document
-            .getElementById("subscription-list")
-            .outerHTML =
-            res["subscription-list"]
-            ?? emptySubscriptionList;
-        delete res["subscription-list"];
-
-        $("#panel").removeClass('d-none');
-        $("#settings-name").val(user.name);
-        $("#settings-surname").val(user.surname);
-        $("#settings-interests").val(user.interests);
-        $("#settings-about").val(user.about);
-        $("#settings-email").val(user.email);
-        $("#settings-gender").val(user.gender.toString());
-        $("#select-week-type").val(parseInt(user.week_type) || 0);
-        if (user.photo.length) {
-            spinner($("#user-avatar").parent(), true);
-            spinner($("#settings-user-avatar").parent(), true);
-            $("#user-avatar, #settings-user-avatar").each(function (i, e) {
-                e.src = user.photo;
-            });
-            $("#settings-avatar-remove-btn").removeClass('d-none');
-        } else {
-            $("#settings-avatar-remove-btn").addClass('d-none');
-        }
-
-        if (user.admin) {
-            $('body').removeClass('is-user').addClass('is-admin');
-            $("#filemanager-btn").removeClass('d-none');
-        } else {
-            $('body').removeClass('is-admin').addClass('is-user');
-            $("#filemanager-btn").addClass('d-none');
-        }
-        if (user.admin) {
-            $("#name-constructor-photos").sortable({
-                stop: function () {
-                    const sortList = [];
-                    $("#name-constructor-photos .item").each(function (i, e) {
-                        const id = parseInt($(e).attr('item-id')) || 0;
-                        if (id > 0) {
-                            sortList.push(id);
-                        }
-                    });
-                    api('nameConstructorSortPhotos', {ids: sortList.join(",")});
-                }
-            });
-        }
         if (user['allow'] === true) {
             $("#draft-btn").click();
         }
@@ -1722,6 +1741,30 @@ $(document).ready(function () {
         }
     );
 
+    $(".user-avatar img")
+        .attr('src', 'img/avatar.png?v=' + Version);
+
+    if ($("#verify").hasClass('d-none')) {
+        let storageToken = localStorage.getItem('token');
+        if (typeof (storageToken) === "string" && storageToken.length) {
+            userToken = storageToken;
+        }
+        if (userToken) {
+            getUserProfile();
+        }
+        if (!userToken) {
+            showSignInForm();
+        }
+    }
+
+    if (
+        guestMenuWasInitialized !== undefined
+        && guestMenuWasInitialized === true
+    ) {
+        return;
+    }
+    guestMenuWasInitialized = true;
+
     $("#btn-signin").click(function () {
         const email = $("#signin-email").val().trim();
         const rememberMe =
@@ -1964,19 +2007,4 @@ $(document).ready(function () {
             self.prev().addClass('d-none');
             self.addClass('d-none');
         });
-    $(".user-avatar img")
-        .attr('src', 'img/avatar.png?v=' + Version);
-
-    if ($("#verify").hasClass('d-none')) {
-        let storageToken = localStorage.getItem('token');
-        if (typeof (storageToken) === "string" && storageToken.length) {
-            userToken = storageToken;
-        }
-        if (userToken) {
-            getUserProfile();
-        }
-        if (!userToken) {
-            showSignInForm();
-        }
-    }
 });

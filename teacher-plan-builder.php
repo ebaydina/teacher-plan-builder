@@ -950,6 +950,8 @@ if ($dev !== 0) {
     var calendarImages = <?=json_encode($api->apiCalendarConstructorImages(), JSON_UNESCAPED_UNICODE)?>;
     var conceptsList = <?=json_encode($api->apiGetConcepts(), JSON_UNESCAPED_UNICODE)?>;
     var selectedConcept = false;
+    var guestMenuWasInitialized;
+    var constructorWasInitialized;
 </script>
 <script src="js/main.js?v=<?= $version ?>"></script>
 </body>
