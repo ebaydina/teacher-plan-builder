@@ -18,3 +18,13 @@ Then restart your webserver. Example:
 sudo systemctl restart apache2
 ```
 
+# Назначение директорий
+
+`img/alphabet` картинки букв алфавита нужные при составлении имёни
+`img/months` картинки с названиями месяцев 
+`img/calendar` картинки для составления календаря
+`img/calendar/alphabet` буквы для добавления по одной картинке
+`img/calendar/images` наборы картинок для добавления картинок за месяц
+`img/calendar/categories` картинки для добавления по категориям
+`img/about` картинки для Главной страницы 
+`img/shop` картинки для раздела Магазин
