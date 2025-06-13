@@ -247,7 +247,7 @@ $version = time();
             </div>
         </article>
 
-        <footer class="py-4 px-36 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
+        <footer class="py-4 px-16 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <p class="text-center"
             >Elena&nbsp;Baydina©2025
                 <a href="mailto:teacherplanbuilder@gmail.com"
