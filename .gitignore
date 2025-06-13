@@ -1,2 +1,4 @@
 /Backend/config.php
 /.idea/**
+/node_modules/**
+
