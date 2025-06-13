@@ -32,13 +32,14 @@ $version = time();
 <div class="w-full h-full flex flex-col items-center"
      style="background-image: url('img/cover-invisible-background.png');"
 >
-    <main class="px-16 flex flex-col items-center bg-white">
-        <header class="py-4 min-w-sm max-w-xl">
-            <h1 class="text-5xl font-bold"> Teacher Plan Builder </h1>
+    <main class="px-8 sm:px-16 flex flex-col items-center bg-white">
+
+        <header class="py-4 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
+            <h1 class="text-5xl font-bold text-center"> Teacher Plan Builder </h1>
         </header>
 
-        <article class="flex flex-col items-center min-w-sm max-w-xl">
-            <figure class="py-4  ">
+        <article class="flex flex-col items-center min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
+            <figure class="py-4">
                 <img src="img/about/children.jpeg"
                      alt="Lena Baydina and children"
                 >
@@ -51,7 +52,7 @@ $version = time();
                     Go to the App
                 </a>
             </nav>
-            <p class="py-4  text-justify"
+            <p class="py-4 text-justify min-w-xs"
             >
                 Welcome to
                 <a href="https://www.teacherplanbuilder.com"
@@ -86,7 +87,7 @@ $version = time();
         </article>
 
         <article class="flex flex-col items-center
-        min-w-sm max-w-xl">
+        min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <figure class="py-4  ">
                 <img src="img/about/author-20.webp"
                      alt="Lena Baydina"
@@ -128,7 +129,7 @@ $version = time();
             </p>
         </article>
 
-        <article class="flex flex-col items-center  min-w-sm max-w-xl">
+        <article class="flex flex-col items-center  min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <div class="shop-item py-4  text-justify"
             >
                 <h2 class="text-3xl font-bold text-center">
@@ -246,7 +247,7 @@ $version = time();
             </div>
         </article>
 
-        <footer class="py-4 px-36 min-w-sm max-w-xl">
+        <footer class="py-4 px-36 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <p class="text-center"
             >Elena&nbsp;Baydina©2025
                 <a href="mailto:by.elena@yahoo.com"
