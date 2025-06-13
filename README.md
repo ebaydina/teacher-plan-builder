@@ -18,6 +18,11 @@ Then restart your webserver. Example:
 sudo systemctl restart apache2
 ```
 
+# Работа с вёрсткой 
+```shell
+npx @tailwindcss/cli -i ./css/about-page-resource.css -o ./css/about-page.css --watch
+```
+
 # Назначение директорий
 
 `img/alphabet` картинки букв алфавита нужные при составлении имёни
