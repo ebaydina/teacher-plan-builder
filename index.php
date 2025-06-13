@@ -250,10 +250,10 @@ $version = time();
         <footer class="py-4 px-36 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <p class="text-center"
             >Elena&nbsp;Baydina©2025
-                <a href="mailto:by.elena@yahoo.com"
+                <a href="mailto:teacherplanbuilder@gmail.com"
                    class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                 >
-                    by.elena@yahoo.com
+                    teacherplanbuilder@gmail.com
                 </a>
             </p>
         </footer>
