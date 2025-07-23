@@ -1,7 +1,7 @@
 <?php
 
-$version = '1.0.0';
-$version = time();
+$version = '1.1.4';
+/*$version = time();*/
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html" lang="en">
