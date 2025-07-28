@@ -42,6 +42,7 @@ $version = '1.1.4';
             <figure class="py-4">
                 <img src="img/about/children.jpeg"
                      alt="Lena Baydina and children"
+                     loading="lazy"
                 >
             </figure>
             <nav class="py-4">
@@ -91,6 +92,7 @@ $version = '1.1.4';
             <figure class="py-4  ">
                 <img src="img/about/author-20.webp"
                      alt="Lena Baydina"
+                     loading="lazy"
                 >
                 <figcaption
                 >Elena Baydina, the creator of TPB
@@ -121,7 +123,11 @@ $version = '1.1.4';
                 you as you plan, adapt, and inspire.
             </p>
             <div class="w-3xs self-end">
-                <img src="img/about/signature.png" alt="Signature">
+                <img
+                        src="img/about/signature.png"
+                        alt="Signature"
+                        loading="lazy"
+                >
             </div>
             <p class=" text-left"
             >
@@ -136,7 +142,11 @@ $version = '1.1.4';
                     Young Reader Textbook (Prek-1) Elena Baydina
                 </h2>
                 <div class="shop-img">
-                    <img src="img/shop/book/cover1.jpg" alt="book cover">
+                    <img
+                            src="img/shop/book/cover1.jpg"
+                            alt="book cover"
+                            loading="lazy"
+                    >
                 </div>
                 <p>
                     Rooted in structured literacy principles and
@@ -169,7 +179,11 @@ $version = '1.1.4';
                     Teacher Plan Builder App
                 </h2>
                 <div class="shop-img">
-                    <img src="img/shop/app/TPB%20-%20app%20example.png" alt="calendar">
+                    <img
+                            src="img/shop/app/TPB%20-%20app%20example.png"
+                            alt="calendar"
+                            loading="lazy"
+                    >
                 </div>
                 <ul>
                     <li>
@@ -213,7 +227,11 @@ $version = '1.1.4';
             >
                 <h2 class="text-3xl font-bold text-center">Name Constructor</h2>
                 <div class="shop-img">
-                    <img src="img/shop/name-constructor/name-example.webp" alt="name-example">
+                    <img
+                            src="img/shop/name-constructor/name-example.webp"
+                            alt="name-example"
+                            loading="lazy"
+                    >
                 </div>
                 <p>
                     The Name Constructor is an interactive tool

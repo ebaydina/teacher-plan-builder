@@ -198,7 +198,13 @@ if ($dev !== 0) {
                 <div class="user-info signin-block">
                     <div class="user-avatar">
                         <span class="spinner-border spinner-border d-none"></span>
-                        <img id="user-avatar" class="d-none" alt="user photo" src="">
+                        <img
+                                id="user-avatar"
+                                class="d-none"
+                                alt="user photo"
+                                src=""
+                                loading="lazy"
+                        >
                     </div>
                     <!--PAID START-->
                     <div class="menu-item" id="menu-item-draft-btn">
@@ -374,8 +380,14 @@ if ($dev !== 0) {
                             <h4>Profile Picture</h4>
                             <div class="user-avatar">
                                 <span class="spinner-border spinner-border d-none"></span>
-                                <img id="settings-user-avatar" class="d-none" style="object-fit: contain"
-                                     alt="user photo preview" src="">
+                                <img
+                                        id="settings-user-avatar"
+                                        class="d-none"
+                                        style="object-fit: contain"
+                                        alt="user photo preview"
+                                        src=""
+                                        loading="lazy"
+                                >
                             </div>
                             <div id="settings-avatar-result" class="alert d-none"></div>
                             <button id="settings-avatar-remove-btn" class="form-control btn btn-danger d-none">
@@ -428,7 +440,11 @@ if ($dev !== 0) {
                             <div class="shop-item">
                                 <p class="title">Young Reader Textbook (Prek-1) Elena Baydina</p>
                                 <div class="shop-img">
-                                    <img src="img/shop/book/cover1.jpg" alt="book cover">
+                                    <img
+                                            src="img/shop/book/cover1.jpg"
+                                            alt="book cover"
+                                            loading="lazy"
+                                    >
                                 </div>
                                 <p>
                                     Rooted in structured literacy principles and phonics-based instruction, this book
@@ -455,7 +471,11 @@ if ($dev !== 0) {
                             <div class="shop-item">
                                 <p class="title">Teacher Plan Builder App</p>
                                 <div class="shop-img">
-                                    <img src="img/shop/app/TPB%20-%20app%20example.png" alt="calendar">
+                                    <img
+                                            src="img/shop/app/TPB%20-%20app%20example.png"
+                                            alt="calendar"
+                                            loading="lazy"
+                                    >
                                 </div>
                                 <ul>
                                     <li>
@@ -490,7 +510,11 @@ if ($dev !== 0) {
                             <div class="shop-item">
                                 <p class="title">Name Constructor</p>
                                 <div class="shop-img">
-                                    <img src="img/shop/name-constructor/name-example.webp" alt="name-example">
+                                    <img
+                                            src="img/shop/name-constructor/name-example.webp"
+                                            alt="name-example"
+                                            loading="lazy"
+                                    >
                                 </div>
                                 <p>
                                     The Name Constructor is an interactive tool designed to help students practice
@@ -667,6 +691,7 @@ if ($dev !== 0) {
         src="img/copyright.png?v=<?= $version ?>"
         class="d-none"
         alt="copyright"
+        loading="lazy"
 >
 <div class="modal fade" id="calendar-month-selector" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
