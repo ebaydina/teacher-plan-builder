@@ -66,8 +66,7 @@ $version = '1.1.4';
                 process, this platform helps you stay organized and focused
                 on what matters most: <b>effective instruction</b>.
             </p>
-            <p class="py-4  text-justify"
-            >
+            <p class="py-4 text-justify">
                 With the monthly calendar feature, you can map out daily
                 lessons in advance, ensuring a clear and structured
                 approach to teaching literacy and other core subjects.
@@ -75,8 +74,7 @@ $version = '1.1.4';
                 early literacy by generating customized name and sight word
                 activities tailored to your students’ needs.
             </p>
-            <p class="py-4  text-justify"
-            >
+            <p class="py-4 text-justify">
                 Teacher Plan Builder (TPB) is an innovative, easy-to-use
                 platform built to streamline both daily instruction and
                 long-term planning for PreK through 3rd grade. Whether you're
@@ -89,7 +87,7 @@ $version = '1.1.4';
 
         <article class="flex flex-col items-center
         min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
-            <figure class="py-4  ">
+            <figure class="py-4">
                 <img src="img/about/author-20.webp"
                      alt="Lena Baydina"
                      loading="lazy"
@@ -98,8 +96,7 @@ $version = '1.1.4';
                 >Elena Baydina, the creator of TPB
                 </figcaption>
             </figure>
-            <p class="py-4  text-justify italic"
-            >
+            <p class="py-4 text-justify italic">
                 After over a decade of teaching in both public and
                 private schools, I’ve seen the power of what’s possible
                 when research-based methods meet creativity. That’s
@@ -107,16 +104,14 @@ $version = '1.1.4';
                 tools for committed educators who want to focus their
                 time and energy on the actual work of teaching.
             </p>
-            <p class="py-4  text-justify italic"
-            >
+            <p class="py-4 text-justify italic">
                 This tool helps you build a meaningful flow in your
                 instruction - while staying aligned with academic goals
                 and making thoughtful adjustments to meet the needs of
                 your students, whether you're teaching a whole class or
                 just one child.
             </p>
-            <p class="py-4  text-justify italic"
-            >
+            <p class="py-4 text-justify italic">
                 To the educators, parents, and tutors using this book
                 and app—thank you. You play a vital role in shaping
                 futures. I hope the resources you find here support
@@ -136,8 +131,7 @@ $version = '1.1.4';
         </article>
 
         <article class="flex flex-col items-center  min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
-            <div class="shop-item py-4  text-justify"
-            >
+            <div class="shop-item py-4 text-justify">
                 <h2 class="text-3xl font-bold text-center">
                     Young Reader Textbook (Prek-1) Elena Baydina
                 </h2>
@@ -173,8 +167,7 @@ $version = '1.1.4';
                     </li>
                 </ul>
             </div>
-            <div class="shop-item py-4  text-justify"
-            >
+            <div class="shop-item py-4 text-justify">
                 <h2 class="text-3xl font-bold text-center">
                     Teacher Plan Builder App
                 </h2>
@@ -223,8 +216,7 @@ $version = '1.1.4';
                     </li>
                 </ul>
             </div>
-            <div class="shop-item py-4  text-justify"
-            >
+            <div class="shop-item py-4 text-justify">
                 <h2 class="text-3xl font-bold text-center">Name Constructor</h2>
                 <div class="shop-img">
                     <img
@@ -266,8 +258,8 @@ $version = '1.1.4';
         </article>
 
         <footer class="py-4 px-16 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
-            <p class="text-center"
-            >Elena&nbsp;Baydina©2025
+            <p class="text-center">
+                Elena&nbsp;Baydina©2025
                 <a href="mailto:teacherplanbuilder@gmail.com"
                    class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                 >
