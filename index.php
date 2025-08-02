@@ -147,22 +147,22 @@ $version = '1.1.4';
                     phonics-based instruction, this book
                     offers:
                 </p>
-                <ul>
+                <ul class="default-list">
                     <li>
-                        ✔ Step-by-step lessons to support foundational
+                        Step-by-step lessons to support foundational
                         reading and writing development.
                     </li>
                     <li>
-                        ✔ Beautifully illustrated resources
+                        Beautifully illustrated resources
                         to engage young learners.
                     </li>
                     <li>
-                        ✔ Hands-on, adaptable activities for diverse
+                        Hands-on, adaptable activities for diverse
                         learning needs, including ELL
                         students.
                     </li>
                     <li>
-                        ✔ Proven strategies to close literacy gaps
+                        Proven strategies to close literacy gaps
                         and build confident, capable readers.
                     </li>
                 </ul>
@@ -178,39 +178,39 @@ $version = '1.1.4';
                             loading="lazy"
                     >
                 </div>
-                <ul>
+                <ul class="default-list">
                     <li>
-                        ✔ Comprehensive Lesson & Unit Planning –
+                        Comprehensive Lesson & Unit Planning –
                         Organize instruction through a
                         concept-based framework adaptable for various
                         grade levels.
                     </li>
                     <li>
-                        ✔ Extensive Literacy Resource Library –
+                        Extensive Literacy Resource Library –
                         Access phonics lessons, reading
                         strategies, and structured literacy activities
                         to support diverse learners,
                         including ELL students.
                     </li>
                     <li>
-                        ✔ Comes with the writing Name Constructor –
+                        Comes with the writing Name Constructor –
                         Create personalized writing
                         exercises to reinforce early literacy skills.
                     </li>
                     <li>
-                        ✔ Concept-Based Learning Tools – Build
+                        Concept-Based Learning Tools – Build
                         interdisciplinary units that connect
                         literacy with broader themes and
                         inquiry-based learning.
                     </li>
                     <li>
-                        ✔ Daily Instruction Calendar – Generate a
+                        Daily Instruction Calendar – Generate a
                         month-long instructional roadmap to
                         guide daily lessons and student learning,
                         ensuring consistency and progress.
                     </li>
                     <li>
-                        ✔ Adaptable for Homeschooling & Traditional
+                        Adaptable for Homeschooling & Traditional
                         Classrooms – Customizable resources
                         for different instructional needs.
                     </li>
@@ -233,25 +233,25 @@ $version = '1.1.4';
                     words they are learning, including sight words,
                     their own names, and uppercase/lowercase letters.
                 </p>
-                <ul>
+                <ul class="default-list">
                     <li>
-                        ✔ Personalized Name Practice: Generates
+                        Personalized Name Practice: Generates
                         worksheets for students to practice
                         writing their own names in both uppercase and
                         lowercase letters.
                     </li>
                     <li>
-                        ✔ Sight Word Integration: Allows teachers to
+                        Sight Word Integration: Allows teachers to
                         input custom word lists for
                         structured practice.
                     </li>
                     <li>
-                        ✔ Adaptive Formatting: Provides dashed-line
+                        Adaptive Formatting: Provides dashed-line
                         tracing, guided writing, and freehand spaces
                         to support different skill levels.
                     </li>
                     <li>
-                        ✔ Printable & Digital Use: Worksheets can be
+                        Printable & Digital Use: Worksheets can be
                         printed for handwriting practice or
                         used on tablets with a stylus.
                     </li>

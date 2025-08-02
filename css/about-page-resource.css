@@ -19,7 +19,7 @@
 
 @layer custom{
     li{
-        @apply pl-2;
+        @apply p-2;
     }
     ul.default-list{
         @apply m-auto max-w-3xs sm:max-w-xs md:max-w-sm;

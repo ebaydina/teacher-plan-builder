@@ -883,7 +883,7 @@
 }
 @layer custom {
   li {
-    padding-left: calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 2);
   }
   ul.default-list {
     margin: auto;
