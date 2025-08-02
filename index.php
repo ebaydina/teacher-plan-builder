@@ -32,7 +32,7 @@ $version = '1.1.4';
 <div class="w-full h-full flex flex-col items-center"
      style="background-image: url('img/cover-invisible-background.png');"
 >
-    <main class="px-8 sm:px-16 flex flex-col items-center bg-white">
+    <div class="px-8 sm:px-16 flex flex-col items-center bg-white">
 
         <header class="py-4 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
             <h1 class="text-5xl font-bold text-center"> Teacher Plan Builder </h1>
@@ -167,7 +167,7 @@ $version = '1.1.4';
                     </li>
                 </ul>
             </div>
-            <div class="shop-item py-4 text-justify">
+            <main class="shop-item py-4 text-justify">
                 <h2 class="text-3xl font-bold text-center">
                     Teacher Plan Builder App
                 </h2>
@@ -215,7 +215,7 @@ $version = '1.1.4';
                         for different instructional needs.
                     </li>
                 </ul>
-            </div>
+            </main>
             <div class="shop-item py-4 text-justify">
                 <h2 class="text-3xl font-bold text-center">Name Constructor</h2>
                 <div class="shop-img">
@@ -267,7 +267,7 @@ $version = '1.1.4';
                 </a>
             </p>
         </footer>
-    </main>
+    </div>
 </div>
 
 </body>
