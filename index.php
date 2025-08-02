@@ -10,8 +10,7 @@ $version = '1.1.4';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Teacher Plan Builder</title>
-    <meta name="description"
-          content="Educational Service: Teacher Plan Builder">
+    <meta name="description" content="Educational Service: Teacher Plan Builder">
     <meta name="author" content="Lena Baydina">
     <meta name="keywords" content="Alphabet, Calendar, Constructor">
 
@@ -35,7 +34,9 @@ $version = '1.1.4';
     <div class="px-8 sm:px-16 flex flex-col items-center bg-white">
 
         <header class="py-4 min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
-            <h1 class="text-5xl font-bold text-center"> Teacher Plan Builder </h1>
+            <h1 class="text-5xl font-bold text-center">
+                Teacher Plan Builder
+            </h1>
         </header>
 
         <article class="flex flex-col items-center min-w-3xs max-w-xs sm:max-w-md md:max-w-xl">
@@ -217,7 +218,9 @@ $version = '1.1.4';
                 </ul>
             </main>
             <div class="shop-item py-4 text-justify">
-                <h2 class="text-3xl font-bold text-center">Name Constructor</h2>
+                <h2 class="text-3xl font-bold text-center">
+                    Name Constructor
+                </h2>
                 <div class="shop-img">
                     <img
                             src="img/shop/name-constructor/name-example.webp"
