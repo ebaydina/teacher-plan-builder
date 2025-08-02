@@ -16,6 +16,12 @@
 .default-link{
     @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600;
 }
+.bounce {
+    @apply transition duration-300 hover:-translate-y-1 hover:scale-110;
+}
+.link-to-app{
+    @apply px-4 py-2 border-4 rounded-3xl text-3xl text-blue-900 bg-cyan-300 hover:text-blue-800 hover:bg-emerald-400;
+}
 
 @layer custom{
     li{

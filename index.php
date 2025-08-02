@@ -46,10 +46,10 @@ $version = '1.1.4';
                      loading="lazy"
                 >
             </figure>
-            <nav class="py-4">
+            <nav class="py-4 bounce">
                 <a href="teacher-plan-builder.php"
                    target="_blank"
-                   class="px-4 py-2 border-4 border-offset-4  rounded-3xl text-3xl text-blue-900 bg-cyan-300 hover:text-blue-800 hover:bg-emerald-400"
+                   class="link-to-app"
                 >
                     Go to the App
                 </a>
