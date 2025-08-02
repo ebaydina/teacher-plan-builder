@@ -27,7 +27,7 @@ $version = '1.1.4';
 
     <link rel="stylesheet" href="css/about-page.css?v=<?= $version ?>"/>
 </head>
-<body style="hyphens:auto">
+<body class="hyphens-auto">
 <div class="w-full h-full flex flex-col items-center"
      style="background-image: url('img/cover-invisible-background.png');"
 >
