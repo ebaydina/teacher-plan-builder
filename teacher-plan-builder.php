@@ -972,8 +972,8 @@ if ($dev !== 0) {
     var calendarImages;
     var conceptsList;
     var selectedConcept = false;
-    var guestMenuWasInitialized;
-    var constructorWasInitialized;
+    var guestMenuWasInitialized = false;
+    var constructorWasInitialized = false;
 </script>
 <script src="js/main.js?v=<?= $version ?>"></script>
 </body>
