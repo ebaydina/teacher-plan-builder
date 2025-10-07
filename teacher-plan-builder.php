@@ -200,7 +200,6 @@ if ($dev !== 0) {
                         <span class="spinner-border spinner-border d-none"></span>
                         <img
                                 id="user-avatar"
-                                class="d-none"
                                 alt="user photo"
                                 src=""
                                 loading="lazy"
@@ -382,7 +381,6 @@ if ($dev !== 0) {
                                 <span class="spinner-border spinner-border d-none"></span>
                                 <img
                                         id="settings-user-avatar"
-                                        class="d-none"
                                         style="object-fit: contain"
                                         alt="user photo preview"
                                         src=""
