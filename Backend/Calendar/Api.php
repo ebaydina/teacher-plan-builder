@@ -12,6 +12,7 @@ use Throwable;
 class Api
 {
     private Db $db;
+    private bool $isPossible = false;
     private string $logPath = '';
     private string $stripeCustomerTable = '';
     private string $stripeSecretKey = '';
@@ -24,8 +25,11 @@ class Api
         ini_set('memory_limit', -1);
 
         if (defined('LOG_PATH')) {
+            $this->isPossible = realpath(LOG_PATH) !== false;
+        }
+        if ($this->isPossible) {
             $parts = [
-                constant('LOG_PATH'),
+                LOG_PATH,
                 time()
                 . '-'
                 . pathinfo(__FILE__, PATHINFO_FILENAME)
@@ -33,6 +37,8 @@ class Api
             ];
             $this->logPath = join(DIRECTORY_SEPARATOR, $parts);
         }
+
+
         if (defined('STRIPE_CUSTOMER')) {
             $this->stripeCustomerTable = constant('STRIPE_CUSTOMER');
         }
@@ -110,19 +116,19 @@ class Api
         string $message,
         array $details,
     ): void {
-        $logPath = $this->logPath;
-        $isPossible = realpath($logPath) !== false;
 
         $testMode = 'unknown';
-        if ($isPossible && defined('TEST_MODE')) {
+        if (defined('TEST_MODE')) {
             $testMode = constant('TEST_MODE');
         }
-
-        if ($isPossible) {
+        if(!isset($details['TEST_MODE'])){
             $details['TEST_MODE'] = $testMode;
+        }
+
+        if ($this->isPossible) {
 
             file_put_contents(
-                $logPath,
+                $this->logPath,
                 date(DATE_ATOM, time())
                 . ': '
                 . $message

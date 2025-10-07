@@ -10,44 +10,17 @@ session_start();
 try {
     $api = new Calendar\Api($db, false);
 } catch (Throwable $e) {
-    $exception = var_export($e, true);
-    $details = ['EXCEPTION' => $exception];
     $message = 'Failure on render index page';
     echo $message;
-    if (defined('LOG_PATH')) {
-        $parts = [
-            constant('LOG_PATH'),
-            time()
-            . '-'
-            . pathinfo(__FILE__, PATHINFO_FILENAME)
-            . '.log',
-        ];
-        $logPath = join(DIRECTORY_SEPARATOR, $parts);
-        $isPossible = realpath($logPath) !== false;
 
-        $testMode = 'unknown';
-        if ($isPossible && defined('TEST_MODE')) {
-            $testMode = constant('TEST_MODE');
-        }
+    include_once 'write-log.php';
+    if(function_exists('writeLog')){
 
-        if ($isPossible) {
-            $details['TEST_MODE'] = $testMode;
+        $exception = var_export($e, true);
+        $details = ['EXCEPTION' => $exception];
+        $filename = pathinfo(__FILE__, PATHINFO_FILENAME);
 
-            file_put_contents(
-                $logPath,
-                date(DATE_ATOM, time())
-                . ': '
-                . $message
-                . ', context: '
-                . json_encode(
-                    $details,
-                    JSON_NUMERIC_CHECK
-                    | JSON_UNESCAPED_SLASHES
-                    | JSON_UNESCAPED_UNICODE
-                ),
-                FILE_APPEND,
-            );
-        }
+        writeLog($message, $details, $filename);
     }
 
     exit;
