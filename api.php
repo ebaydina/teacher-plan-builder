@@ -6,7 +6,9 @@ try {
     $message = 'Failure on API call';
     echo $message;
 
-    include_once 'write-log.php';
+    include_once __DIR__
+        . DIRECTORY_SEPARATOR
+        . 'write-log.php';
     if(function_exists('writeLog')){
 
         $exception = var_export($e, true);

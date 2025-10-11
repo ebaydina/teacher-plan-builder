@@ -12,13 +12,18 @@ define('DB_USER', 'u718471842_tpb');
 define('DB_PASSWORD', '***');
 define('DB_NAME', 'u718471842_tpb');
 
+define('LOG_PATH', dirname(__DIR__) . '/log');
 try {
     $db = new Calendar\Db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 } catch (Throwable $e) {
     $message = 'Failure on establish connection to database';
     echo $message;
 
-    include_once '..' . DIRECTORY_SEPARATOR . 'write-log.php';
+    include_once __DIR__
+        . DIRECTORY_SEPARATOR
+        . '..'
+        . DIRECTORY_SEPARATOR
+        . 'write-log.php';
     if(function_exists('writeLog')){
 
         $exception = var_export($e, true);
