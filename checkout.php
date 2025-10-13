@@ -63,8 +63,8 @@ try {
             ]
         ],
         'mode' => $mode,
-        'success_url' => $YOUR_DOMAIN . '/index.php',
-        'cancel_url' => $YOUR_DOMAIN . '/index.php',
+        'success_url' => $YOUR_DOMAIN . '/teacher-plan-builder.php',
+        'cancel_url' => $YOUR_DOMAIN . '/teacher-plan-builder.php',
         'customer_update' => ['address' => 'auto'],
         'automatic_tax' => [
             'enabled' => true,
