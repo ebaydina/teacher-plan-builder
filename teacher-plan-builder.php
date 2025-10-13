@@ -100,7 +100,7 @@ if ($dev !== 0) {
 <section id="verify" style="background-image: url('img/cover-invisible-background.png');"
          class="<?= ($verifyResult ? '' : 'd-none') ?>">
     <div class="container">
-        <div clas="row">
+        <div class="row">
             <div class="col-12 col-lg-4 offset-lg-4 verify-block" style="background: white">
                 <h2 class="pb-2 text-center"><?= TITLE ?></h2>
                 <h3>Verify account</h3>
