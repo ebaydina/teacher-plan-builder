@@ -711,7 +711,10 @@ SQL,
     {
         $user = $this->session();
         if (!is_array($user)) {
-            return $this->error($user);
+            $result = $this->error($user);
+            $this->log(__FUNCTION__, ['$result' => $user]);
+
+            return $result;
         }
         $user['photo'] = $user['photo'] ? UPLOADS_LINK . $user['photo'] : '';
 
