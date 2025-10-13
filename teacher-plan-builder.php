@@ -620,7 +620,8 @@ if ($dev !== 0) {
                     <div class="row">
                         <table
                                 id='subscription-list'
-                                class="table table-hover table-bordered border-primary">
+                                class="table table-hover
+                                    table-bordered border-primary">
                             <caption>
                                 List of my actual subscriptions
                             </caption>
