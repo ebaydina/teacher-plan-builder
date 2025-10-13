@@ -71,13 +71,11 @@ try {
         ],
     ]);
 } catch (\Throwable $e) {
-    $api->logException(
-        $e,
-        'Failure buy with Stripe API',
-        get_defined_vars()
-    );
+    $message = 'Failure on checkout';
 
-    throw $e;
+    echo $message;
+    $api->logException($e, $message, get_defined_vars());
+    exit;
 }
 
 header("HTTP/1.1 303 See Other");
