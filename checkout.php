@@ -41,6 +41,9 @@ $token = @$_GET['token'];
 
 try {
     $user = $api->session(token: $token);
+    if (!is_array($user)) {
+        throw new InvalidArgumentException($user);
+    }
     $customerId = $api->readCustomerId($user['id']);
     if ($customerId === '') {
         $customerId = $api->createStripeUser($user);
