@@ -762,12 +762,16 @@ SQL,
                     $plan = $subscription->plan;
                     $product = $plan->product;
                     $interval = $plan->interval;
+                    $cancelRenew = $subscription->cancel_at_period_end;
+                    $subscriptionId = $subscription->id;
 
                     $actualSubscriptions[] = [
                         $startAt,
                         $finishAt,
                         $product,
-                        $interval
+                        $interval,
+                        $cancelRenew,
+                        $subscriptionId,
                     ];
                 }
             }
@@ -778,16 +782,45 @@ SQL,
             }
 
             foreach ($actualSubscriptions as $next) {
-                list($startAt, $finishAt, $product, $interval) = $next;
+                list(
+                    $startAt
+                    , $finishAt
+                    , $product
+                    , $interval
+                    , $isCanceled
+                    , $id
+                    ) = $next;
                 $start = date('Y-m-d', $startAt);
                 $finish = date('Y-m-d', $finishAt);
                 $title = $products[$product] ?? '';
+
+                $checked = '';
+                if ($isCanceled) {
+                    $button = <<<HTML
+<button data-id="$id" class="reactivate-subscription 
+    form-control btn btn-primary my-2">
+    <span>Reactivate</span>
+</button>
+HTML;
+                    $checked = 'checked';
+                }
+
+                if (!$isCanceled) {
+                    $button = <<<HTML
+<button data-id="$id" class="cancel-subscription 
+    form-control btn btn-danger my-2">
+    <span>Cancel</span>
+</button>
+HTML;
+                }
                 $rows[] = <<<HTML
 <tr>
     <th scope="row">$title</th>
     <td>$interval</td>
     <td>$start</td>
     <td>$finish</td>
+    <td><input disabled type="checkbox" $checked></td>
+    <td>$button</td>
 </tr>
 HTML;
             }
@@ -806,6 +839,8 @@ HTML;
         <th scope="col">Type</th>
         <th scope="col">Starts</th>
         <th scope="col">Ends</th>
+        <th scope="col">Cancel at period end</th>
+        <th scope="col">Action</th>
     </tr>
     </thead>
     <tbody>

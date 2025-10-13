@@ -630,6 +630,8 @@ if ($dev !== 0) {
                                 <th scope="col">Type</th>
                                 <th scope="col">Starts</th>
                                 <th scope="col">Ends</th>
+                                <th scope="col">Cancel at period end</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
