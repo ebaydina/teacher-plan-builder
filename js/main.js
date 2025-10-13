@@ -476,11 +476,11 @@ function getUserProfile() {
                 $("#book-with-discount").removeClass('d-none');
             }
 
-            if (user['allow'] === true && user.admin === 0) {
+            if (user['allow'] === true && user.admin !== 1) {
                 $("#book-full-price").addClass('d-none');
                 $("#book-with-discount").removeClass('d-none');
             }
-            if (user['allow'] === false && user.admin === 0) {
+            if (user['allow'] === false && user.admin !== 1) {
                 $("#book-full-price").removeClass('d-none');
                 $("#book-with-discount").addClass('d-none');
             }
