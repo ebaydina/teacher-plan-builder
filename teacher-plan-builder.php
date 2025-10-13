@@ -93,10 +93,32 @@ if ($dev !== 0) {
     <script src="js/popper.min.js?v=<?= $version ?>"></script>
     <script src="js/tippy.min.js?v=<?= $version ?>"></script>
 </head>
+<style>
+    body:has(dialog:modal) {
+        overflow: hidden;
+    }
+</style>
 <body>
 <script>
     var Version = '<?=$version?>';
 </script>
+
+<dialog id="ShowMessage" class="rounded-4 p-4">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header p-2">
+                <h5 class="modal-title" id="Title"></h5>
+                <button class="closeDialog">✖</button>
+            </div>
+            <div class="modal-body p-2">
+                <p id="Message"></p>
+            </div>
+            <div class="modal-footer p-2">
+            </div>
+        </div>
+    </div>
+</dialog>
+
 <section id="verify" style="background-image: url('img/cover-invisible-background.png');"
          class="<?= ($verifyResult ? '' : 'd-none') ?>">
     <div class="container">

@@ -2,6 +2,7 @@
 
 namespace Calendar;
 
+use InvalidArgumentException;
 use mysqli_result;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Stripe\Exception\ApiErrorException;
@@ -704,6 +705,32 @@ SQL,
         return UPLOADS_LINK . $photo;
     }
 
+    public function apiCancelSubscription()
+    {
+        $this->getSessionData();
+
+        $result = $this->updateSubscriptionRenewStatus(
+            true,
+            'Subscription successfully canceled.',
+            'Subscription cancellation failed.'
+        );
+
+        return $result;
+    }
+
+    public function apiReactivateSubscription()
+    {
+        $this->getSessionData();
+
+        $result = $this->updateSubscriptionRenewStatus(
+            false,
+            'Subscription successfully reactivated.',
+            'Subscription reactivation failed.'
+        );
+
+        return $result;
+    }
+
     /**
      * @throws ApiErrorException
      */
@@ -1267,6 +1294,42 @@ SQL,
         return $customerId;
     }
 
+    /**
+     * @param bool $cancelAtPeriodEnd
+     * @param string $SuccessMessage
+     * @return array|string
+     */
+    protected function updateSubscriptionRenewStatus(
+        bool $cancelAtPeriodEnd,
+        string $SuccessMessage,
+        string $FailureMessage,
+    ): string|array {
+        $id = $this->param('subscriptionId');
+
+        $stripeSecretKey = '';
+        if (defined('STRIPE_SECRET_KEY')) {
+            $stripeSecretKey = constant('STRIPE_SECRET_KEY');
+        }
+
+        try {
+            $stripe = new \Stripe\StripeClient($stripeSecretKey);
+            $subscription = $stripe->subscriptions->update(
+                $id,
+                ['cancel_at_period_end' => $cancelAtPeriodEnd]
+            );
+
+            $result =
+                $SuccessMessage
+                . ' Please, update page to refresh subscriptions list.';
+        } catch (\Throwable $e) {
+            $message = $FailureMessage;
+            $this->logException($e, $message, get_defined_vars());
+
+            $result = $this->error($message);
+        }
+        return $result;
+    }
+
     private function paramIds($name)
     {
         $list = [];
@@ -1277,5 +1340,19 @@ SQL,
             }
         }
         return array_keys($list);
+    }
+
+    /**
+     * @return array user data with session context
+     */
+    protected function getSessionData(): array
+    {
+        $token = $this->param('token');
+        $user = $this->session(token: $token);
+        if (!is_array($user)) {
+            throw new InvalidArgumentException($user);
+        }
+
+        return $user;
     }
 }

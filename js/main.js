@@ -323,6 +323,15 @@ function getUserProfile() {
     title('Control panel');
     loader(true);
     $("#signin, #signup, #verify, #settings, #subscription").addClass('d-none');
+
+    function getDataId(data) {
+        let id = "";
+        if (data.hasOwnProperty('id')) {
+            id = data.id;
+        }
+        return id;
+    }
+
     api('getProfile',
         function (res) {
             user = res;
@@ -549,6 +558,15 @@ function getUserProfile() {
             ) {
 
                 constructorWasInitialized = true;
+
+                $(".cancel-subscription").click(function () {
+                    let id = getDataId(this.dataset);
+                    cancelSubscription(id);
+                });
+                $(".reactivate-subscription").click(function () {
+                    let id = getDataId(this.dataset);
+                    reactivateSubscription(id);
+                });
 
                 $("#name-constructor-btn").click(function () {
                     showNameConstructor();
@@ -911,6 +929,48 @@ function spinner(el, mode) {
     } else {
         spinner.addClass('d-none');
     }
+}
+
+function cancelSubscription(id) {
+
+    const titleElement = document.querySelector("#Title");
+    titleElement.textContent = "Cancel Subscription";
+    const messageElement = document.querySelector("#Message");
+    const dialog = document.querySelector("#ShowMessage");
+
+    api(
+        'CancelSubscription',
+        {subscriptionId: id},
+        function (result) {
+            messageElement.textContent = result;
+            dialog.showModal();
+        },
+        function (result) {
+            messageElement.textContent = result.error;
+            dialog.showModal();
+        },
+    );
+}
+
+function reactivateSubscription(id) {
+
+    const titleElement = document.querySelector("#Title");
+    titleElement.textContent = "Reactivate Subscription";
+    const messageElement = document.querySelector("#Message");
+    const dialog = document.querySelector("#ShowMessage");
+
+    api(
+        'ReactivateSubscription',
+        {subscriptionId: id},
+        function (result) {
+            messageElement.textContent = result;
+            dialog.showModal();
+        },
+        function (result) {
+            messageElement.textContent = result.error;
+            dialog.showModal();
+        },
+    );
 }
 
 function showNameConstructor() {
@@ -1752,6 +1812,11 @@ $(document).ready(function () {
     if (storedEmail !== null) {
         $("#signin-email").val(storedEmail);
     }
+
+    const dialog = document.querySelector(`#ShowMessage`);
+    dialog
+        .querySelector(".closeDialog")
+        .addEventListener("click", () => dialog.close());
 
     window.addEventListener(
         "keyup",
