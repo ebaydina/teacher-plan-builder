@@ -36,8 +36,8 @@ $host = '';
 if (defined('HOST')) {
     $host = constant('HOST');
 }
-$priceId = $_GET['priceId'];
-$token = $_GET['token'];
+$priceId = @$_GET['priceId'];
+$token = @$_GET['token'];
 
 try {
     $user = $api->session(token: $token);
