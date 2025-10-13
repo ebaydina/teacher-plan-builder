@@ -532,13 +532,13 @@ function getUserProfile() {
             if (user['allow'] === true) {
                 $("#menu-item-draft-btn").removeClass('d-none');
                 $("#menu-item-name-constructor-btn").removeClass('d-none');
-
-                $("td form").each(function (key, value) {
-                    if (this.action.indexOf('&token=') === -1) {
-                        this.action = `${this.action}\&token=${userToken}`;
-                    }
-                });
             }
+
+            $("td form").each(function (key, value) {
+                if (this.action.indexOf('&token=') === -1) {
+                    this.action = `${this.action}\&token=${userToken}`;
+                }
+            });
 
             if (
                 constructorWasInitialized !== undefined
