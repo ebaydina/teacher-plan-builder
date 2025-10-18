@@ -36,6 +36,12 @@ try {
     exit;
 }
 
+const SMTP_HOST = 'smtp.hostinger.com';
+const SMTP_PORT = '465';
+const SMTP_USERNAME = 'info@teacherplanbuilder.com';
+const SMTP_PASSWORD = '***';
+const SMTP_FROM_NAME = 'Teacher Plan Builder';
+
 define('TEST_MODE', 0);
 #define('TEST_MODE', 1);
 if (TEST_MODE) {
@@ -99,7 +105,7 @@ if (!TEST_MODE) {
     );
 }
 
-define('VERSION', '1.0.4');
+define('VERSION', '1.0.5');
 #define('HOST', 'https://teacherplanbuilder.com/');
 define('HOST', 'http://teacher.localhost/');
 define('HOST_PATH', dirname(__DIR__) . '/');

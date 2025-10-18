@@ -4,6 +4,7 @@ namespace Calendar;
 
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class Functions
 {
@@ -11,21 +12,19 @@ class Functions
     {
         $mail = new PHPMailer(true);
         try {
-            /*
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
-            $mail->Host       = 'smtp.jino.ru';
+            $mail->Host       = SMTP_HOST;
             $mail->SMTPAuth   = true;
-            $mail->Port       = 465;
-            $mail->Password   = '';
+            $mail->Port       = SMTP_PORT;
+            $mail->Password   = SMTP_PASSWORD;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            */
-            $mail->Username = 'info@teacherplanbuilder.com';
+            $mail->Username = SMTP_USERNAME;
 
             $mail->CharSet = "UTF-8";
             $mail->Encoding = 'base64';
 
-            $mail->setFrom($mail->Username, 'Teacher Plan Builder');
+            $mail->setFrom($mail->Username, SMTP_FROM_NAME);
             $mail->addCC($mail->Username);
             $mail->addBCC($mail->Username);
             $mail->addAddress($email);
@@ -35,7 +34,10 @@ class Functions
             $mail->send();
             return true;
         } catch (Exception $e) {
+            var_dump($e->getMessage());
+            die;
         }
+        
         return false;
     }
 
