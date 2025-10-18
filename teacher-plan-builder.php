@@ -34,7 +34,13 @@ if (!isset($_COOKIE['csrf_token'])) {
 }
 if (isset($_GET['verify'])) {
     $_SESSION['verify'] = $_GET['verify'];
-    Functions::redirect('/', true);
+
+    $appPage = 'teacher-plan-builder.php';
+    if (defined('HOST')) {
+        $appPage = constant('HOST') . $appPage;
+    }
+
+    Functions::redirect($appPage, true);
 }
 $verifyResult = false;
 if (isset($_SESSION['verify'])) {

@@ -1126,18 +1126,31 @@ SQL,
 
     private function sendVerifyCode($email, $verifyCode)
     {
-        $host = '';
+        $host = 'teacher-plan-builder.php';
         if (defined('HOST')) {
-            $host = constant('HOST');
+            $host = constant('HOST') . $host;
         }
-        Functions::mail(
-            $email
-            ,
-            'Welcome to Teacher Plan Builder'
-            ,
-            <<<HTML
-Account activation link:<a href="$host?verify= $verifyCode">Click me to confirm account</a>
-HTML
+
+        $subject = 'Welcome to Teacher Plan Builder';
+        $body = <<<HTML
+<main style="display:flex;flex-direction: column;">
+<h1 style="margin: 0 auto">Welcome to Teacher Plan Builder!</h1>
+<p style="font-size:2rem;margin: 0 auto; padding: 1rem">Please click the 
+<a href="$host?verify=$verifyCode">
+link
+</a> to verify your account
+</p>
+</main>
+</main>
+HTML;
+        Functions::mail($email, $subject, $body);
+
+        $this->log(
+            __FUNCTION__,
+            [
+                'email'=>$email,
+                'verifyCode'=>$verifyCode,
+            ]
         );
     }
 
