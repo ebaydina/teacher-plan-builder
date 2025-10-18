@@ -34,11 +34,15 @@ class Functions
             $mail->send();
             return true;
         } catch (Exception $e) {
-            var_dump($e->getMessage());
+            if (isset($db)) {
+                $api = new Api($db, false);
+                $details = get_defined_vars();
+                $api->log('Fail on send e-mail', $details);
+            }
+            echo $e->getMessage();
+
             die;
         }
-        
-        return false;
     }
 
     public static function redirect($url, $replace = false)
